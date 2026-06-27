@@ -76,6 +76,13 @@ function fixFile(filePath) {
   // --- Fix 5: Fix missing blank line between closing fence and next heading ---
   content = content.replace(/```\n(##)/g, '```\n\n$1');
 
+  // --- Fix 6: Remove trailing blank lines after closing code fences ---
+  // Matches ``` followed by whitespace-only lines at end of file or before next section
+  content = content.replace(/```\n\s*$/gm, '```\n');
+
+  // --- Fix 7: Remove trailing blank lines at end of file ---
+  content = content.replace(/\n\s*$/, '\n');
+
   if (content !== original) {
     writeFileSync(filePath, content, 'utf8');
     fixedCount++;
