@@ -138,6 +138,60 @@ html.dark .glass-nav {
   animation: logoFloat 3s ease-in-out infinite;
 }
 
+/* ========== Homepage Hero Section ========== */
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.8) 50%, rgba(255,23,68,0.05) 100%);
+}
+.hero-gradient-dark {
+  background: linear-gradient(135deg, rgba(14,17,21,0.95) 0%, rgba(15,17,21,0.9) 50%, rgba(255,23,68,0.08) 100%);
+}
+.hero-grid {
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+html.dark .hero-grid {
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Hero Animations */
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-fade-in {
+  animation: heroFadeIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+.hero-delay-1 { animation-delay: 0.1s; }
+.hero-delay-2 { animation-delay: 0.2s; }
+.hero-delay-3 { animation-delay: 0.3s; }
+.hero-delay-4 { animation-delay: 0.4s; }
+
+/* Feature Cards */
+.feature-card {
+  transition: all 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.1);
+}
+html.dark .feature-card:hover {
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.4);
+}
+
+/* Stat Cards */
+.stat-card {
+  transition: all 0.3s ease;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
 /* ========== Shared: Brand Colors ========== */
 .text-brand-500 { color: var(--brand-primary) !important; }
 .bg-brand-500 { background-color: var(--brand-primary) !important; color: #FFFFFF !important; }
