@@ -27,7 +27,10 @@ WalkForwardOptimizer wfo(data, /* train= */ 50000, /* test= */ 10000, /* purge= 
 ## Source Code
 
 ```cpp
-*   auto best = wfo.optimize([](auto params, auto& data) { /* strategy */ });
+/*
+ *   auto best = wfo.optimize([](auto params, auto& data) { /* strategy */ });
+
+ */
  *
  * PERFORMANCE TARGET:
  *   one fold evaluation < 1 second for 100K ticks

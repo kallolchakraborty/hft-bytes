@@ -32,8 +32,11 @@ artifact-id: "ZHFT_NIC_TUNING"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_NIC_TUNING.txt -o nic_tune
-// ./nic_tune eth0
+```bash
+
+g++ -O3 -std=c++20 ZHFT_NIC_TUNING.txt -o nic_tune
+./nic_tune eth0
+```
 
 ## Source Code
 

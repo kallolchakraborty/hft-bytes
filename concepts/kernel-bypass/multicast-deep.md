@@ -24,8 +24,11 @@ artifact-id: "ZHFT_MULTICAST_DEEP"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_MULTICAST_DEEP.txt -o mcast_deep
-// sudo ./mcast_deep  (needs raw socket for IGMP simulation)
+```bash
+
+g++ -O3 -std=c++20 ZHFT_MULTICAST_DEEP.txt -o mcast_deep
+sudo ./mcast_deep  (needs raw socket for IGMP simulation)
+```
 
 ## Source Code
 

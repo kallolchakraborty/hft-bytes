@@ -22,8 +22,11 @@ artifact-id: "ZHFT_EXCHANGE_COMPARE"
 
 ## Usage
 
-// ExchangeCompare cmp;
-// cmp.compare(startum);
+```bash
+
+ExchangeCompare cmp;
+cmp.compare(startum);
+```
 
 ## Source Code
 
@@ -108,6 +111,7 @@ public:
   }
 };
 ```
+
 ## Decision Matrix
 
 | : Exchange Architecture Comparison |

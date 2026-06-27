@@ -22,9 +22,12 @@ artifact-id: "ZHFT_EXCHANGE_CERT"
 
 ## Usage
 
-// CertHarness harness("CME");
-// harness.runAll();
-// harness.printReport();
+```bash
+
+CertHarness harness("CME");
+harness.runAll();
+harness.printReport();
+```
 
 ## Source Code
 

@@ -34,8 +34,11 @@ artifact-id: "ZHFT_CPU_ARCH"
 
 ## Usage
 
-// g++ -O3 -march=native -std=c++20 ZHFT_CPU_ARCH.txt -o latency_bench
-// ./latency_bench
+```bash
+
+g++ -O3 -march=native -std=c++20 ZHFT_CPU_ARCH.txt -o latency_bench
+./latency_bench
+```
 
 ## Source Code
 

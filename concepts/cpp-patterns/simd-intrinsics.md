@@ -22,7 +22,10 @@ artifact-id: "ZHFT_SIMD_INTRINSICS"
 
 ## Usage
 
-// Fast FIX tag finder
+```bash
+
+Fast FIX tag finder
+```
 size_t pos = simd::findTag(msg, "38", 2);  // find OrderQty tag
 // Normalize price array to Z-scores
 simd::normalizeAVX512(prices.data(), N, mean, stddev);

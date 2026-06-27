@@ -35,9 +35,12 @@ artifact-id: "ZHFT_LINUX_TUNING"
 
 ## Usage
 
-// g++ -std=c++20 ZHFT_LINUX_TUNING.txt -o linux_tuner
-// sudo ./linux_tuner --apply   (applies settings via sysfs)
-// sudo ./linux_tuner --verify  (checks current settings)
+```bash
+
+g++ -std=c++20 ZHFT_LINUX_TUNING.txt -o linux_tuner
+sudo ./linux_tuner --apply   (applies settings via sysfs)
+sudo ./linux_tuner --verify  (checks current settings)
+```
 
 ## Source Code
 

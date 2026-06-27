@@ -22,10 +22,13 @@ artifact-id: "ZHFT_EXCHANGE_CONNECT"
 
 ## Usage
 
-// ExchangeSessionMgr mgr;
-// mgr.addSession("CME", "10.0.0.1", 9100, SessionProtocol::ILink3);
-// mgr.connectAll();
-// mgr.send("CME", order_msg);
+```bash
+
+ExchangeSessionMgr mgr;
+mgr.addSession("CME", "10.0.0.1", 9100, SessionProtocol::ILink3);
+mgr.connectAll();
+mgr.send("CME", order_msg);
+```
 
 ## Source Code
 

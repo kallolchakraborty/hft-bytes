@@ -23,8 +23,11 @@ artifact-id: "ZHFT_SWITCH_TOPOLOGY"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_SWITCH_TOPOLOGY.txt -o switch_latency
-// sudo ./switch_latency <switch_ip>
+```bash
+
+g++ -O3 -std=c++20 ZHFT_SWITCH_TOPOLOGY.txt -o switch_latency
+sudo ./switch_latency <switch_ip>
+```
 
 ## Source Code
 

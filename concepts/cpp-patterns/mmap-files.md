@@ -30,8 +30,11 @@ journal.recover([](const Order& o) { /* replay */ });
 ## Source Code
 
 ```cpp
-*
+/*
+ *
  * PERFORMANCE TARGET:
+
+ */
  *   mmap file open  (64 MB):           ~2-5µs
  *   Append to journal (64-byte write):  ~30ns
  *   Sequential scan (CRC verify, 1 GB): ~500ms

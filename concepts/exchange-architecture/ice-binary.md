@@ -23,10 +23,13 @@ artifact-id: "ZHFT_ICE_BINARY"
 
 ## Usage
 
-// IceBinarySession ice;
-// ice.login("user", "pass");
-// ice.newOrder("CL", Side::BUY, 1000, 75.50);
-// auto msg = ice.receive();
+```bash
+
+IceBinarySession ice;
+ice.login("user", "pass");
+ice.newOrder("CL", Side::BUY, 1000, 75.50);
+auto msg = ice.receive();
+```
 
 ## Source Code
 

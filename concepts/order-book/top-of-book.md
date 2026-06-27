@@ -22,9 +22,12 @@ artifact-id: "ZHFT_TOP_OF_BOOK"
 
 ## Usage
 
-// StrategyBookFit fit;
-// fit.evaluate(StrategyType::MARKET_MAKING);
-// auto result = fit.recommend(); // "full-book"
+```bash
+
+StrategyBookFit fit;
+fit.evaluate(StrategyType::MARKET_MAKING);
+auto result = fit.recommend(); // "full-book"
+```
 
 ## Source Code
 
@@ -170,6 +173,7 @@ public:
   }
 };
 ```
+
 ## Decision Matrix
 
 | : Strategy vs Book Depth Fit |

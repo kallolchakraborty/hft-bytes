@@ -34,9 +34,12 @@ artifact-id: "ZHFT_BUILD_SYSTEMS"
 
 ## Usage
 
-// cmake --preset hft-release
-// cmake --build --preset hft-release
-// ./build/hft_release/my_strategy
+```bash
+
+cmake --preset hft-release
+cmake --build --preset hft-release
+./build/hft_release/my_strategy
+```
 
 ## Source Code
 

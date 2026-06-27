@@ -22,11 +22,14 @@ artifact-id: "ZHFT_BOOK_IMBALANCE"
 
 ## Usage
 
-// BookImbalance bi;
-// bi.update(Side::BUY, 1000, 150.25, Side::SELL, 500, 150.30);
-// auto imb = bi.imbalance();
-// auto mp = bi.microPrice();
-// auto vpin = bi.vpin(trades, 100);
+```bash
+
+BookImbalance bi;
+bi.update(Side::BUY, 1000, 150.25, Side::SELL, 500, 150.30);
+auto imb = bi.imbalance();
+auto mp = bi.microPrice();
+auto vpin = bi.vpin(trades, 100);
+```
 
 ## Source Code
 

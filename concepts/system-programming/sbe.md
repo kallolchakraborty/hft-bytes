@@ -23,10 +23,13 @@ artifact-id: "ZHFT_SBE"
 
 ## Usage
 
-// 1. Create message.xml schema file
-// 2. Run: java -jar sbe.jar message.xml > sbe_generated.hpp
-// 3. Compile: g++ -O3 -std=c++20 -I. ZHFT_SBE.txt -o sbe_bench
-// 4. ./sbe_bench
+```bash
+
+1. Create message.xml schema file
+2. Run: java -jar sbe.jar message.xml > sbe_generated.hpp
+3. Compile: g++ -O3 -std=c++20 -I. ZHFT_SBE.txt -o sbe_bench
+4. ./sbe_bench
+```
 
 ## Source Code
 

@@ -22,12 +22,15 @@ artifact-id: "ZHFT_GAP_RECOVERY"
 
 ## Usage
 
-// GapDetectionEngine gde;
-// gde.setExpectedSeq(100);
-// if (gde.checkGap(105)) {
-//     gde.requestRetransmit(100, 104);
-// }
-// gde.onGapFill(100, "msg100", false);
+```bash
+
+GapDetectionEngine gde;
+gde.setExpectedSeq(100);
+if (gde.checkGap(105)) {
+    gde.requestRetransmit(100, 104);
+}
+gde.onGapFill(100, "msg100", false);
+```
 
 ## Source Code
 

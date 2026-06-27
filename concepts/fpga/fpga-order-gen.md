@@ -22,7 +22,10 @@ artifact-id: "ZHFT_FPGA_ORDER_GEN"
 
 ## Usage
 
-// Verilog FIX encoder + order state machine
+```bash
+
+Verilog FIX encoder + order state machine
+```
 
 ## Source Code
 

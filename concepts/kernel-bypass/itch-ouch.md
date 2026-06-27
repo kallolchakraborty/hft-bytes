@@ -24,8 +24,11 @@ artifact-id: "ZHFT_ITCH_OUCH"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_ITCH_OUCH.txt -o itch_ouch
-// ./itch_ouch < sample_itch.bin
+```bash
+
+g++ -O3 -std=c++20 ZHFT_ITCH_OUCH.txt -o itch_ouch
+./itch_ouch < sample_itch.bin
+```
 
 ## Source Code
 

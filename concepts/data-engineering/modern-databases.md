@@ -23,8 +23,11 @@ artifact-id: "ZHFT_MODERN_DATABASES"
 ## Source Code
 
 ```cpp
-*
+/*
+ *
  * USAGE:
+
+ */
  *   ClickHouseConnector ch("localhost:8123");
  *   ch.execute("INSERT INTO market_data VALUES ...");
  *
@@ -119,6 +122,7 @@ public:
     }
 };
 ```
+
 ## Decision Matrix
 
 | DIMENSION | kdb+/q | ClickHouse | InfluxDB | TimescaleDB |

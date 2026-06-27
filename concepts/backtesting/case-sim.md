@@ -22,8 +22,11 @@ artifact-id: "ZHFT_CASE_SIM"
 ## Source Code
 
 ```cpp
-*
+/*
+ *
  * USAGE:
+
+ */
  *   ScenarioInjector si(backtester);
  *   si.inject<FlashCrashScenario>(/* start_ns= */ 34200000000000);
  *   si.inject<KnightRogueOrders>(/* probability= */ 0.001);

@@ -28,7 +28,10 @@ AlmgrenChriss ac(/* sigma= */ 0.02, /* impact= */ 1e-6, /* risk_aversion= */ 1e-
 ## Source Code
 
 ```cpp
-*   auto schedule = ac.optimize(100000, 3600);
+/*
+ *   auto schedule = ac.optimize(100000, 3600);
+
+ */
  *
  * PERFORMANCE TARGET:
  *   optimization < 1 ms for 1-hour schedule at 1-second granularity

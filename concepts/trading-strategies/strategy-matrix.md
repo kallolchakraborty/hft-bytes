@@ -23,8 +23,11 @@ artifact-id: "ZHFT_STRATEGY_MATRIX"
 ## Source Code
 
 ```cpp
-*
+/*
+ *
  * USAGE:
+
+ */
  *   StrategySelector selector;
  *   auto rec = selector.recommend(/* vol= */ 0.3, /* trend= */ -0.1, /* liquid= */ true);
  *
@@ -76,6 +79,7 @@ public:
     }
 };
 ```
+
 ## Decision Matrix
 
 | DIMENSION | MARKET MAKING | STAT ARB | MOMENTUM | MEAN REV | PAIRS |

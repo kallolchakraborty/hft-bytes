@@ -23,9 +23,12 @@ artifact-id: "ZHFT_SHARED_MEMORY"
 
 ## Usage
 
-// g++ -O3 -std=c++20 -pthread ZHFT_SHARED_MEMORY.txt -o shm_broadcaster
-// Terminal 1: ./shm_broadcaster producer
-// Terminal 2: ./shm_broadcaster consumer
+```bash
+
+g++ -O3 -std=c++20 -pthread ZHFT_SHARED_MEMORY.txt -o shm_broadcaster
+Terminal 1: ./shm_broadcaster producer
+Terminal 2: ./shm_broadcaster consumer
+```
 
 ## Source Code
 

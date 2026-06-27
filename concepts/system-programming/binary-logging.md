@@ -24,8 +24,11 @@ artifact-id: "ZHFT_BINARY_LOGGING"
 
 ## Usage
 
-// g++ -O3 -std=c++20 -pthread ZHFT_BINARY_LOGGING.txt -o binlog
-// ./binlog
+```bash
+
+g++ -O3 -std=c++20 -pthread ZHFT_BINARY_LOGGING.txt -o binlog
+./binlog
+```
 
 ## Source Code
 

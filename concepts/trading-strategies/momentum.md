@@ -27,7 +27,10 @@ MomentumSignal sig(/* lookback= */ 20);
 ## Source Code
 
 ```cpp
-*   for (auto px : prices) { sig.update(px); auto s = sig.signal(); }
+/*
+ *   for (auto px : prices) { sig.update(px); auto s = sig.signal(); }
+
+ */
  *
  * PERFORMANCE TARGET:
  *   signal generation < 100 ns per tick

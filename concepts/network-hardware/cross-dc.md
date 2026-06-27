@@ -25,8 +25,11 @@ artifact-id: "ZHFT_CROSS_DC"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_CROSS_DC.txt -o cross_dc
-// ./cross_dc
+```bash
+
+g++ -O3 -std=c++20 ZHFT_CROSS_DC.txt -o cross_dc
+./cross_dc
+```
 
 ## Source Code
 

@@ -22,14 +22,20 @@ artifact-id: "ZHFT_MICROSTRUCTURE_EDGE"
 
 ## Usage
 
-// ShortSaleRestrictionChecker ssrc;
-// ssrc.updateNBBO(150.25, 150.30);
-// if (ssrc.isRestricted("AAPL")) { /* only short at +0 uptick */ }
+```bash
+
+ShortSaleRestrictionChecker ssrc;
+ssrc.updateNBBO(150.25, 150.30);
+if (ssrc.isRestricted("AAPL")) { /* only short at +0 uptick */ }
+```
 
 ## Source Code
 
 ```cpp
-*   //
+/*
+ *   //
+
+ */
  *   // LuldCalculator luld;
  *   // auto band = luld.computeBands(last_price, 0.05);
  *   // // band = {lower: 142.74, upper: 157.78} (5% bands)

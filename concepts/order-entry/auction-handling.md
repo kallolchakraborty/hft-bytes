@@ -22,11 +22,14 @@ artifact-id: "ZHFT_AUCTION_HANDLING"
 
 ## Usage
 
-// AuctionEngine auct;
-// auct.startAuction(AuctionType::OPENING, "AAPL");
-// auct.addOrder(Order{...}); // during collection
-// auct.indicativePrice(); // during auction
-// auto result = auct.uncross(); // at auction end
+```bash
+
+AuctionEngine auct;
+auct.startAuction(AuctionType::OPENING, "AAPL");
+auct.addOrder(Order{...}); // during collection
+auct.indicativePrice(); // during auction
+auto result = auct.uncross(); // at auction end
+```
 
 ## Source Code
 

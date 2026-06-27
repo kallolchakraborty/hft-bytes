@@ -24,8 +24,11 @@ artifact-id: "ZHFT_TCP_TUNING"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_TCP_TUNING.txt -o tcp_tuner
-// sudo ./tcp_tuner (needs CAP_NET_ADMIN for some sysctls)
+```bash
+
+g++ -O3 -std=c++20 ZHFT_TCP_TUNING.txt -o tcp_tuner
+sudo ./tcp_tuner (needs CAP_NET_ADMIN for some sysctls)
+```
 
 ## Source Code
 

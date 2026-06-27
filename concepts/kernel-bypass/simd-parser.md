@@ -23,8 +23,11 @@ artifact-id: "ZHFT_SIMD_PARSER"
 
 ## Usage
 
-// g++ -O3 -mavx2 -std=c++20 ZHFT_SIMD_PARSER.txt -o simd_parser
-// ./simd_parser
+```bash
+
+g++ -O3 -mavx2 -std=c++20 ZHFT_SIMD_PARSER.txt -o simd_parser
+./simd_parser
+```
 
 ## Source Code
 

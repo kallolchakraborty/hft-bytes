@@ -44,8 +44,11 @@ artifact-id: "ZHFT_KERNEL_BYPASS"
 
 ## Usage
 
-// DPDK pseudo-code — compile with meson/ninja, run with:
-// ./build/app/dpdk-recv -l 0-1 -- -p 0x1
+```bash
+
+DPDK pseudo-code — compile with meson/ninja, run with:
+./build/app/dpdk-recv -l 0-1 -- -p 0x1
+```
 
 ## Staff+ Perspective
 
@@ -234,6 +237,7 @@ auto main() -> int {
     return 0;
 }
 ```
+
 ## Decision Matrix
 
 | — Kernel Bypass Decision Matrix |

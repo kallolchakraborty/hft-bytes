@@ -23,9 +23,12 @@ artifact-id: "ZHFT_HUGE_PAGES"
 
 ## Usage
 
-// g++ -std=c++20 -O3 ZHFT_HUGE_PAGES.txt -o huge_alloc
-// sudo ./huge_alloc   (needs CAP_IPC_LOCK or huge page quota)
-// sudo ./huge_alloc --measure-tlb  (runs TLB miss measurement)
+```bash
+
+g++ -std=c++20 -O3 ZHFT_HUGE_PAGES.txt -o huge_alloc
+sudo ./huge_alloc   (needs CAP_IPC_LOCK or huge page quota)
+sudo ./huge_alloc --measure-tlb  (runs TLB miss measurement)
+```
 
 ## Source Code
 

@@ -23,7 +23,10 @@ artifact-id: "ZHFT_FPGA_VENDORS"
 
 ## Usage
 
-// FPGA card benchmark harness (pseudo)
+```bash
+
+FPGA card benchmark harness (pseudo)
+```
 FpgaBench bench("Alveo U250");
 bench.loadBitstream("itch_parser.bit");
 auto lat = bench.measureLatency(1000000);

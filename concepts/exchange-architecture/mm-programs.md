@@ -22,12 +22,18 @@ artifact-id: "ZHFT_MM_PROGRAMS"
 
 ## Usage
 
-// MmObligationMonitor mm(/* venue */ "CME");
+```bash
+
+MmObligationMonitor mm(/* venue */ "CME");
+```
 
 ## Source Code
 
 ```cpp
-*   // mm.setObligations({100, 0.05, 0.10});
+/*
+ *   // mm.setObligations({100, 0.05, 0.10});
+
+ */
  *   // mm.recordQuote(Symbol::ES, 4500.00, 4500.50);
  *   // bool ok = mm.checkCompliance();
  *

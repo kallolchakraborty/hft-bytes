@@ -25,10 +25,13 @@ artifact-id: "ZHFT_MATCHING_ENGINE"
 
 ## Usage
 
-// MatchingEngine me("AAPL");
-// me.addOrder({1, Side::BUY, 100, 150.25, OrderType::LIMIT});
-// me.addOrder({2, Side::SELL, 50, 150.25, OrderType::LIMIT});
-// auto trades = me.match(); // process matching
+```bash
+
+MatchingEngine me("AAPL");
+me.addOrder({1, Side::BUY, 100, 150.25, OrderType::LIMIT});
+me.addOrder({2, Side::SELL, 50, 150.25, OrderType::LIMIT});
+auto trades = me.match(); // process matching
+```
 
 ## Staff+ Perspective
 

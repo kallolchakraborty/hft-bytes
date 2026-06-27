@@ -22,10 +22,13 @@ artifact-id: "ZHFT_SOR"
 
 ## Usage
 
-// SorEngine sor;
-// sor.addVenue("CME", 50e-6, 0.0001, 0.85);
-// sor.addVenue("EUREX", 45e-6, 0.00015, 0.80);
-// auto venue = sor.selectVenue("ES", 100, Side::BUY);
+```bash
+
+SorEngine sor;
+sor.addVenue("CME", 50e-6, 0.0001, 0.85);
+sor.addVenue("EUREX", 45e-6, 0.00015, 0.80);
+auto venue = sor.selectVenue("ES", 100, Side::BUY);
+```
 
 ## Source Code
 

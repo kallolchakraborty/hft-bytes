@@ -22,8 +22,11 @@ artifact-id: "ZHFT_CROSS_COMPILE"
 
 ## Usage
 
-// g++ -O3 -std=c++20 -march=x86-64-v2 ZHFT_CROSS_COMPILE.txt -o dispatch
-// ./dispatch
+```bash
+
+g++ -O3 -std=c++20 -march=x86-64-v2 ZHFT_CROSS_COMPILE.txt -o dispatch
+./dispatch
+```
 
 ## Source Code
 

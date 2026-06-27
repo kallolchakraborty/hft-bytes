@@ -42,8 +42,11 @@ artifact-id: "ZHFT_CACHE_LINES"
 
 ## Usage
 
-// g++ -O3 -march=native -std=c++20 -pthread ZHFT_CACHE_LINES.txt -o cache_bench
-// ./cache_bench [--no-false-sharing] [--numa] [--threads=N]
+```bash
+
+g++ -O3 -march=native -std=c++20 -pthread ZHFT_CACHE_LINES.txt -o cache_bench
+./cache_bench [--no-false-sharing] [--numa] [--threads=N]
+```
 
 ## Source Code
 

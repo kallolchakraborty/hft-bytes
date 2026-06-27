@@ -22,8 +22,11 @@ artifact-id: "ZHFT_FPGA_PARSER"
 
 ## Usage
 
-// Verilog ITCH parser module + pipeline latency breakdown
-// Synthesize for Alveo U250 at 322MHz
+```bash
+
+Verilog ITCH parser module + pipeline latency breakdown
+Synthesize for Alveo U250 at 322MHz
+```
 
 ## Source Code
 

@@ -30,10 +30,13 @@ artifact-id: "ZHFT_FIX_ENGINE"
 
 ## Usage
 
-// FIXSession session("FIX.4.2", "SENDER", "TARGET");
-// session.connect("10.0.0.1", 9001);
-// session.send(newOrderSingle("AAPL", Side::BUY, 100, 150.25));
-// auto exec = session.recv(); // blocks until ExecutionReport
+```bash
+
+FIXSession session("FIX.4.2", "SENDER", "TARGET");
+session.connect("10.0.0.1", 9001);
+session.send(newOrderSingle("AAPL", Side::BUY, 100, 150.25));
+auto exec = session.recv(); // blocks until ExecutionReport
+```
 
 ## Source Code
 

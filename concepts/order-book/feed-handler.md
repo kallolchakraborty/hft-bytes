@@ -26,10 +26,13 @@ artifact-id: "ZHFT_FEED_HANDLER"
 
 ## Usage
 
-// FeedHandler fh("ES", FeedType::MDP);
-// fh.onIncremental(seq, msg);
-// fh.onSnapshot(snap);
-// fh.onTimeout(); // detect freeze
+```bash
+
+FeedHandler fh("ES", FeedType::MDP);
+fh.onIncremental(seq, msg);
+fh.onSnapshot(snap);
+fh.onTimeout(); // detect freeze
+```
 
 ## Staff+ Perspective
 

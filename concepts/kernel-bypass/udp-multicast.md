@@ -25,8 +25,11 @@ artifact-id: "ZHFT_UDP_MULTICAST"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_UDP_MULTICAST.txt -o multicast_recv
-// sudo ./multicast_recv 232.1.1.1 5000 192.168.1.100
+```bash
+
+g++ -O3 -std=c++20 ZHFT_UDP_MULTICAST.txt -o multicast_recv
+sudo ./multicast_recv 232.1.1.1 5000 192.168.1.100
+```
 
 ## Source Code
 

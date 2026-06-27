@@ -22,11 +22,14 @@ artifact-id: "ZHFT_LSE_MILLENNIUM"
 
 ## Usage
 
-// MillenniumSession ses;
-// ses.connect("10.0.0.3", 9300);
-// ses.logon("user", "pass");
-// ses.enterOrder("VOD.L", Side::BUY, 10000, 150.25, false);
-// auto exec = ses.receive();
+```bash
+
+MillenniumSession ses;
+ses.connect("10.0.0.3", 9300);
+ses.logon("user", "pass");
+ses.enterOrder("VOD.L", Side::BUY, 10000, 150.25, false);
+auto exec = ses.receive();
+```
 
 ## Source Code
 

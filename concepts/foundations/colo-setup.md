@@ -41,9 +41,12 @@ artifact-id: "ZHFT_COLO_SETUP"
 
 ## Usage
 
-// g++ -std=c++20 ZHFT_COLO_SETUP.txt -o colo_config
-// ./colo_config --generate > bootstrap.sh
-// (review and run on each colo server)
+```bash
+
+g++ -std=c++20 ZHFT_COLO_SETUP.txt -o colo_config
+./colo_config --generate > bootstrap.sh
+(review and run on each colo server)
+```
 
 ## Source Code
 

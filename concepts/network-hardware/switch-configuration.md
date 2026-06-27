@@ -23,9 +23,12 @@ artifact-id: "ZHFT_SWITCH_CONFIG"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_SWITCH_CONFIG.txt -o switch_config
-// ./switch_config
-// Outputs JSON/YAML configuration.
+```bash
+
+g++ -O3 -std=c++20 ZHFT_SWITCH_CONFIG.txt -o switch_config
+./switch_config
+Outputs JSON/YAML configuration.
+```
 
 ## Source Code
 

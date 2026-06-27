@@ -25,8 +25,11 @@ artifact-id: "ZHFT_BIOS_TUNING"
 
 ## Usage
 
-// g++ -std=c++20 -O2 ZHFT_BIOS_TUNING.txt -o bios_validator
-// sudo ./bios_validator   (reads MSRs to verify BIOS settings)
+```bash
+
+g++ -std=c++20 -O2 ZHFT_BIOS_TUNING.txt -o bios_validator
+sudo ./bios_validator   (reads MSRs to verify BIOS settings)
+```
 
 ## Source Code
 

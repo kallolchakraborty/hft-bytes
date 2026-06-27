@@ -23,9 +23,12 @@ artifact-id: "ZHFT_MKT_DATA_VENDORS"
 
 ## Usage
 
-// MarketDataVendorSelector sel;
-// sel.evaluate(StrategyType::MARKET_MAKING);
-// auto rec = sel.recommend();
+```bash
+
+MarketDataVendorSelector sel;
+sel.evaluate(StrategyType::MARKET_MAKING);
+auto rec = sel.recommend();
+```
 
 ## Source Code
 
@@ -154,6 +157,7 @@ public:
   }
 };
 ```
+
 ## Decision Matrix
 
 | : Market Data Vendor Comparison |

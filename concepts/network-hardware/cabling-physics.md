@@ -23,8 +23,11 @@ artifact-id: "ZHFT_CABLING_PHYSICS"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_CABLING_PHYSICS.txt -o cable_calc
-// ./cable_calc
+```bash
+
+g++ -O3 -std=c++20 ZHFT_CABLING_PHYSICS.txt -o cable_calc
+./cable_calc
+```
 
 ## Source Code
 

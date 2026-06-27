@@ -53,10 +53,13 @@ artifact-id: "ZHFT_LOB"
 
 ## Usage
 
-// LimitOrderBook lob("ES");
-// lob.applyIncremental(MDAdd{SeqNo, Side::BUY, 100, 4500.00, "ORD1"});
-// lob.applyIncremental(MDExecute{SeqNo, "ORD1", 50});
-// auto top = lob.topOfBook(); // 4500.00, 4500.25, 50@bid, 100@ask
+```bash
+
+LimitOrderBook lob("ES");
+lob.applyIncremental(MDAdd{SeqNo, Side::BUY, 100, 4500.00, "ORD1"});
+lob.applyIncremental(MDExecute{SeqNo, "ORD1", 50});
+auto top = lob.topOfBook(); // 4500.00, 4500.25, 50@bid, 100@ask
+```
 
 ## Staff+ Perspective
 

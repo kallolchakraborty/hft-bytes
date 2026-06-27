@@ -25,9 +25,12 @@ artifact-id: "ZHFT_IPMI_OOB"
 
 ## Usage
 
-// g++ -O3 -std=c++20 -lcurl ZHFT_IPMI_OOB.txt -o ipmi_client
-// ./ipmi_client
-// Requires libcurl for Redfish API calls.
+```bash
+
+g++ -O3 -std=c++20 -lcurl ZHFT_IPMI_OOB.txt -o ipmi_client
+./ipmi_client
+Requires libcurl for Redfish API calls.
+```
 
 ## Source Code
 

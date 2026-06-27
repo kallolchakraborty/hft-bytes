@@ -22,12 +22,15 @@ artifact-id: "ZHFT_LATENCY_MEASURE"
 
 ## Usage
 
-// LatencyHarness lh("eth0");
-// lh.start();  // background measurement thread
-// ... trade ...
-// lh.recordTickToTrade(tick_ns, trade_ns);
-// auto hdr = lh.histogram();
-// printf("p50=%.3f p99=%.3f\n", hdr.percentile(50), hdr.percentile(99));
+```bash
+
+LatencyHarness lh("eth0");
+lh.start();  // background measurement thread
+... trade ...
+lh.recordTickToTrade(tick_ns, trade_ns);
+auto hdr = lh.histogram();
+printf("p50=%.3f p99=%.3f\n", hdr.percentile(50), hdr.percentile(99));
+```
 
 ## Source Code
 

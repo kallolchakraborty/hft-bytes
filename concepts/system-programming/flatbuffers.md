@@ -23,10 +23,13 @@ artifact-id: "ZHFT_FLATBUFFERS"
 
 ## Usage
 
-// 1. Install flatc (FlatBuffers compiler)
-// 2. flatc --cpp marketdata.fbs
-// 3. g++ -O3 -std=c++20 -I. ZHFT_FLATBUFFERS.txt -o fb_bench
-// 4. ./fb_bench
+```bash
+
+1. Install flatc (FlatBuffers compiler)
+2. flatc --cpp marketdata.fbs
+3. g++ -O3 -std=c++20 -I. ZHFT_FLATBUFFERS.txt -o fb_bench
+4. ./fb_bench
+```
 
 ## Source Code
 

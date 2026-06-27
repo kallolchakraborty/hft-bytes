@@ -23,11 +23,14 @@ artifact-id: "ZHFT_EUREX_T7"
 
 ## Usage
 
-// T7Session t7;
-// t7.connect("10.0.0.2", 9200);
-// t7.login("user", "pass");
-// t7.enterOrder({...});
-// auto exec = t7.receive();
+```bash
+
+T7Session t7;
+t7.connect("10.0.0.2", 9200);
+t7.login("user", "pass");
+t7.enterOrder({...});
+auto exec = t7.receive();
+```
 
 ## Source Code
 

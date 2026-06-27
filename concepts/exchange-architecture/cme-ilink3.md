@@ -24,10 +24,13 @@ artifact-id: "ZHFT_CME_iLINK3"
 
 ## Usage
 
-// ILink3Session session;
-// session.login(encrypted_key);
-// session.sendMassQuote(quotes);
-// auto fills = session.recv();
+```bash
+
+ILink3Session session;
+session.login(encrypted_key);
+session.sendMassQuote(quotes);
+auto fills = session.recv();
+```
 
 ## Source Code
 

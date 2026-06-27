@@ -24,9 +24,12 @@ artifact-id: "ZHFT_SERVER_SELECTION"
 
 ## Usage
 
-// g++ -std=c++20 ZHFT_SERVER_SELECTION.txt -o server_selector
-// ./server_selector  (compare pre-configured profiles)
-// ./server_selector --custom  (interactive custom spec)
+```bash
+
+g++ -std=c++20 ZHFT_SERVER_SELECTION.txt -o server_selector
+./server_selector  (compare pre-configured profiles)
+./server_selector --custom  (interactive custom spec)
+```
 
 ## Source Code
 

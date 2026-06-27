@@ -25,9 +25,12 @@ artifact-id: "ZHFT_BINARY_SIZE"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_BINARY_SIZE.txt -o binary_size
-// ./binary_size
-// strip ./binary_size  (optional)
+```bash
+
+g++ -O3 -std=c++20 ZHFT_BINARY_SIZE.txt -o binary_size
+./binary_size
+strip ./binary_size  (optional)
+```
 
 ## Source Code
 

@@ -22,17 +22,23 @@ artifact-id: "ZHFT_ANOMALY_DETECTION"
 
 ## Usage
 
-// AnomalyDetector ad;
-// ad.onOrderAdd({order, timestamp});
-// ad.onOrderCancel({order_id, timestamp});
-// ad.onTrade({buy_id, sell_id, qty, px, timestamp});
-// if (auto alert = ad.detect()) { /* pause or investigate */ }
+```bash
+
+AnomalyDetector ad;
+ad.onOrderAdd({order, timestamp});
+ad.onOrderCancel({order_id, timestamp});
+ad.onTrade({buy_id, sell_id, qty, px, timestamp});
+if (auto alert = ad.detect()) { /* pause or investigate */ }
+```
 
 ## Source Code
 
 ```cpp
-*
+/*
+ *
  * PERFORMANCE TARGET:
+
+ */
  *   Per-event check < 100 ns; full scan (1s window) < 1 us
  * ====================================================================
  */

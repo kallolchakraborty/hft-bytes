@@ -23,9 +23,12 @@ artifact-id: "ZHFT_SESSION_RECOVERY"
 
 ## Usage
 
-// SessionRecovery recovery(session, order_store);
-// if (recovery.detectGap()) recovery.requestResend(seq);
-// recovery.handleGapFill(gap_msg);
+```bash
+
+SessionRecovery recovery(session, order_store);
+if (recovery.detectGap()) recovery.requestResend(seq);
+recovery.handleGapFill(gap_msg);
+```
 
 ## Source Code
 

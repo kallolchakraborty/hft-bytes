@@ -22,7 +22,10 @@ artifact-id: "ZHFT_CACHE_FRIENDLY"
 
 ## Usage
 
-// SoA layout
+```bash
+
+SoA layout
+```
 struct OrderBookSoA {
 std::vector<double> price;
 std::vector<uint32_t> qty;

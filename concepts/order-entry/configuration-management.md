@@ -22,11 +22,14 @@ artifact-id: "ZHFT_CONFIG_MGMT"
 
 ## Usage
 
-// ConfigManager cfg("config/");
-// cfg.loadAll();
-// auto *sym = cfg.symbol("ES");
-// auto *venue = cfg.venue("CME");
-// cfg.hotReload([](const ConfigSnapshot &s) { strategy.apply(s); });
+```bash
+
+ConfigManager cfg("config/");
+cfg.loadAll();
+auto *sym = cfg.symbol("ES");
+auto *venue = cfg.venue("CME");
+cfg.hotReload([](const ConfigSnapshot &s) { strategy.apply(s); });
+```
 
 ## Source Code
 

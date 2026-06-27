@@ -22,9 +22,12 @@ artifact-id: "ZHFT_FEE_DYNAMICS"
 
 ## Usage
 
-// FeeAwareOrderPlacer placer(fee_calc);
-// auto loc = placer.optimalPosting(Side::BUY, 100, 150.25);
-// // loc says: post on ASMEX (rebate -$0.0012) vs take on CME ($0.0015)
+```bash
+
+FeeAwareOrderPlacer placer(fee_calc);
+auto loc = placer.optimalPosting(Side::BUY, 100, 150.25);
+// loc says: post on ASMEX (rebate -$0.0012) vs take on CME ($0.0015)
+```
 
 ## Source Code
 

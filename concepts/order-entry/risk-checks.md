@@ -44,9 +44,12 @@ artifact-id: "ZHFT_RISK_CHECKS"
 
 ## Usage
 
-// RiskEngine risk;
-// risk.setCreditLimit(Symbol::ES, 50'000'000);
-// if (risk.check(order).pass) exchange.send(order);
+```bash
+
+RiskEngine risk;
+risk.setCreditLimit(Symbol::ES, 50'000'000);
+if (risk.check(order).pass) exchange.send(order);
+```
 
 ## Staff+ Perspective
 

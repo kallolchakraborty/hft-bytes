@@ -22,7 +22,10 @@ artifact-id: "ZHFT_COMPILE_TIME"
 
 ## Usage
 
-// constexpr latency table
+```bash
+
+constexpr latency table
+```
 constexpr double lat_ns = LatencyTable::lookup("NYSE", "FIX_4.2");
 // CRTP: exchange protocol handler
 struct NasdaqHandler : ProtocolHandler<NasdaqHandler> {

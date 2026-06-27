@@ -25,8 +25,11 @@ artifact-id: "ZHFT_FPGA_INTRO"
 
 ## Usage
 
-// Verilog: UDP packet filter
-// HLS C++: market data parser skeleton
+```bash
+
+Verilog: UDP packet filter
+HLS C++: market data parser skeleton
+```
 
 ## Source Code
 

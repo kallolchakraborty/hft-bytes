@@ -32,9 +32,12 @@ artifact-id: "ZHFT_HW_LATENCY_REF"
 
 ## Usage
 
-// g++ -std=c++20 ZHFT_HW_LATENCY_REF.txt -o latency_ref
-// ./latency_ref  (prints reference table)
-// Use the constexpr lookup in your own HFT path estimation.
+```bash
+
+g++ -std=c++20 ZHFT_HW_LATENCY_REF.txt -o latency_ref
+./latency_ref  (prints reference table)
+Use the constexpr lookup in your own HFT path estimation.
+```
 
 ## Source Code
 

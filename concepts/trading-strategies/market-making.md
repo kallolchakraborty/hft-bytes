@@ -48,7 +48,10 @@ engine.setParams(/* baseSpread= */ 0.001, /* skewFactor= */ 0.5);
 ## Source Code
 
 ```cpp
-*   while (running) { auto tick = exchange.nextTick(); engine.onTick(tick); }
+/*
+ *   while (running) { auto tick = exchange.nextTick(); engine.onTick(tick); }
+
+ */
  *
  * PERFORMANCE TARGET:
  *   quote-to-quote latency < 1 μs; spread capture ratio > 40%

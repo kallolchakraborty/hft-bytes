@@ -24,11 +24,14 @@ artifact-id: "ZHFT_PACKET_CAPTURE"
 
 ## Usage
 
-// XDP program: clang -O2 -target bpf -c kernel/xdp_filter.c -o xdp_filter.o
-// Attach: ip link set dev eth0 xdp obj xdp_filter.o
-//
-// PACKET_MMAP: g++ -O3 -std=c++20 -DPACKET_MMAP ZHFT_PACKET_CAPTURE.txt -o capture
-// sudo ./capture eth0
+```bash
+
+XDP program: clang -O2 -target bpf -c kernel/xdp_filter.c -o xdp_filter.o
+Attach: ip link set dev eth0 xdp obj xdp_filter.o
+
+PACKET_MMAP: g++ -O3 -std=c++20 -DPACKET_MMAP ZHFT_PACKET_CAPTURE.txt -o capture
+sudo ./capture eth0
+```
 
 ## Source Code
 

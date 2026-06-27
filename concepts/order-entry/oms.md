@@ -26,10 +26,13 @@ artifact-id: "ZHFT_OMS"
 
 ## Usage
 
-// OrderManager om("/dev/shm/orders.dat");
-// auto id = om.newOrder("AAPL", Side::BUY, 100, 150.25);
-// om.onFill(id, 50, 150.30, "EXEC1");
-// om.onCancel(id);
+```bash
+
+OrderManager om("/dev/shm/orders.dat");
+auto id = om.newOrder("AAPL", Side::BUY, 100, 150.25);
+om.onFill(id, 50, 150.30, "EXEC1");
+om.onCancel(id);
+```
 
 ## Staff+ Perspective
 

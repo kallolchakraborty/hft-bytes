@@ -24,8 +24,11 @@ artifact-id: "ZHFT_FPGA_VS_CPU"
 ## Source Code
 
 ```cpp
-*
+/*
+ *
  * USAGE:
+
+ */
  *   // Decision: route tick-to-trade logic
  *   if (latencyBudget < 500ns) -> FPGA
  *   if (strategyComplex)       -> CPU + FPGA co-process
@@ -88,6 +91,7 @@ public:
     }
 };
 ```
+
 ## Decision Matrix
 
 | DIMENSION | FPGA (Alveo U250) | CPU (Xeon 3.6GHz) |

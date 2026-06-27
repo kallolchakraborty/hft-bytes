@@ -22,8 +22,11 @@ artifact-id: "ZHFT_ORDER_RECON"
 
 ## Usage
 
-// OrderReconEngine recon(order_db, exchange_session);
-// recon.reconcileAfterReconnect();
+```bash
+
+OrderReconEngine recon(order_db, exchange_session);
+recon.reconcileAfterReconnect();
+```
 
 ## Source Code
 

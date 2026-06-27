@@ -27,8 +27,11 @@ artifact-id: "ZHFT_FIX_PROTOCOL"
 
 ## Usage
 
-// g++ -O3 -std=c++20 ZHFT_FIX_PROTOCOL.txt -o fix_proto
-// ./fix_proto
+```bash
+
+g++ -O3 -std=c++20 ZHFT_FIX_PROTOCOL.txt -o fix_proto
+./fix_proto
+```
 
 ## Staff+ Perspective
 

@@ -22,9 +22,12 @@ artifact-id: "ZHFT_HW_SELECTION"
 
 ## Usage
 
-// g++ -std=c++20 ZHFT_HW_SELECTION.txt -o hw_selector
-// ./hw_selector --show-inventory  (demonstrates inventory struct)
-// ./hw_selector --estimate-latency (runs latency calculator)
+```bash
+
+g++ -std=c++20 ZHFT_HW_SELECTION.txt -o hw_selector
+./hw_selector --show-inventory  (demonstrates inventory struct)
+./hw_selector --estimate-latency (runs latency calculator)
+```
 
 ## Source Code
 

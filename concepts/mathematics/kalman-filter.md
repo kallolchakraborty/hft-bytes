@@ -30,7 +30,10 @@ kf.predict(/* A= */ 1.0, /* Q= */ 0.01);
 ## Source Code
 
 ```cpp
-*       kf.update(price, /* H= */ 1.0, /* R= */ 0.1);
+/*
+ *       kf.update(price, /* H= */ 1.0, /* R= */ 0.1);
+
+ */
  *       double filtered = kf.state()[0];
  *   }
  *

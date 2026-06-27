@@ -22,10 +22,13 @@ artifact-id: "ZHFT_EXCHANGE_OUTAGES"
 
 ## Usage
 
-// OutageDetector det;
-// det.onHeartbeatTimeout("CME", 5000);
-// det.onMarketDataFreeze("ES", 100);
-// auto status = det.status("CME");
+```bash
+
+OutageDetector det;
+det.onHeartbeatTimeout("CME", 5000);
+det.onMarketDataFreeze("ES", 100);
+auto status = det.status("CME");
+```
 
 ## Source Code
 
