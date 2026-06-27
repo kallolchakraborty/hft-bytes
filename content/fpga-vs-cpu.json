@@ -1,0 +1,30 @@
+{
+  "id": "fpga-vs-cpu",
+  "title": "FPGA Vs CPU",
+  "phase": 13,
+  "phaseName": "FPGA & Hardware",
+  "category": "Phase 13 - FPGA & Hardware",
+  "subcategory": "fpga",
+  "language": "cpp",
+  "description": "FPGA: ~100ns tick-to-order vs CPU: ~1-10μs (10-100x advantage). CPU: flexible, easy to program; FPGA: 3-6 month dev cycle",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>FPGA: ~100ns tick-to-order vs CPU: ~1-10μs (10-100x advantage)</li>\n<li>CPU: flexible, easy to program; FPGA: 3-6 month dev cycle</li>\n<li>Development cost: FPGA team (Verilog/HLS) is 2-3x salary premium</li>\n<li>Iteration speed: CPU = minutes; FPGA = hours (synthesis + P&R)</li>\n<li>FPGA wins: deterministic latency, wire-speed processing</li>\n<li>CPU wins: complex logic, ML models, strategy iteration, legacy systems</li>\n</ul>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">*\n * USAGE:\n *   // Decision: route tick-to-trade logic\n *   if (latencyBudget &lt; 500ns) -&gt; FPGA\n *   if (strategyComplex)       -&gt; CPU + FPGA co-process\n *\n * PERFORMANCE TARGET:\n *   N/A (decision framework)\n * ====================================================================\n */\n\n#include &lt;string&gt;\n#include &lt;unordered_map&gt;\n\nclass HardwareSelector {\n    // Decision engine for CPU vs FPGA partitioning\n\n    enum class Unit { FPGA, CPU, BOTH };\n\n    struct DecisionCriteria {\n        double latency_ns;        // required end-to-end\n        double throughput_mpps;   // million packets per sec\n        bool   complex_math;      // floating point heavy?\n        bool   ml_model;          // neural network?\n        bool   fast_iterate;      // strategy changes daily?\n        double dev_budget;        // $K\n    };\n\npublic:\n    Unit recommend(const DecisionCriteria&amp; dc) {\n        // tradeoff: FPGA if latency &lt; 1μs and throughput &gt; 10M pps\n        // tradeoff: CPU if complex math or ML or fast iteration needed\n        if (dc.latency_ns &lt; 1000 &amp;&amp; dc.throughput_mpps &gt; 10)\n            return dc.ml_model ? Unit::BOTH : Unit::FPGA;\n        // Hybrid: FPGA for parsing, CPU for strategy\n        // Canonical HFT split: FPGA decodes + book, CPU runs strategy\n        if (dc.latency_ns &lt; 5000)\n            return Unit::BOTH;\n        return Unit::CPU;\n    }\n\n    std::string rationale(const DecisionCriteria&amp; dc, Unit u) {\n        std::string r;\n        switch (u) {\n            case Unit::FPGA:\n                r = &quot;FPGA: deterministic sub-μs path. &quot;;\n                r += &quot;Budget for Verilog team? $200-400k/yr per engineer. &quot;;\n                r += &quot;Synthesis ~4hrs per change. Must freeze spec.&quot;;\n                break;\n            case Unit::CPU:\n                r = &quot;CPU: flexible, fast iteration. &quot;;\n                r += &quot;Use kernel bypass (DPDK/ef_vi) to reduce jitter. &quot;;\n                r += &quot;Accept 1-10μs latency. Good for complex strategies.&quot;;\n                break;\n            case Unit::BOTH:\n                r = &quot;Hybrid: FPGA for line-rate parse + book building. &quot;;\n                r += &quot;CPU for strategy logic (C++). PCIe DMA bridge. &quot;;\n                r += &quot;Best of both worlds but complex debugging.&quot;;\n                break;\n        }\n        return r;\n    }\n};</code></pre>\n<h2 id=\"section-decision-matrix\">Decision Matrix</h2>\n<p>| DIMENSION | FPGA (Alveo U250) | CPU (Xeon 3.6GHz) |\n| --- | --- | --- |\n| Latency (tick→decision) | 100-300 ns | 1-10 μs |\n| Latency jitter (p99) | < 50 ns | 50-500 μs (OS noise) |\n| Throughput (packets/sec) | 100M+ (line-rate 100G) | 10M (kernel bypass) |\n| Pipeline depth | 5-50 stages | 10-100 instructions |\n| Clock speed | 200-500 MHz | 3-5 GHz |\n| Development time | 3-6 months | 1-4 weeks |\n| Developer cost | $$$ (Verilog niche) | $$ (C++ common) |\n| Debugging | Waveforms, simulation | gdb, printf, perf |\n| Reconfiguration | Hours (synthesis) | Seconds (recompile) |\n| Floating-point | Poor (DSP slices) | Excellent (AVX-512) |\n| Random access memory | Limited (BRAM/URAM) | 1TB+ (DDR5/PMem) |\n| Machine learning | QNN, small models | Full stack (PyTorch) |\n| Risk of bugs | High (hardware idioms) | Moderate |\n| Power efficiency | 0.1-0.5 pJ/op | 1-5 pJ/op |\n| MATRIX |</p>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    },
+    {
+      "id": "decision-matrix",
+      "title": "Decision Matrix"
+    }
+  ],
+  "tags": [
+    "fpga"
+  ],
+  "type": "decision-matrix",
+  "toc": false
+}

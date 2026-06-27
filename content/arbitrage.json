@@ -1,0 +1,30 @@
+{
+  "id": "arbitrage",
+  "title": "Arbitrage",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Phase 10 - Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "cpp",
+  "description": "Latency arb: race to slow venue when price moves on fast venue. Statistical arb: trade mean-reverting spread of cointegrated basket",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Latency arb: race to slow venue when price moves on fast venue</li>\n<li>Statistical arb: trade mean-reverting spread of cointegrated basket</li>\n<li>Triangular arb: detect FX cross-rate discrepancies (3-leg cycle)</li>\n<li>ETF arb: exploit NAV vs market price divergence</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>EtfArbDetector arb(exchange);\nif (auto opp = arb.scan()) { exec->transact(*opp); }</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;array&gt;\n#include &lt;vector&gt;\n#include &lt;string&gt;\n#include &lt;functional&gt;\n\nclass TriangularArbFinder {\n    struct FXRate {\n        std::string pair;   // &quot;EURUSD&quot;\n        double bid, ask;\n        uint64_t ts_ns;\n    };\n\n    // cycle: EUR→USD→GBP→EUR  =&gt;  EURUSD * USDGBP * GBPEUR\n    struct ArbCycle {\n        std::array&lt;std::string, 3&gt; legs;\n        double theoretical;  // product of rates\n        double market;       // actual cross\n        double profit_bps;\n    };\n\n    std::vector&lt;FXRate&gt; rates_;\n\npublic:\n    void updateRate(const FXRate&amp; r) {\n        // tradeoff: O(n) scan — fine for ~30 major pairs\n        for (auto&amp; existing : rates_) {\n            if (existing.pair == r.pair) {\n                existing = r;\n                return;\n            }\n        }\n        rates_.push_back(r);\n    }\n\n    std::vector&lt;ArbCycle&gt; findCycles() {\n        std::vector&lt;ArbCycle&gt; cycles;\n        // naive O(n^3) — acceptable for &lt; 100 pairs\n        for (size_t i = 0; i &lt; rates_.size(); ++i)\n            for (size_t j = 0; j &lt; rates_.size(); ++j)\n                for (size_t k = 0; k &lt; rates_.size(); ++k) {\n                    auto&amp; a = rates_[i], b = rates_[j], c = rates_[k];\n                    if (!formsCycle(a.pair, b.pair, c.pair)) continue;\n                    double theoretical = a.bid * b.bid * c.bid;  // simplified\n                    double market = getCrossRate(a.pair, b.pair, c.pair);\n                    if (std::abs(theoretical - market) &gt; 1e-6)\n                        cycles.push_back({a.pair, b.pair, c.pair,\n                                          theoretical, market,\n                                          (theoretical/market - 1.0)*10000});\n                }\n        return cycles;\n    }\n\nprivate:\n    bool formsCycle(const std::string&amp;, const std::string&amp;, const std::string&amp;);\n    double getCrossRate(const std::string&amp;, const std::string&amp;, const std::string&amp;);\n};\n\n// --------------------------------------------------------------------\n// ETF Arbitrage Detector\n\nclass EtfArbDetector {\n    double nav_;          // net asset value from constituent prices\n    double etf_price_;\n    double creation_cost_;  // fee to create/redeem\n    double threshold_;      // min arb profit to trigger\n\npublic:\n    // opportunity: buy ETF cheap, redeem for NAV    OR    buy basket, create ETF, sell\n    enum class ArbType { NONE, BUY_ETF_SELL_BASKET, BUY_BASKET_SELL_ETF };\n\n    struct Opportunity {\n        ArbType type;\n        double profit_bps;\n        double size;      // max executable\n    };\n\n    Opportunity scan() {\n        double diff = (etf_price_ - nav_) / nav_;\n        if (std::abs(diff) &lt; threshold_ + creation_cost_)\n            return {ArbType::NONE, 0, 0};\n\n        if (diff &lt; 0)  // ETF undervalued: buy ETF, redeem\n            return {ArbType::BUY_ETF_SELL_BASKET, -diff * 10000, 100000};\n        else            // ETF overvalued: buy basket, create ETF, sell\n            return {ArbType::BUY_BASKET_SELL_ETF, diff * 10000, 100000};\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "trading"
+  ],
+  "type": "reference",
+  "toc": false
+}

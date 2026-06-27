@@ -1,0 +1,31 @@
+{
+  "id": "fix-deep-dive",
+  "title": "FIX Protocol Deep Dive",
+  "phase": 7,
+  "phaseName": "Order Entry & Execution",
+  "category": "Order Entry",
+  "subcategory": "order-entry",
+  "language": "cpp",
+  "description": "FIX session FSM, sequence number management, gap-fill and resend-request logic, message validation rules, FIX-over-SBE binary encoding, checksum calculation, and session-level recovery procedures.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>FIX session FSM: states are <code>NotLoggedIn</code>, <code>LoggedIn</code>, <code>Silent</code>, <code>Disconnected</code>, <code>WaitingForLogon</code>; transitions driven by Logon/Logout/Heartbeat/TestRequest messages</li>\n<li>Sequence number management: each session tracks <code>MsgSeqNum</code> inbound/outbound; gaps trigger <code>ResendRequest</code> (35=2); sender must reply with <code>SequenceReset</code> (35=4) or gap-fill</li>\n<li>Gap-fill logic: loss detected when received <code>MsgSeqNum > expected</code>; send <code>ResendRequest(beginSeqNo, endSeqNo)</code>; receive either <code>SequenceReset(GapFillFlag=Y)</code> or full message replay</li>\n<li>Logon negotiation: <code>EncryptMethod</code>, <code>HeartBtInt</code>, <code>DefaultApplVerID</code>, <code>Username/Password</code>; session-level vs application-level logon</li>\n<li>Message validation: <code>BodyLength</code> must match, <code>CheckSum</code> (tag 10) = mod 256 of all chars before tag 10, <code>BeginString</code> (tag 8) must match, <code>SenderCompID/TargetCompID</code> (tags 49/56)</li>\n<li>FIX-over-SBE: binary FIX (SBE-encoded) reduces wire size ~60% vs text FIX; FastPacket on CME iLink 3; SBE schema compiled from XML into C++ structs</li>\n<li>Session recovery: on reconnect, exchange expected <code>MsgSeqNum</code> from last session; if gap, logged-in side sends <code>ResendRequest</code>; never trade on stale state</li>\n<li>Heartbeat monitoring: missing <code>HeartBtInt * 2</code> triggers <code>TestRequest</code>; if no response within <code>HeartBtInt</code>, declare session lost and begin reconnect</li>\n</ul>\n<div class=\"mermaid-wrapper\"><pre class=\"mermaid\">stateDiagram-v2\n    [*] --&gt; Disconnected\n    Disconnected --&gt; NotLoggedIn: Connect TCP\n    NotLoggedIn --&gt; LoggedIn: Logon(35=A) → Logon Accept\n    NotLoggedIn --&gt; Disconnected: Logout\n    LoggedIn --&gt; Silent: Gap detected\\nResendRequest sent\n    Silent --&gt; LoggedIn: SequenceReset(35=4)\\nor Gap-Fill received\n    LoggedIn --&gt; NotLoggedIn: Logout(35=5) received\n    LoggedIn --&gt; Disconnected: Heartbeat timeout\\nTestRequest failed\n    Silent --&gt; Disconnected: Heartbeat timeout\\nTestRequest failed</pre></div>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// FIX session FSM event dispatch\nenum class FixState { NOT_LOGGED_IN, LOGGED_IN, SILENT, DISCONNECTED };\n\nstruct FixSession {\n    FixState state_ = FixState::DISCONNECTED;\n    uint64_t expected_seq_in_ = 1;\n    uint64_t next_seq_out_ = 1;\n\n    void onMessage(const FixMsg&amp; msg) {\n        uint64_t seq = msg.getTag(34);\n        if (seq &gt; expected_seq_in_) {\n            // Gap detected: request resend\n            sendResendRequest(expected_seq_in_, seq - 1);\n            state_ = FixState::SILENT;  // wait for gap-fill\n        }\n        // Process based on MsgType (35)\n        switch (msg.getMsgType()) {\n        case 'A':  // Logon\n            validateLogon(msg);\n            if (state_ == FixState::NOT_LOGGED_IN) {\n                state_ = FixState::LOGGED_IN;\n                expected_seq_in_ = seq + 1;\n            }\n            break;\n        case '0':  // Heartbeat\n            state_ = FixState::LOGGED_IN;\n            break;\n        case '4':  // SequenceReset\n            handleSeqReset(msg);\n            state_ = FixState::LOGGED_IN;\n            break;\n        case '5':  // Logout\n            state_ = FixState::NOT_LOGGED_IN;\n            break;\n        }\n    }\n\n    void validateLogon(const FixMsg&amp; msg) {\n        // Check EncryptMethod (98), HeartBtInt (108), DefaultApplVerID (1137)\n        // Verify SenderCompID (49) matches our config\n        // Compute and verify CheckSum (10)\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Checksum calculation (FIX standard)\nuint8_t computeFixChecksum(const char* buf, size_t len) {\n    // Checksum covers all characters up to (but not including) tag 10=\n    uint64_t sum = 0;\n    for (size_t i = 0; i &lt; len; ++i) {\n        if (i + 6 &lt;= len &amp;&amp; strncmp(buf + i, &quot;10=&quot;, 2) == 0)\n            break;  // tag 10= found, sum before this\n        sum += static_cast&lt;uint8_t&gt;(buf[i]);\n    }\n    return static_cast&lt;uint8_t&gt;(sum % 256);\n}\n\n// FIX-over-SBE message decoding (CME iLink 3)\nstruct SbeMessageHeader {\n    uint16_t block_length_;\n    uint16_t template_id_;\n    uint16_t schema_id_;\n    uint16_t version_;\n    // Followed by SBE-encoded fields per template\n    // Decode via generated C++ classes from SBE XML schema\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "exchange-protocols",
+    "protocols"
+  ],
+  "type": "reference",
+  "toc": false
+}

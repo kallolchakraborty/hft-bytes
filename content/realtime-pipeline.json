@@ -1,0 +1,33 @@
+{
+  "id": "realtime-pipeline",
+  "title": "Realtime Pipeline",
+  "phase": 12,
+  "phaseName": "Data Engineering",
+  "category": "Phase 12 - Data Engineering",
+  "subcategory": "data-engineering",
+  "language": "cpp",
+  "description": "Kafka vs Redpanda vs Aeron: latency/throughput/consistency tradeoffs. Exactly-once semantics: idempotent producer + transactional",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Kafka vs Redpanda vs Aeron: latency/throughput/consistency tradeoffs</li>\n<li>Exactly-once semantics: idempotent producer + transactional</li>\n<li>Schema registry: Avro/Protobuf for forward/backward compat</li>\n<li>Partitioning by symbol for ordering guarantees</li>\n<li>Consumer rebalancing: sticky vs eager, impact on HFT</li>\n<li>Aeron: sub-microsecond IPC/UDP, lossless via term buffers</li>\n<li>Alternatives: ZeroMQ, NATS, Solarflare ef_vi for kernel bypass</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>AeronSubscriber sub(\"aeron:ipc\", 10001);\nsub.onMessage([](const uint8_t* data, size_t len) { ... });</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;cstdint&gt;\n#include &lt;functional&gt;\n#include &lt;thread&gt;\n#include &lt;atomic&gt;\n\n// --------------------------------------------------------------------\n// Aeron IPC Subscriber (pseudo — Aeron C++ API is JNI-based)\n\nclass AeronSubscriber {\n    // Aeron: fixed-size ring buffer, zero-copy, UDP or IPC\n    // Media Driver runs as separate process or embedded\n    // tradeoff: Aeron (1-10μs) vs Kafka (1-100ms) vs ef_vi (sub-μs)\n    std::function&lt;void(const uint8_t*, size_t)&gt; callback_;\n    std::atomic&lt;bool&gt; running_{false};\n    std::thread poll_thread_;\n\npublic:\n    AeronSubscriber(const char* channel, int stream_id,\n                    std::function&lt;void(const uint8_t*, size_t)&gt; cb)\n        : callback_(std::move(cb)) {\n        // In production: Aeron::addSubscription(channel, stream_id, callback)\n    }\n\n    void start() {\n        running_ = true;\n        poll_thread_ = std::thread([this]() {\n            while (running_) {\n                // Aeron::conductor-&gt;poll(block=false)\n                // tradeoff: busy-poll (0% sleep) vs yield (lower CPU)\n            }\n        });\n    }\n\n    void stop() { running_ = false; if (poll_thread_.joinable()) poll_thread_.join(); }\n};\n\n// --------------------------------------------------------------------\n// Pipeline Comparison Wrapper\n\nclass PipelineSelector {\npublic:\n    // Decision: pick technology based on latency budget\n    enum class Budget { SUB_US, US_10, US_100, MS_1, MS_10, MS_100 };\n    enum class Tech { AERON, EF_VI, REDPANDA, KAFKA, ZMQ, NATS };\n\n    static Tech recommend(Budget budget) {\n        switch (budget) {\n            case Budget::SUB_US: return Tech::EF_VI;  // kernel bypass\n            case Budget::US_10:  return Tech::AERON;  // userspace TCP/UDP\n            case Budget::US_100: return Tech::REDPANDA;\n            case Budget::MS_1:   return Tech::KAFKA;\n            case Budget::MS_10:  return Tech::NATS;\n            case Budget::MS_100: return Tech::ZMQ;\n        }\n    }\n};\n\n// --------------------------------------------------------------------\n// Schema Versioning with Avro (simplified)\n\nclass SchemaRegistry {\n    // tradeoff: Avro (schema evolution) vs FlatBuffers (zero-deserialize)\n    // FlatBuffers: 10-50x faster decode, no schema registry needed\n    // Avro: rich schema evolution, JSON-friendly\n    struct SchemaInfo {\n        int id;\n        std::string schema;  // Avro JSON schema\n        int version;\n    };\n\n    std::unordered_map&lt;int, SchemaInfo&gt; schemas_;\n    int next_id_{1};\n\npublic:\n    int registerSchema(const std::string&amp; schema) {\n        int id = next_id_++;\n        schemas_[id] = {id, schema, 1};\n        return id;\n    }\n};\n\n// --------------------------------------------------------------------\n// Partitioning Strategy for Market Data\n\nclass MarketDataPartitioner {\n    // Key insight: partition by symbol → single consumer sees ordered ticks\n    // tradeoff: hot keys (AAPL gets more data) need range or consistent hashing\n    static uint32_t partition(const std::string&amp; symbol, uint32_t num_partitions) {\n        // MurmurHash3 simple version\n        uint32_t h = 0x971e137b;\n        for (char c : symbol) {\n            h ^= c;\n            h *= 0x5bd1e995;\n            h ^= h &gt;&gt; 15;\n        }\n        return h % num_partitions;\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "data-engineering",
+    "deployment",
+    "ipc",
+    "time-series"
+  ],
+  "type": "reference",
+  "toc": false
+}

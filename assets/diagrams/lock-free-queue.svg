@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">Lock-Free SPSC Queue — Ring Buffer Internals</text>
+
+  <!-- Producer Section -->
+  <rect x="30" y="70" width="940" height="130" rx="8" fill="#FFEBEE" stroke="#FF1744" stroke-width="1.5"/>
+  <text x="50" y="92" font-size="12" font-weight="bold" fill="#FF1744">Producer (single writer)</text>
+  <line x1="50" y1="98" x2="950" y2="98" stroke="#FF1744" stroke-width="0.5"/>
+
+  <!-- Producer write pointer -->
+  <rect x="50" y="110" width="180" height="36" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="140" y="132" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">Producer Index (write)</text>
+
+  <!-- Padding -->
+  <rect x="240" y="110" width="80" height="36" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="280" y="128" text-anchor="middle" font-size="8" font-weight="bold" fill="#B45309">alignas</text>
+  <text x="280" y="140" text-anchor="middle" font-size="8" font-weight="bold" fill="#B45309">(64)</text>
+
+  <rect x="50" y="155" width="410" height="30" rx="4" fill="#1E293B"/>
+  <text x="60" y="175" font-size="9" fill="#22C55E">// Producer writes, then advances index</text>
+  <text x="60" y="175" font-size="9" fill="#22C55E">buffer[head &amp; mask] = data;  head.store(head + 1, release);</text>
+
+  <!-- Ring Buffer -->
+  <rect x="30" y="215" width="940" height="200" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="237" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">Ring Buffer Slots</text>
+  <line x1="50" y1="243" x2="950" y2="243" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- Buffer slots -->
+  <rect x="50" y="255" width="84" height="50" rx="3" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="92" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">Slot 0</text>
+  <text x="92" y="293" text-anchor="middle" font-size="8" fill="#64748B">[filled]</text>
+
+  <rect x="140" y="255" width="84" height="50" rx="3" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="182" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">Slot 1</text>
+  <text x="182" y="293" text-anchor="middle" font-size="8" fill="#64748B">[filled]</text>
+
+  <rect x="230" y="255" width="84" height="50" rx="3" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="272" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">Slot 2</text>
+  <text x="272" y="293" text-anchor="middle" font-size="8" fill="#64748B">[filled]</text>
+
+  <rect x="320" y="255" width="84" height="50" rx="3" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="362" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#B45309">Slot 3</text>
+  <text x="362" y="293" text-anchor="middle" font-size="8" fill="#64748B">[writing...]</text>
+
+  <rect x="410" y="255" width="84" height="50" rx="3" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="452" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#94A3B8">Slot 4</text>
+  <text x="452" y="293" text-anchor="middle" font-size="8" fill="#CBD5E1">[empty]</text>
+
+  <rect x="500" y="255" width="84" height="50" rx="3" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="542" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#94A3B8">Slot 5</text>
+  <text x="542" y="293" text-anchor="middle" font-size="8" fill="#CBD5E1">[empty]</text>
+
+  <rect x="590" y="255" width="84" height="50" rx="3" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="632" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#94A3B8">Slot 6</text>
+  <text x="632" y="293" text-anchor="middle" font-size="8" fill="#CBD5E1">[empty]</text>
+
+  <rect x="680" y="255" width="84" height="50" rx="3" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="722" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">Slot 7</text>
+  <text x="722" y="293" text-anchor="middle" font-size="8" fill="#64748B">[filled]</text>
+
+  <rect x="770" y="255" width="84" height="50" rx="3" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="812" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#94A3B8">Slot 8</text>
+  <text x="812" y="293" text-anchor="middle" font-size="8" fill="#CBD5E1">[empty]</text>
+
+  <rect x="860" y="255" width="84" height="50" rx="3" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="902" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#94A3B8">Slot 9</text>
+  <text x="902" y="293" text-anchor="middle" font-size="8" fill="#CBD5E1">[empty]</text>
+
+  <text x="50" y="395" font-size="9" fill="#64748B">N = power of 2 (e.g., 1024) → idx = head &amp; (N-1) bitmask avoids modulo</text>
+
+  <!-- Consumer Section -->
+  <rect x="30" y="430" width="940" height="130" rx="8" fill="#FFF3ED" stroke="#EA580C" stroke-width="1.5"/>
+  <text x="50" y="452" font-size="12" font-weight="bold" fill="#EA580C">Consumer (single reader)</text>
+  <line x1="50" y1="458" x2="950" y2="458" stroke="#EA580C" stroke-width="0.5"/>
+
+  <!-- Consumer read pointer -->
+  <rect x="50" y="470" width="180" height="36" rx="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1.5"/>
+  <text x="140" y="492" text-anchor="middle" font-size="11" font-weight="bold" fill="#9A3412">Consumer Index (read)</text>
+
+  <!-- Padding -->
+  <rect x="240" y="470" width="80" height="36" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="280" y="488" text-anchor="middle" font-size="8" font-weight="bold" fill="#B45309">alignas</text>
+  <text x="280" y="500" text-anchor="middle" font-size="8" font-weight="bold" fill="#B45309">(64)</text>
+
+  <rect x="50" y="515" width="410" height="30" rx="4" fill="#1E293B"/>
+  <text x="60" y="535" font-size="9" fill="#22C55E">// Consumer reads, then advances index</text>
+  <text x="60" y="535" font-size="9" fill="#22C55E">data = buffer[tail &amp; mask];  tail.store(tail + 1, acquire);</text>
+
+  <!-- Memory layout detail -->
+  <rect x="30" y="575" width="940" height="155" rx="8" fill="#1E293B"/>
+  <text x="50" y="597" font-size="10" font-weight="bold" fill="#94A3B8">struct SPSCQueue {</text>
+  <text x="70" y="617" font-size="10" fill="#EAB308">  std::atomic&lt;size_t&gt; head_{0};                    <tspan fill="#64748B">// Producer index (64-bit)</tspan></text>
+  <text x="70" y="637" font-size="10" fill="#94A3B8">  char padding1_[64 - sizeof(std::atomic&lt;size_t&gt;)]; <tspan fill="#64748B">// alignas(64) padding</tspan></text>
+  <text x="70" y="657" font-size="10" fill="#EAB308">  std::atomic&lt;size_t&gt; tail_{0};                    <tspan fill="#64748B">// Consumer index (64-bit)</tspan></text>
+  <text x="70" y="677" font-size="10" fill="#94A3B8">  char padding2_[64 - sizeof(std::atomic&lt;size_t&gt;)]; <tspan fill="#64748B">// alignas(64) padding</tspan></text>
+  <text x="70" y="697" font-size="10" fill="#22C55E">  T buffer_[N];                                     <tspan fill="#64748B">// Ring buffer slots</tspan></text>
+  <text x="50" y="717" font-size="10" fill="#94A3B8">};</text>
+</svg>

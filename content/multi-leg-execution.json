@@ -1,0 +1,31 @@
+{
+  "id": "multi-leg-execution",
+  "title": "Multi-Leg Order Execution",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "cpp",
+  "description": "Spread trading, combination orders, implied pricing (CME implied IN/OUT), calendar spreads, order-book construction for multi-leg instruments, and risk management for multi-leg positions.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Multi-leg order types: spreads (calendar, inter-commodity, butterfly, condor), straddles/strangles (options), stock + option combo; each is a single order with 2+ legs</li>\n<li>Leg pricing convention: spread price = price of leg 1 - price of leg 2 (e.g., calendar spread = near month - far month); ratio defined per instrument (e.g., 1:1, 2:1)</li>\n<li>CME implied pricing: implied IN (spread order implies legs) and implied OUT (leg orders imply spread); creates synthetic liquidity; adds order-book complexity in matching engine</li>\n<li>Calendar spread book: CME maintains a dedicated order book for each listed spread; price is the net differential; book depth is typically thinner than outrights</li>\n<li>Order management: multi-leg order must send leg fills simultaneously (or fail atomically); partial fills on spread orders are rare but possible if exchange supports it</li>\n<li>Implied pricing algorithm: matching engine periodically scans outright books for tradable combinations; generates implied orders on the spread book and vice versa</li>\n<li>Risk: leg hedge ratios must be managed; if one leg fills and the other doesn't (partial fill scenario), residual risk must be hedged immediately</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Calendar spread order representation\nstruct MultiLegOrder {\n    struct Leg {\n        std::string symbol_;\n        uint32_t ratio_;   // e.g., 1 for near month\n        Side side_;        // Buy leg or Sell leg\n        double price_;     // leg limit price (if not spread-priced)\n    };\n    std::vector&lt;Leg&gt; legs_;\n    double spread_price_;  // net differential price for the combination\n    OrderType type_;       // e.g., SPREAD, COMBO, STRADDLE\n\n    // For CME calendar spread:\n    // Leg 1: Buy ESZ6 (ratio: 1)\n    // Leg 2: Sell ESH7 (ratio: 1)\n    // spread_price = Bid(ESZ6) - Ask(ESH7)\n};\n\n// Implied pricing logic (simplified)\n// Given outright book for near: Bid(1001) Ask(1003)\n// Given outright book for far:  Bid(995)  Ask(997)\n// Implied spread bid = Bid(near) - Ask(far) = 1001 - 997 = 4\n// Implied spread ask = Ask(near) - Bid(far) = 1003 - 995 = 8\n// These implied quotes appear on the spread book\nstruct ImpliedPricing {\n    static double impliedBid(double near_bid, double far_ask) {\n        return near_bid - far_ask;\n    }\n    static double impliedAsk(double near_ask, double far_bid) {\n        return near_ask - far_bid;\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// CME futures spread notation\n// Calendar spread:  ESH7-ESZ6  (Mar 2027 vs Dec 2026)\n// Inter-commodity:  ESH7-NQH7  (ES vs NQ spread)\n// Butterfly:        ESZ6-ESH7-ESM7 (Dec-Mar-Jun butterfly)\n// Price in ticks:  2.5 ticks = 5 half-ticks on ES\n\n// Risk check: leg fill ratio management\nstruct LegFillTracker {\n    uint32_t filled_legs_ = 0;\n    uint32_t total_legs_;\n    std::vector&lt;LegFill&gt; fills_;\n\n    bool isFullyFilled() const { return filled_legs_ == total_legs_; }\n    // On partial fill with exchange rejection of remaining legs,\n    // immediately hedge the filled leg(s)\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "execution-algorithms",
+    "trading"
+  ],
+  "type": "reference",
+  "toc": false
+}

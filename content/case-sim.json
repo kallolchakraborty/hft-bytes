@@ -1,0 +1,26 @@
+{
+  "id": "case-sim",
+  "title": "Case Sim",
+  "phase": 11,
+  "phaseName": "Backtesting & Simulation",
+  "category": "Phase 11 - Backtesting & Simulation",
+  "subcategory": "backtesting",
+  "language": "cpp",
+  "description": "Knight Capital (2012): rogue order generator → 7B in 45 min. 2010 Flash Crash: liquidity drop + stub quotes → 1000pt Dow drop",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Knight Capital (2012): rogue order generator → 7B in 45 min</li>\n<li>2010 Flash Crash: liquidity drop + stub quotes → 1000pt Dow drop</li>\n<li>Fat-finger: erroneous large orders → circuit breaker testing</li>\n<li>Simulate via scenario injection framework in the backtester</li>\n</ul>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">*\n * USAGE:\n *   ScenarioInjector si(backtester);\n *   si.inject&lt;FlashCrashScenario&gt;(/* start_ns= */ 34200000000000);\n *   si.inject&lt;KnightRogueOrders&gt;(/* probability= */ 0.001);\n *\n * PERFORMANCE TARGET:\n *   scenario injection overhead &lt; 100 ns per event check\n * ====================================================================\n */\n\n#include &lt;memory&gt;\n#include &lt;vector&gt;\n#include &lt;random&gt;\n\nstruct ScenarioEvent {\n    uint64_t trigger_ns;\n    std::function&lt;void()&gt; action;\n};\n\nclass ScenarioInjector {\n    std::vector&lt;ScenarioEvent&gt; scheduled_;\n    std::mt19937_64 rng_;\n\npublic:\n    void check(uint64_t now_ns) {\n        for (auto&amp; se : scheduled_) {\n            if (se.trigger_ns == now_ns) {\n                se.action();\n            }\n        }\n    }\n};\n\n// --------------------------------------------------------------------\n// Flash Crash Scenario\n\nclass FlashCrashScenario {\npublic:\n    static void inject(uint64_t start_ns) {\n        // Phase 1: rapid sell-off (liquidity drops to 10%)\n        // Phase 2: stub quotes appear (bid=0.01, ask=99999.99)\n        // Phase 3: circuit breakers halt\n        // Phase 4: recovery with price reversion\n        // tradeoff: realistic multi-phase vs simple price manipulation\n    }\n};\n\n// --------------------------------------------------------------------\n// Knight Capital Rogue Order Generator\n\nclass KnightRogueOrders {\npublic:\n    static std::vector&lt;ScenarioEvent&gt; events(uint64_t start_ns) {\n        // Generates geometrically increasing order flow\n        // tradeoff: exact replication vs abstract &quot;order storm&quot;\n        std::vector&lt;ScenarioEvent&gt; evts;\n        uint64_t order_interval_ns = 1000000;  // 1ms\n        double order_mult = 1.5;\n        for (int i = 0; i &lt; 100; ++i) {\n            uint64_t ts = start_ns + i * order_interval_ns;\n            double size = 100 * std::pow(order_mult, i);\n            // tradeoff: no size check → unlimited exposure\n            evts.push_back({\n                ts,\n                [=]() {\n                    // send order without risk checks\n                    // exchange-&gt;sendOrder(size, MARKET, BUY);\n                }\n            });\n        }\n        return evts;\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "phase-11"
+  ],
+  "type": "reference",
+  "toc": false
+}

@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FF1744"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">Backtesting Framework — Event-Driven Architecture</text>
+
+  <!-- Main flow -->
+  <rect x="30" y="70" width="940" height="450" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">Event Loop Pipeline</text>
+  <line x1="50" y1="98" x2="950" y2="98" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- 1. Market Data Cursor -->
+  <rect x="50" y="115" width="250" height="70" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="175" y="137" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">Market Data Cursor</text>
+  <text x="175" y="155" text-anchor="middle" font-size="9" fill="#475569">Reads binary file (mmap)</text>
+  <text x="175" y="170" text-anchor="middle" font-size="9" fill="#475569">Sequential iteration</text>
+
+  <!-- Arrow -->
+  <line x1="300" y1="150" x2="340" y2="150" stroke="#FF1744" stroke-width="2"/>
+  <polygon points="338,143 348,150 338,157" fill="#FF1744"/>
+
+  <!-- 2. Event Queue -->
+  <rect x="350" y="115" width="250" height="70" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="475" y="137" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309">Event Queue</text>
+  <text x="475" y="155" text-anchor="middle" font-size="9" fill="#475569">Lock-free SPSC buffer</text>
+  <text x="475" y="170" text-anchor="middle" font-size="9" fill="#475569">Timestamps + event types</text>
+
+  <!-- Arrow -->
+  <line x1="600" y1="150" x2="640" y2="150" stroke="#FF1744" stroke-width="2"/>
+  <polygon points="638,143 648,150 638,157" fill="#FF1744"/>
+
+  <!-- 3. Strategy / Signal -->
+  <rect x="650" y="115" width="250" height="70" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="775" y="137" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">Strategy / Signal</text>
+  <text x="775" y="155" text-anchor="middle" font-size="9" fill="#475569">User-defined logic</text>
+  <text x="775" y="170" text-anchor="middle" font-size="9" fill="#475569">Generates order signals</text>
+
+  <!-- Arrow down to Order Manager -->
+  <line x1="775" y1="185" x2="775" y2="220" stroke="#FF1744" stroke-width="2"/>
+  <polygon points="768,218 775,228 782,218" fill="#FF1744"/>
+
+  <!-- 4. Order Manager -->
+  <rect x="650" y="230" width="250" height="70" rx="6" fill="#EDE9FE" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="775" y="252" text-anchor="middle" font-size="11" font-weight="bold" fill="#7E22CE">Order Manager</text>
+  <text x="775" y="270" text-anchor="middle" font-size="9" fill="#475569">Order state machine</text>
+  <text x="775" y="285" text-anchor="middle" font-size="9" fill="#475569">New/Cancel/Replace</text>
+
+  <!-- Arrow down to Fill Simulator -->
+  <line x1="775" y1="300" x2="775" y2="335" stroke="#FF1744" stroke-width="2"/>
+  <polygon points="768,333 775,343 782,333" fill="#FF1744"/>
+
+  <!-- 5. Fill Simulator -->
+  <rect x="650" y="345" width="250" height="70" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="775" y="367" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">Fill Simulator</text>
+  <text x="775" y="385" text-anchor="middle" font-size="9" fill="#475569">LOB crossing logic</text>
+  <text x="775" y="400" text-anchor="middle" font-size="9" fill="#475569">Partial fill / Full fill / No fill</text>
+
+  <!-- Arrow down to P&L -->
+  <line x1="775" y1="415" x2="775" y2="450" stroke="#FF1744" stroke-width="2"/>
+  <polygon points="768,448 775,458 782,448" fill="#FF1744"/>
+
+  <!-- 6. P&L Tracker -->
+  <rect x="650" y="460" width="250" height="70" rx="6" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="775" y="482" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">P&amp;L Tracker</text>
+  <text x="775" y="500" text-anchor="middle" font-size="9" fill="#475569">Realized + unrealized</text>
+  <text x="775" y="515" text-anchor="middle" font-size="9" fill="#475569">Transaction cost model</text>
+
+  <!-- Horizontal connector to Stats -->
+  <line x1="650" y1="495" x2="610" y2="495" stroke="#FF1744" stroke-width="2"/>
+  <polygon points="612,488 602,495 612,502" fill="#FF1744"/>
+
+  <!-- 7. Statistics Logger -->
+  <rect x="350" y="460" width="250" height="70" rx="6" fill="#FFEBEE" stroke="#FF1744" stroke-width="1.5"/>
+  <text x="475" y="482" text-anchor="middle" font-size="11" font-weight="bold" fill="#FF1744">Statistics Logger</text>
+  <text x="475" y="500" text-anchor="middle" font-size="9" fill="#475569">Sharpe, Sortino, drawdown</text>
+  <text x="475" y="515" text-anchor="middle" font-size="9" fill="#475569">CSV / Parquet output</text>
+
+  <!-- Side components -->
+
+  <!-- Configuration -->
+  <rect x="50" y="230" width="250" height="70" rx="6" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="175" y="252" text-anchor="middle" font-size="11" font-weight="bold" fill="#7E22CE">Configuration</text>
+  <text x="175" y="270" text-anchor="middle" font-size="9" fill="#475569">Strategy params, symbols</text>
+  <text x="175" y="285" text-anchor="middle" font-size="9" fill="#475569">Date range, initial capital</text>
+
+  <!-- Latency Model -->
+  <rect x="50" y="320" width="250" height="70" rx="6" fill="#FEFCE8" stroke="#EAB308" stroke-width="1"/>
+  <text x="175" y="342" text-anchor="middle" font-size="11" font-weight="bold" fill="#CA8A04">Latency Model</text>
+  <text x="175" y="360" text-anchor="middle" font-size="9" fill="#475569">Configurable tick-to-trade</text>
+  <text x="175" y="375" text-anchor="middle" font-size="9" fill="#475569">Deterministic delay injection</text>
+
+  <!-- Performance Metrics -->
+  <rect x="50" y="410" width="250" height="70" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1"/>
+  <text x="175" y="432" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">Performance Metrics</text>
+  <text x="175" y="450" text-anchor="middle" font-size="9" fill="#475569">Total return, alpha, beta</text>
+  <text x="175" y="465" text-anchor="middle" font-size="9" fill="#475569">Hit ratio, avg trade duration</text>
+
+  <!-- Data structures -->
+  <rect x="30" y="535" width="940" height="195" rx="8" fill="#1E293B"/>
+  <text x="50" y="557" font-size="10" font-weight="bold" fill="#94A3B8">Event Types &amp; Data Structures</text>
+
+  <text x="50" y="580" font-size="10" fill="#EAB308">struct MarketDataEvent {<tspan fill="#64748B">  // From binary file replay</tspan></text>
+  <text x="70" y="600" font-size="10" fill="#94A3B8">  int64_t  timestamp_ns;       <tspan fill="#64748B">// Monotonic nanosecond clock</tspan></text>
+  <text x="70" y="618" font-size="10" fill="#94A3B8">  uint8_t  event_type;         <tspan fill="#64748B">// ADD=1, MODIFY=2, DELETE=3, TRADE=4</tspan></text>
+  <text x="70" y="636" font-size="10" fill="#94A3B8">  uint32_t order_id;</text>
+  <text x="70" y="654" font-size="10" fill="#94A3B8">  double   price;</text>
+  <text x="70" y="672" font-size="10" fill="#94A3B8">  uint32_t size;</text>
+  <text x="50" y="694" font-size="10" fill="#94A3B8">};</text>
+
+  <text x="500" y="580" font-size="10" fill="#EAB308">struct OrderEvent {<tspan fill="#64748B">  // Generated by strategy</tspan></text>
+  <text x="520" y="600" font-size="10" fill="#94A3B8">  int64_t  timestamp_ns;</text>
+  <text x="520" y="618" font-size="10" fill="#94A3B8">  uint8_t  action;             <tspan fill="#64748B">// NEW=1, CANCEL=2, REPLACE=3</tspan></text>
+  <text x="520" y="636" font-size="10" fill="#94A3B8">  uint64_t clord_id;</text>
+  <text x="520" y="654" font-size="10" fill="#94A3B8">  Side     side;               <tspan fill="#64748B">// BUY=1, SELL=2</tspan></text>
+  <text x="520" y="672" font-size="10" fill="#94A3B8">  double   price;</text>
+  <text x="520" y="690" font-size="10" fill="#94A3B8">  uint32_t size;</text>
+  <text x="500" y="710" font-size="10" fill="#94A3B8">};</text>
+</svg>

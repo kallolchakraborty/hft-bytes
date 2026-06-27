@@ -1,0 +1,30 @@
+{
+  "id": "mkt-replay",
+  "title": "Mkt Replay",
+  "phase": 11,
+  "phaseName": "Backtesting & Simulation",
+  "category": "Phase 11 - Backtesting & Simulation",
+  "subcategory": "backtesting",
+  "language": "cpp",
+  "description": "Binary recording format: fixed-size records for deterministic replay. Replay at original speed vs accelerated (Nx)",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Binary recording format: fixed-size records for deterministic replay</li>\n<li>Replay at original speed vs accelerated (Nx)</li>\n<li>Deterministic replay: same binary → same sequence of ticks</li>\n<li>Seek/rewind for targeted testing</li>\n<li>Sequence number checking for gap detection</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>MarketRecorder rec(\"data.bin\");\nrec.record(tick);\nMarketReplayPlayer player(\"data.bin\");\nplayer.setSpeed(10.0);\nwhile (auto ev = player.next()) { strategy.onTick(*ev); }</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;cstdio&gt;\n#include &lt;cstdint&gt;\n#include &lt;chrono&gt;\n#include &lt;optional&gt;\n#include &lt;vector&gt;\n\n#pragma pack(push, 1)\nstruct BinaryTickRecord {\n    uint64_t timestamp_ns;\n    uint64_t seqno;\n    double   bid, ask, last;\n    uint32_t bid_sz, ask_sz, last_sz;\n    uint8_t  flags;  // bit0: gap flag, bit1: corrected\n};\n#pragma pack(pop)\n\nstatic_assert(sizeof(BinaryTickRecord) == 64,\n              &quot;BinaryTickRecord must be 64 bytes (cache-line aligned)&quot;);\n\nclass MarketRecorder {\n    FILE* file_;\n    uint64_t seqno_{0};\n    uint64_t base_time_{0};\n\npublic:\n    explicit MarketRecorder(const char* path) {\n        file_ = fopen(path, &quot;wb&quot;);\n        // tradeoff: unbuffered for crash safety vs buffered for throughput\n        // HFT recording: unbuffered writes, direct I/O if possible\n    }\n\n    void record(double bid, double ask, double last,\n                uint32_t bsz, uint32_t asz, uint32_t lsz) {\n        BinaryTickRecord rec;\n        rec.timestamp_ns = std::chrono::steady_clock::now()\n                           .time_since_epoch().count();\n        rec.seqno = seqno_++;\n        rec.bid = bid; rec.ask = ask; rec.last = last;\n        rec.bid_sz = bsz; rec.ask_sz = asz; rec.last_sz = lsz;\n        rec.flags = 0;\n        fwrite(&amp;rec, sizeof(rec), 1, file_);\n    }\n\n    ~MarketRecorder() { fclose(file_); }\n};\n\nclass MarketReplayPlayer {\n    FILE* file_;\n    double speed_{1.0};\n    uint64_t first_ts_{0};\n    uint64_t last_replay_ns_{0};\n    bool     started_{false};\n\npublic:\n    explicit MarketReplayPlayer(const char* path) {\n        file_ = fopen(path, &quot;rb&quot;);\n    }\n\n    void setSpeed(double s) { speed_ = s; }  // 1.0 = real-time\n\n    std::optional&lt;BinaryTickRecord&gt; next() {\n        BinaryTickRecord rec;\n        if (fread(&amp;rec, sizeof(rec), 1, file_) != 1)\n            return std::nullopt;\n\n        // sequence check\n        static uint64_t expected_seq = 0;\n        if (rec.seqno != expected_seq) {\n            rec.flags |= 0x01;  // gap detected\n            // tradeoff: skip vs interpolate vs pause\n        }\n        expected_seq = rec.seqno + 1;\n\n        // timing control for real-time replay\n        if (!started_) {\n            first_ts_ = rec.timestamp_ns;\n            last_replay_ns_ = now();\n            started_ = true;\n        } else {\n            uint64_t wall_elapsed = now() - last_replay_ns_;\n            uint64_t tick_elapsed = rec.timestamp_ns - first_ts_;\n            uint64_t target_elapsed = static_cast&lt;uint64_t&gt;(tick_elapsed / speed_);\n            if (wall_elapsed &lt; target_elapsed) {\n                // busy-wait: tradeoff between accuracy and CPU\n                while (now() - last_replay_ns_ &lt; target_elapsed);\n            }\n        }\n        return rec;\n    }\n\n    void seek(uint64_t seqno) {\n        fseek(file_, seqno * sizeof(BinaryTickRecord), SEEK_SET);\n    }\n\nprivate:\n    static uint64_t now() {\n        return std::chrono::steady_clock::now()\n               .time_since_epoch().count();\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "backtesting"
+  ],
+  "type": "reference",
+  "toc": false
+}

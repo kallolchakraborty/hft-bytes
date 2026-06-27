@@ -1,0 +1,232 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">Network Stack Comparison — Latency Estimates</text>
+
+  <!-- Traditional Stack -->
+  <rect x="30" y="75" width="180" height="320" rx="6" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="120" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#475569">Traditional</text>
+  <text x="120" y="108" text-anchor="middle" font-size="9" fill="#64748B">(Linux Kernel)</text>
+
+  <rect x="40" y="120" width="160" height="35" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="120" y="140" text-anchor="middle" font-size="9" fill="#1E40AF">App</text>
+  <line x1="120" y1="155" x2="120" y2="165" stroke="#94A3B8" stroke-width="1"/>
+  <polygon points="115,163 120,170 125,163" fill="#94A3B8"/>
+
+  <rect x="40" y="170" width="160" height="35" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="120" y="190" text-anchor="middle" font-size="9" fill="#B45309">Socket</text>
+  <line x1="120" y1="205" x2="120" y2="215" stroke="#94A3B8" stroke-width="1"/>
+  <polygon points="115,213 120,220 125,213" fill="#94A3B8"/>
+
+  <rect x="40" y="220" width="160" height="35" rx="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="120" y="240" text-anchor="middle" font-size="9" fill="#9A3412">TCP/IP Stack</text>
+  <line x1="120" y1="255" x2="120" y2="265" stroke="#94A3B8" stroke-width="1"/>
+  <polygon points="115,263 120,270 125,263" fill="#94A3B8"/>
+
+  <rect x="40" y="270" width="160" height="35" rx="4" fill="#FFEBEE" stroke="#FF1744" stroke-width="1"/>
+  <text x="120" y="290" text-anchor="middle" font-size="9" fill="#FF1744">Driver</text>
+  <line x1="120" y1="305" x2="120" y2="315" stroke="#94A3B8" stroke-width="1"/>
+  <polygon points="115,313 120,320 125,313" fill="#94A3B8"/>
+
+  <rect x="40" y="320" width="160" height="35" rx="4" fill="#1E293B"/>
+  <text x="120" y="340" text-anchor="middle" font-size="9" font-weight="bold" fill="#22C55E">NIC</text>
+
+  <rect x="40" y="370" width="160" height="20" rx="4" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="120" y="384" text-anchor="middle" font-size="9" fill="#7E22CE">~10-20µs latency</text>
+
+  <!-- DPDK -->
+  <rect x="230" y="75" width="180" height="320" rx="6" fill="#F0FDF4" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="320" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">DPDK</text>
+  <text x="320" y="108" text-anchor="middle" font-size="9" fill="#64748B">(Poll Mode Driver)</text>
+
+  <rect x="240" y="120" width="160" height="35" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="320" y="140" text-anchor="middle" font-size="9" fill="#1E40AF">App</text>
+  <line x1="320" y1="155" x2="320" y2="165" stroke="#22C55E" stroke-width="1"/>
+  <polygon points="315,163 320,170 325,163" fill="#22C55E"/>
+
+  <rect x="240" y="170" width="160" height="35" rx="4" fill="#DCFCE7" stroke="#22C55E" stroke-width="1"/>
+  <text x="320" y="190" text-anchor="middle" font-size="9" fill="#166534">DPDK PMD</text>
+  <line x1="320" y1="205" x2="320" y2="215" stroke="#22C55E" stroke-width="1"/>
+  <polygon points="315,213 320,220 325,213" fill="#22C55E"/>
+
+  <rect x="240" y="220" width="160" height="35" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="320" y="240" text-anchor="middle" font-size="9" fill="#B45309">rte_ring (lock-free)</text>
+  <line x1="320" y1="255" x2="320" y2="265" stroke="#22C55E" stroke-width="1"/>
+  <polygon points="315,263 320,270 325,263" fill="#22C55E"/>
+
+  <rect x="240" y="270" width="160" height="35" rx="4" fill="#FFEBEE" stroke="#FF1744" stroke-width="1"/>
+  <text x="320" y="290" text-anchor="middle" font-size="9" fill="#FF1744">UIO/VFIO</text>
+  <line x1="320" y1="305" x2="320" y2="315" stroke="#22C55E" stroke-width="1"/>
+  <polygon points="315,313 320,320 325,313" fill="#22C55E"/>
+
+  <rect x="240" y="320" width="160" height="35" rx="4" fill="#1E293B"/>
+  <text x="320" y="340" text-anchor="middle" font-size="9" font-weight="bold" fill="#22C55E">NIC (userspace)</text>
+
+  <rect x="240" y="370" width="160" height="20" rx="4" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="320" y="384" text-anchor="middle" font-size="9" fill="#7E22CE">~1-3µs latency</text>
+
+  <!-- OpenOnload -->
+  <rect x="430" y="75" width="180" height="320" rx="6" fill="#FFF3ED" stroke="#EA580C" stroke-width="1.5"/>
+  <text x="520" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#9A3412">OpenOnload</text>
+  <text x="520" y="108" text-anchor="middle" font-size="9" fill="#64748B">(Solarflare/Xilinx)</text>
+
+  <rect x="440" y="120" width="160" height="35" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="520" y="140" text-anchor="middle" font-size="9" fill="#1E40AF">App</text>
+  <line x1="520" y1="155" x2="520" y2="165" stroke="#EA580C" stroke-width="1"/>
+  <polygon points="515,163 520,170 525,163" fill="#EA580C"/>
+
+  <rect x="440" y="170" width="160" height="35" rx="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="520" y="190" text-anchor="middle" font-size="9" fill="#9A3412">Onload Stack</text>
+  <line x1="520" y1="205" x2="520" y2="215" stroke="#EA580C" stroke-width="1"/>
+  <polygon points="515,213 520,220 525,213" fill="#EA580C"/>
+
+  <rect x="440" y="220" width="160" height="35" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="520" y="240" text-anchor="middle" font-size="9" fill="#B45309">TCP/UDP Offload</text>
+  <line x1="520" y1="255" x2="520" y2="265" stroke="#EA580C" stroke-width="1"/>
+  <polygon points="515,263 520,270 525,263" fill="#EA580C"/>
+
+  <rect x="440" y="270" width="160" height="35" rx="4" fill="#FFEBEE" stroke="#FF1744" stroke-width="1"/>
+  <text x="520" y="290" text-anchor="middle" font-size="9" fill="#FF1744">Onload Driver</text>
+  <line x1="520" y1="305" x2="520" y2="315" stroke="#EA580C" stroke-width="1"/>
+  <polygon points="515,313 520,320 525,313" fill="#EA580C"/>
+
+  <rect x="440" y="320" width="160" height="35" rx="4" fill="#1E293B"/>
+  <text x="520" y="340" text-anchor="middle" font-size="9" font-weight="bold" fill="#22C55E">NIC (ef_vi)</text>
+
+  <rect x="440" y="370" width="160" height="20" rx="4" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="520" y="384" text-anchor="middle" font-size="9" fill="#7E22CE">~2-5µs latency</text>
+
+  <!-- VMA -->
+  <rect x="630" y="75" width="170" height="320" rx="6" fill="#EDE9FE" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="715" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#7E22CE">VMA</text>
+  <text x="715" y="108" text-anchor="middle" font-size="9" fill="#64748B">(Mellanox/NVIDIA)</text>
+
+  <rect x="640" y="120" width="150" height="35" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="715" y="140" text-anchor="middle" font-size="9" fill="#1E40AF">App</text>
+  <line x1="715" y1="155" x2="715" y2="165" stroke="#A855F7" stroke-width="1"/>
+  <polygon points="710,163 715,170 720,163" fill="#A855F7"/>
+
+  <rect x="640" y="170" width="150" height="35" rx="4" fill="#E9D5FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="715" y="190" text-anchor="middle" font-size="9" fill="#7E22CE">VMA Library</text>
+  <line x1="715" y1="205" x2="715" y2="215" stroke="#A855F7" stroke-width="1"/>
+  <polygon points="710,213 715,220 720,213" fill="#A855F7"/>
+
+  <rect x="640" y="220" width="150" height="35" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="715" y="240" text-anchor="middle" font-size="9" fill="#B45309">Accel. TCP</text>
+  <line x1="715" y1="255" x2="715" y2="265" stroke="#A855F7" stroke-width="1"/>
+  <polygon points="710,263 715,270 720,263" fill="#A855F7"/>
+
+  <rect x="640" y="270" width="150" height="35" rx="4" fill="#FFEBEE" stroke="#FF1744" stroke-width="1"/>
+  <text x="715" y="290" text-anchor="middle" font-size="9" fill="#FF1744">MLX5 Driver</text>
+  <line x1="715" y1="305" x2="715" y2="315" stroke="#A855F7" stroke-width="1"/>
+  <polygon points="710,313 715,320 720,313" fill="#A855F7"/>
+
+  <rect x="640" y="320" width="150" height="35" rx="4" fill="#1E293B"/>
+  <text x="715" y="340" text-anchor="middle" font-size="9" font-weight="bold" fill="#22C55E">ConnectX NIC</text>
+
+  <rect x="640" y="370" width="150" height="20" rx="4" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="715" y="384" text-anchor="middle" font-size="9" fill="#7E22CE">~2-4µs latency</text>
+
+  <!-- io_uring -->
+  <rect x="820" y="75" width="150" height="320" rx="6" fill="#FEFCE8" stroke="#EAB308" stroke-width="1.5"/>
+  <text x="895" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#CA8A04">io_uring</text>
+  <text x="895" y="108" text-anchor="middle" font-size="9" fill="#64748B">(Linux 5.1+)</text>
+
+  <rect x="830" y="120" width="130" height="35" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="895" y="140" text-anchor="middle" font-size="9" fill="#1E40AF">App</text>
+  <line x1="895" y1="155" x2="895" y2="165" stroke="#EAB308" stroke-width="1"/>
+  <polygon points="890,163 895,170 900,163" fill="#EAB308"/>
+
+  <rect x="830" y="170" width="130" height="35" rx="4" fill="#FEF9C3" stroke="#EAB308" stroke-width="1"/>
+  <text x="895" y="190" text-anchor="middle" font-size="9" fill="#CA8A04">io_uring SQ/CQ</text>
+  <line x1="895" y1="205" x2="895" y2="215" stroke="#EAB308" stroke-width="1"/>
+  <polygon points="890,213 895,220 900,213" fill="#EAB308"/>
+
+  <rect x="830" y="220" width="130" height="35" rx="4" fill="#FED7AA" stroke="#EA580C" stroke-width="1"/>
+  <text x="895" y="240" text-anchor="middle" font-size="9" fill="#9A3412">Kernel (TCP/IP)</text>
+  <line x1="895" y1="255" x2="895" y2="265" stroke="#EAB308" stroke-width="1"/>
+  <polygon points="890,263 895,270 900,263" fill="#EAB308"/>
+
+  <rect x="830" y="270" width="130" height="35" rx="4" fill="#FFEBEE" stroke="#FF1744" stroke-width="1"/>
+  <text x="895" y="290" text-anchor="middle" font-size="9" fill="#FF1744">Driver</text>
+  <line x1="895" y1="305" x2="895" y2="315" stroke="#EAB308" stroke-width="1"/>
+  <polygon points="890,313 895,320 900,313" fill="#EAB308"/>
+
+  <rect x="830" y="320" width="130" height="35" rx="4" fill="#1E293B"/>
+  <text x="895" y="340" text-anchor="middle" font-size="9" font-weight="bold" fill="#22C55E">NIC</text>
+
+  <rect x="830" y="370" width="130" height="20" rx="4" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="895" y="384" text-anchor="middle" font-size="9" fill="#7E22CE">~5-10µs latency</text>
+
+  <!-- Comparison table -->
+  <rect x="30" y="410" width="940" height="320" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="432" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">Comparison Summary</text>
+  <line x1="50" y1="438" x2="950" y2="438" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- Table header -->
+  <rect x="50" y="450" width="180" height="28" rx="3" fill="#FF1744"/>
+  <text x="140" y="470" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">Attribute</text>
+  <rect x="230" y="450" width="140" height="28" rx="3" fill="#475569"/>
+  <text x="300" y="470" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">Traditional</text>
+  <rect x="370" y="450" width="140" height="28" rx="3" fill="#166534"/>
+  <text x="440" y="470" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">DPDK</text>
+  <rect x="510" y="450" width="140" height="28" rx="3" fill="#9A3412"/>
+  <text x="580" y="470" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">OpenOnload</text>
+  <rect x="650" y="450" width="130" height="28" rx="3" fill="#7E22CE"/>
+  <text x="715" y="470" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">VMA</text>
+  <rect x="780" y="450" width="130" height="28" rx="3" fill="#CA8A04"/>
+  <text x="845" y="470" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">io_uring</text>
+
+  <!-- Table rows -->
+  <text x="60" y="505" font-size="10" fill="#475569">Latency</text>
+  <text x="300" y="505" text-anchor="middle" font-size="10" fill="#94A3B8">10-20µs</text>
+  <text x="440" y="505" text-anchor="middle" font-size="10" fill="#166534">1-3µs</text>
+  <text x="580" y="505" text-anchor="middle" font-size="10" fill="#9A3412">2-5µs</text>
+  <text x="715" y="505" text-anchor="middle" font-size="10" fill="#7E22CE">2-4µs</text>
+  <text x="845" y="505" text-anchor="middle" font-size="10" fill="#CA8A04">5-10µs</text>
+  <line x1="50" y1="513" x2="950" y2="513" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="530" font-size="10" fill="#475569">Kernel Bypass</text>
+  <text x="300" y="530" text-anchor="middle" font-size="10" fill="#EF4444">No</text>
+  <text x="440" y="530" text-anchor="middle" font-size="10" fill="#22C55E">Full</text>
+  <text x="580" y="530" text-anchor="middle" font-size="10" fill="#22C55E">Full</text>
+  <text x="715" y="530" text-anchor="middle" font-size="10" fill="#22C55E">Full</text>
+  <text x="845" y="530" text-anchor="middle" font-size="10" fill="#F59E0B">Partial</text>
+  <line x1="50" y1="538" x2="950" y2="538" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="555" font-size="10" fill="#475569">API</text>
+  <text x="300" y="555" text-anchor="middle" font-size="10" fill="#94A3B8">Berkeley sockets</text>
+  <text x="440" y="555" text-anchor="middle" font-size="10" fill="#166534">rte_eth_*</text>
+  <text x="580" y="555" text-anchor="middle" font-size="10" fill="#9A3412">BSD sockets</text>
+  <text x="715" y="555" text-anchor="middle" font-size="10" fill="#7E22CE">BSD sockets</text>
+  <text x="845" y="555" text-anchor="middle" font-size="10" fill="#CA8A04">io_uring</text>
+  <line x1="50" y1="563" x2="950" y2="563" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="580" font-size="10" fill="#475569">TCP Offload</text>
+  <text x="300" y="580" text-anchor="middle" font-size="10" fill="#94A3B8">Kernel</text>
+  <text x="440" y="580" text-anchor="middle" font-size="10" fill="#EF4444">No</text>
+  <text x="580" y="580" text-anchor="middle" font-size="10" fill="#22C55E">Yes</text>
+  <text x="715" y="580" text-anchor="middle" font-size="10" fill="#22C55E">Yes</text>
+  <text x="845" y="580" text-anchor="middle" font-size="10" fill="#22C55E">Kernel</text>
+  <line x1="50" y1="588" x2="950" y2="588" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="605" font-size="10" fill="#475569">Portability</text>
+  <text x="300" y="605" text-anchor="middle" font-size="10" fill="#22C55E">All NICs</text>
+  <text x="440" y="605" text-anchor="middle" font-size="10" fill="#F59E0B">Intel/MLX</text>
+  <text x="580" y="605" text-anchor="middle" font-size="10" fill="#F59E0B">Solarflare</text>
+  <text x="715" y="605" text-anchor="middle" font-size="10" fill="#F59E0B">Mellanox</text>
+  <text x="845" y="605" text-anchor="middle" font-size="10" fill="#22C55E">All NICs</text>
+  <line x1="50" y1="613" x2="950" y2="613" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="630" font-size="10" fill="#475569">Complexity</text>
+  <text x="300" y="630" text-anchor="middle" font-size="10" fill="#22C55E">Low</text>
+  <text x="440" y="630" text-anchor="middle" font-size="10" fill="#EF4444">High</text>
+  <text x="580" y="630" text-anchor="middle" font-size="10" fill="#22C55E">Medium</text>
+  <text x="715" y="630" text-anchor="middle" font-size="10" fill="#22C55E">Medium</text>
+  <text x="845" y="630" text-anchor="middle" font-size="10" fill="#22C55E">Low</text>
+  <line x1="50" y1="638" x2="950" y2="638" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="50" y="665" font-size="10" font-weight="bold" fill="#475569">Use Case</text>
+  <text x="50" y="685" font-size="9" fill="#64748B">• Traditional: legacy apps, non-latency sensitive</text>
+  <text x="50" y="701" font-size="9" fill="#64748B">• DPDK: fastest path, userspace NIC, custom protocol (market data, FPGA integration)</text>
+  <text x="50" y="717" font-size="9" fill="#64748B">• OpenOnload/VMA: transparent acceleration, TCP apps, no code changes needed</text>
+</svg>

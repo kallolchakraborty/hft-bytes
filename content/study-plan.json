@@ -1,0 +1,88 @@
+{
+  "id": "study-plan",
+  "title": "HFT Study Plan",
+  "phase": 0,
+  "phaseName": "Study Plan",
+  "category": "Study Plan",
+  "subcategory": "Study Plan",
+  "language": "markdown",
+  "description": "A 17-week structured curriculum covering all HFT engineering domains: CPU architecture, low-latency C++, kernel bypass, exchange protocols, trading strategies, and production operations.",
+  "content": "<h2 id=\"section-overview\">Roadmap Overview</h2>\n<div class=\"text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6\">A 17-week structured curriculum to build production-grade HFT engineering knowledge, from CPU architecture through failure-mode recovery.</div>\n<div class=\"vtimeline\">\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w1\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w1\">W1</span>\n<span class=\"vtimeline-title\">Foundations</span>\n<span class=\"vtimeline-phase\">Phase 1</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">CPU Architecture</span>\n<span class=\"vtimeline-topic\">Memory Hierarchy</span>\n<span class=\"vtimeline-topic\">Cache Coherency</span>\n<span class=\"vtimeline-topic\">NUMA</span>\n<span class=\"vtimeline-topic\">RDTSC & Timing</span>\n<span class=\"vtimeline-topic\">Compiler Intrinsics</span>\n<span class=\"vtimeline-topic\">Branch Prediction</span>\n<span class=\"vtimeline-topic\">SIMD Basics</span>\n<span class=\"vtimeline-topic\">Linux Tuning</span>\n<span class=\"vtimeline-topic\">BIOS Tuning</span>\n<span class=\"vtimeline-topic\">Server Selection</span>\n<span class=\"vtimeline-topic\">Colo Setup</span>\n</div>\n<div class=\"vtimeline-milestone\">🏁 Phase 1 complete — core hardware & OS foundations</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w2\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w2\">W2</span>\n<span class=\"vtimeline-title\">Mathematics & Statistics</span>\n<span class=\"vtimeline-phase\">Phase 2</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Probability Distributions</span>\n<span class=\"vtimeline-topic\">Time Series Analysis</span>\n<span class=\"vtimeline-topic\">Kalman Filters</span>\n<span class=\"vtimeline-topic\">Signal Processing</span>\n<span class=\"vtimeline-topic\">Machine Learning Basics</span>\n<span class=\"vtimeline-topic\">Stochastic Calculus</span>\n<span class=\"vtimeline-topic\">Optimization Theory</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w3\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w3\">W3</span>\n<span class=\"vtimeline-title\">C++ Low-Latency Patterns</span>\n<span class=\"vtimeline-phase\">Phase 3</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Lock-Free Queues</span>\n<span class=\"vtimeline-topic\">Wait-Free Hazard Pointers</span>\n<span class=\"vtimeline-topic\">Memory Pool Allocators</span>\n<span class=\"vtimeline-topic\">Atomic Operations</span>\n<span class=\"vtimeline-topic\">Cache-Friendly Data Structures</span>\n<span class=\"vtimeline-topic\">Placement New</span>\n<span class=\"vtimeline-topic\">SIMD Intrinsics</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w4\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w4\">W4</span>\n<span class=\"vtimeline-title\">System Programming & IPC</span>\n<span class=\"vtimeline-phase\">Phase 4</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Shared Memory</span>\n<span class=\"vtimeline-topic\">FlatBuffers</span>\n<span class=\"vtimeline-topic\">SBE</span>\n<span class=\"vtimeline-topic\">Binary Logging</span>\n<span class=\"vtimeline-topic\">Binary Size Optimization</span>\n<span class=\"vtimeline-topic\">Build Systems</span>\n<span class=\"vtimeline-topic\">Cross Compilation</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w5\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w5\">W5</span>\n<span class=\"vtimeline-title\">Kernel Bypass & Protocols</span>\n<span class=\"vtimeline-phase\">Phase 5</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Kernel Bypass (DPDK/Onload)</span>\n<span class=\"vtimeline-topic\">FIX Protocol</span>\n<span class=\"vtimeline-topic\">ITCH/OUCH</span>\n<span class=\"vtimeline-topic\">TCP Tuning</span>\n<span class=\"vtimeline-topic\">UDP Multicast</span>\n<span class=\"vtimeline-topic\">Multicast Deep Dive</span>\n<span class=\"vtimeline-topic\">SIMD Parser</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w6\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w6\">W6</span>\n<span class=\"vtimeline-title\">Network Hardware</span>\n<span class=\"vtimeline-phase\">Phase 6</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">NIC Tuning</span>\n<span class=\"vtimeline-topic\">Switch Topology</span>\n<span class=\"vtimeline-topic\">Switch Configuration</span>\n<span class=\"vtimeline-topic\">Packet Capture</span>\n<span class=\"vtimeline-topic\">Cross-DC Connectivity</span>\n<span class=\"vtimeline-topic\">IPMI/OOB</span>\n<span class=\"vtimeline-topic\">Cabling Physics</span>\n</div>\n<div class=\"vtimeline-milestone\">🏁 Phases 1-6 complete — systems & networking fundamentals</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w1\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w1\">W7</span>\n<span class=\"vtimeline-title\">Order Entry & Execution</span>\n<span class=\"vtimeline-phase\">Phase 7</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Order Types</span>\n<span class=\"vtimeline-topic\">FIX Engine</span>\n<span class=\"vtimeline-topic\">OMS</span>\n<span class=\"vtimeline-topic\">Smart Order Router</span>\n<span class=\"vtimeline-topic\">Risk Checks</span>\n<span class=\"vtimeline-topic\">Latency Measurement</span>\n<span class=\"vtimeline-topic\">Exchange Connectivity</span>\n<span class=\"vtimeline-topic\">Auction Handling</span>\n<span class=\"vtimeline-topic\">Configuration Management</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w2\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w2\">W8</span>\n<span class=\"vtimeline-title\">Exchange Architecture</span>\n<span class=\"vtimeline-phase\">Phase 8</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Matching Engine</span>\n<span class=\"vtimeline-topic\">CME iLink3</span>\n<span class=\"vtimeline-topic\">Eurex T7</span>\n<span class=\"vtimeline-topic\">LSE Millennium</span>\n<span class=\"vtimeline-topic\">ICE Binary</span>\n<span class=\"vtimeline-topic\">Exchange Compare</span>\n<span class=\"vtimeline-topic\">Session Recovery</span>\n<span class=\"vtimeline-topic\">Fee Structures</span>\n<span class=\"vtimeline-topic\">MM Programs</span>\n<span class=\"vtimeline-topic\">Exchange Outages</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w3\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w3\">W9</span>\n<span class=\"vtimeline-title\">Order Book & Microstructure</span>\n<span class=\"vtimeline-phase\">Phase 9</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">LOB Design</span>\n<span class=\"vtimeline-topic\">Feed Handler</span>\n<span class=\"vtimeline-topic\">Top of Book</span>\n<span class=\"vtimeline-topic\">Book Imbalance</span>\n<span class=\"vtimeline-topic\">Market Data Vendors</span>\n<span class=\"vtimeline-topic\">Fee Dynamics</span>\n<span class=\"vtimeline-topic\">Gap Recovery</span>\n<span class=\"vtimeline-topic\">Anomaly Detection</span>\n<span class=\"vtimeline-topic\">Microstructure Edge</span>\n</div>\n<div class=\"vtimeline-milestone\">🏁 Phases 1-9 complete — exchange protocols & market structure</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w4\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w4\">W10</span>\n<span class=\"vtimeline-title\">Trading Strategies</span>\n<span class=\"vtimeline-phase\">Phase 10</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Market Making</span>\n<span class=\"vtimeline-topic\">Arbitrage</span>\n<span class=\"vtimeline-topic\">Pairs Trading</span>\n<span class=\"vtimeline-topic\">Momentum</span>\n<span class=\"vtimeline-topic\">Optimal Execution</span>\n<span class=\"vtimeline-topic\">Position Management</span>\n<span class=\"vtimeline-topic\">Strategy Matrix</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w5\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w5\">W11</span>\n<span class=\"vtimeline-title\">Backtesting & Simulation</span>\n<span class=\"vtimeline-phase\">Phase 11</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Backtest Engine</span>\n<span class=\"vtimeline-topic\">Market Replay</span>\n<span class=\"vtimeline-topic\">Latency Simulation</span>\n<span class=\"vtimeline-topic\">Case Simulation</span>\n<span class=\"vtimeline-topic\">Cross-Asset BT</span>\n<span class=\"vtimeline-topic\">Performance Attribution</span>\n<span class=\"vtimeline-topic\">Overfitting Prevention</span>\n</div>\n<div class=\"vtimeline-milestone\">🏁 Phases 1-11 complete — backtesting & simulation ready</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w6\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w6\">W12</span>\n<span class=\"vtimeline-title\">Data Engineering</span>\n<span class=\"vtimeline-phase\">Phase 12</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Real-time Pipelines</span>\n<span class=\"vtimeline-topic\">Historical Data</span>\n<span class=\"vtimeline-topic\">Compression</span>\n<span class=\"vtimeline-topic\">KDB+</span>\n<span class=\"vtimeline-topic\">Alternative Data</span>\n<span class=\"vtimeline-topic\">Reference Data</span>\n<span class=\"vtimeline-topic\">Backfill Strategies</span>\n<span class=\"vtimeline-topic\">Modern Databases</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w1\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w1\">W13</span>\n<span class=\"vtimeline-title\">FPGA & Hardware</span>\n<span class=\"vtimeline-phase\">Phase 13</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">FPGA Intro</span>\n<span class=\"vtimeline-topic\">FPGA Parser</span>\n<span class=\"vtimeline-topic\">FPGA Order Gen</span>\n<span class=\"vtimeline-topic\">FPGA Vendors</span>\n<span class=\"vtimeline-topic\">FPGA vs CPU</span>\n</div>\n<div class=\"vtimeline-milestone\">🏁 Phases 1-13 complete — FPGA & hardware acceleration</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w2\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w2\">W14</span>\n<span class=\"vtimeline-title\">Monitoring & Security</span>\n<span class=\"vtimeline-phase\">Phase 14</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Grafana</span>\n<span class=\"vtimeline-topic\">Latency Histograms</span>\n<span class=\"vtimeline-topic\">Order Tracking</span>\n<span class=\"vtimeline-topic\">SLI/SLO</span>\n<span class=\"vtimeline-topic\">Structured Logging</span>\n<span class=\"vtimeline-topic\">Market Data Quality</span>\n<span class=\"vtimeline-topic\">Secrets Management</span>\n<span class=\"vtimeline-topic\">Supply Chain Security</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w3\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w3\">W15</span>\n<span class=\"vtimeline-title\">Testing & Production</span>\n<span class=\"vtimeline-phase\">Phase 15</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Deterministic Testing</span>\n<span class=\"vtimeline-topic\">Replay Testing</span>\n<span class=\"vtimeline-topic\">Chaos Engineering</span>\n<span class=\"vtimeline-topic\">Canary Release</span>\n<span class=\"vtimeline-topic\">Container HFT</span>\n<span class=\"vtimeline-topic\">DR/Failover</span>\n<span class=\"vtimeline-topic\">Disaster Scenarios</span>\n<span class=\"vtimeline-topic\">Incident Cases</span>\n<span class=\"vtimeline-topic\">Colocation</span>\n<span class=\"vtimeline-topic\">Operations</span>\n<span class=\"vtimeline-topic\">Compliance Testing</span>\n<span class=\"vtimeline-topic\">Post-Trade</span>\n<span class=\"vtimeline-topic\">Practical SysAdmin</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w4\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w4\">W16</span>\n<span class=\"vtimeline-title\">Economics & Career</span>\n<span class=\"vtimeline-phase\">Phase 16</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Compensation & Org</span>\n<span class=\"vtimeline-topic\">LLM for HFT</span>\n<span class=\"vtimeline-topic\">Latency Cost</span>\n<span class=\"vtimeline-topic\">Colo Budget</span>\n<span class=\"vtimeline-topic\">Vendor Evaluation</span>\n<span class=\"vtimeline-topic\">Legal & Compliance</span>\n<span class=\"vtimeline-topic\">Staff+ Engineering</span>\n</div>\n</div>\n<div class=\"vtimeline-entry\">\n<div class=\"vtimeline-dot w5\"></div>\n<div class=\"vtimeline-header\">\n<span class=\"vtimeline-week w5\">W17</span>\n<span class=\"vtimeline-title\">Failure Modes & Recovery</span>\n<span class=\"vtimeline-phase\">Phase 17</span>\n</div>\n<div class=\"vtimeline-topics\">\n<span class=\"vtimeline-topic\">Split Brain</span>\n<span class=\"vtimeline-topic\">Clock Anomalies</span>\n<span class=\"vtimeline-topic\">Phantom Orders</span>\n<span class=\"vtimeline-topic\">Order Duplication</span>\n<span class=\"vtimeline-topic\">Partial Fills</span>\n<span class=\"vtimeline-topic\">Sequence Resets</span>\n<span class=\"vtimeline-topic\">Mass Cancel</span>\n<span class=\"vtimeline-topic\">Stale State</span>\n</div>\n<div class=\"vtimeline-milestone\">🏁 Full curriculum complete — production-ready HFT engineer</div>\n</div>\n</div>",
+  "sections": [
+    {
+      "id": "week-1",
+      "title": "Week 1: Foundations"
+    },
+    {
+      "id": "week-2",
+      "title": "Week 2: Mathematics & Statistics"
+    },
+    {
+      "id": "week-3",
+      "title": "Week 3: C++ Low-Latency Patterns"
+    },
+    {
+      "id": "week-4",
+      "title": "Week 4: System Programming & IPC"
+    },
+    {
+      "id": "week-5",
+      "title": "Week 5: Kernel Bypass & Protocols"
+    },
+    {
+      "id": "week-6",
+      "title": "Week 6: Network Hardware"
+    },
+    {
+      "id": "week-7",
+      "title": "Week 7: Order Entry & Execution"
+    },
+    {
+      "id": "week-8",
+      "title": "Week 8: Exchange Architecture"
+    },
+    {
+      "id": "week-9",
+      "title": "Week 9: Order Book & Microstructure"
+    },
+    {
+      "id": "week-10",
+      "title": "Week 10: Trading Strategies"
+    },
+    {
+      "id": "week-11",
+      "title": "Week 11: Backtesting & Simulation"
+    },
+    {
+      "id": "week-12",
+      "title": "Week 12: Data Engineering"
+    },
+    {
+      "id": "week-13",
+      "title": "Week 13: FPGA & Hardware"
+    },
+    {
+      "id": "week-14",
+      "title": "Week 14: Monitoring & Security"
+    },
+    {
+      "id": "week-15",
+      "title": "Week 15: Testing & Production"
+    },
+    {
+      "id": "week-16",
+      "title": "Week 16: Economics & Career"
+    },
+    {
+      "id": "week-17",
+      "title": "Week 17: Failure Modes & Recovery"
+    }
+  ],
+  "tags": [
+    "study-plan",
+    "curriculum",
+    "learning-path"
+  ],
+  "type": "study-plan",
+  "toc": true
+}

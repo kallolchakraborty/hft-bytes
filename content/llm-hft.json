@@ -1,0 +1,46 @@
+{
+  "id": "llm-hft",
+  "title": "LLM Hft",
+  "phase": 16,
+  "phaseName": "HFT Economics & Career",
+  "category": "Phase 16 - HFT Economics & Career",
+  "subcategory": "economics-career",
+  "language": "cpp",
+  "description": "Code generation for protocol parsers: LLMs can translate exchange spec. Incident analysis automation: feed logs and metrics to LLM for postmortem",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Code generation for protocol parsers: LLMs can translate exchange spec</li>\n<li>Incident analysis automation: feed logs and metrics to LLM for postmortem</li>\n<li>Python→C++ translation: LLMs can convert research/prototype Python into</li>\n<li>Monitoring anomaly detection: LLM-based log analysis identifies patterns</li>\n<li>Current limitations: LLMs lack understanding of memory ordering, cache</li>\n</ul>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;algorithm&gt;\n#include &lt;array&gt;\n#include &lt;cstdint&gt;\n#include &lt;cstdlib&gt;\n#include &lt;filesystem&gt;\n#include &lt;fstream&gt;\n#include &lt;functional&gt;\n#include &lt;map&gt;\n#include &lt;optional&gt;\n#include &lt;sstream&gt;\n#include &lt;string&gt;\n#include &lt;vector&gt;\n\n// ---------------------------------------------------------------------------\n// LLM prompt templates for HFT engineering tasks.\n// ---------------------------------------------------------------------------\n/*\n * Each template is a std::string with {{placeholders}} for parameters.\n * The evaluation framework scores the LLM output against ground truth.\n */\n\nnamespace PromptTemplates {\n\n// Prompt: translate an exchange spec snippet into a C++ struct definition.\ninline constexpr const char *kProtocolParserPrompt = R&quot;(\nYou are an HFT engineer implementing a market data protocol parser.\n\nGiven the following exchange specification for a {{protocol_name}} message,\ngenerate a C++ struct that can parse this message from a byte buffer.\n\nSpecification:\n{{spec_text}}\n\nRequirements:\n- Use `#pragma pack(push, 1)` for packed structs\n- Fields must be in network byte order (big-endian)\n- Include a `static constexpr size_t size()` method\n- Include a `void to_host_order()` method if endianness conversion is needed\n- Zero-copy parsing: return a pointer to the struct (do not copy fields)\n- Include a bounds check against the buffer size in the parse function\n\nOutput only the C++ code, no explanation.\n)&quot;;\n\n// Prompt: translate Python research code to production C++.\ninline constexpr const char *kPyToCppPrompt = R&quot;(\nTranslate the following Python code to production-quality C++20.\nThe C++ version must:\n- Use fixed-point arithmetic where Python uses float (scale factor: {{scale_factor}})\n- Be lock-free (no std::mutex in the hot path)\n- Use stack allocation (no heap allocation during the trading loop)\n- Use RAII for all resource management\n- Include noexcept specifiers\n- Match the Python output exactly, including edge cases\n\nPython code:</code></pre>\n<p>{{python_code}}</p>\n<pre><code class=\"language-cpp\">\nOutput only the C++ code, no explanation.\n)&quot;;\n\n// Prompt: generate a postmortem from incident logs.\ninline constexpr const char *kPostmortemPrompt = R&quot;(\nGenerate a postmortem report for a trading system incident based on the\nfollowing logs and metrics. Use the format:\n\n## Summary\n## Timeline (UTC)\n## Root Cause Analysis\n## Impact\n## Action Items\n\nLogs:\n{{logs}}\n\nMetrics (Latency P50/P99/P99.9):\n{{metrics}}\n)&quot;;\n\n} // namespace PromptTemplates\n\n// ---------------------------------------------------------------------------\n// LLM output evaluation framework — scores generated code against specs.\n// ---------------------------------------------------------------------------\nclass LlmOutputEvaluator {\npublic:\n  struct Evaluation {\n    std::string task;\n    double      correctness_score;     // 0-1: does it compile and match spec?\n    double      performance_score;     // 0-1: is it within 10% of hand-written?\n    double      safety_score;          // 0-1: no buffer overflow, no UB.\n    std::vector&lt;std::string&gt; issues;\n    std::string verdict;\n  };\n\n  // Evaluate a generated protocol parser against the exchange spec.\n  Evaluation evaluate_parser(const std::string &amp;generated_code,\n                              const std::string &amp;spec,\n                              const std::vector&lt;uint8_t&gt; &amp;test_message) {\n    Evaluation eval;\n    eval.task = &quot;Protocol Parser Generation&quot;;\n\n    // Check 1: Does it compile? (Invoke compiler in a sandbox).\n    bool compiles = check_compiles(generated_code);\n    if (!compiles) {\n      eval.issues.push_back(&quot;Generated code does not compile&quot;);\n      eval.correctness_score = 0;\n      eval.performance_score = 0;\n      eval.safety_score      = 0;\n      eval.verdict           = &quot;REJECT — compilation failure&quot;;\n      return eval;\n    }\n\n    // Check 2: Does it parse the test message correctly?\n    bool parses = check_parser_output(generated_code, test_message);\n    eval.correctness_score = parses ? 0.95 : 0.3;\n    if (!parses) eval.issues.push_back(&quot;Parser output does not match expected&quot;);\n\n    // Check 3: Any safety issues?\n    bool has_ubsan = check_undefined_behavior(generated_code);\n    eval.safety_score = has_ubsan ? 0.5 : 1.0;\n    if (has_ubsan) eval.issues.push_back(&quot;Undefined behavior detected&quot;);\n\n    // Check 4: Benchmark against reference.\n    eval.performance_score = benchmark_parser(generated_code);\n\n    // Overall verdict.\n    double combined = (eval.correctness_score + eval.performance_score +\n                       eval.safety_score) / 3.0;\n    if (combined &gt;= 0.85)\n      eval.verdict = &quot;ACCEPT — production-ready after review&quot;;\n    else if (combined &gt;= 0.6)\n      eval.verdict = &quot;ACCEPT WITH CHANGES — see issues above&quot;;\n    else\n      eval.verdict = &quot;REJECT — requires rewrite&quot;;\n\n    return eval;\n  }\n\nprivate:\n  bool check_compiles(const std::string &amp;code) const {\n    // Write to temp file, invoke g++ -std=c++20 -fsyntax-only.\n    std::string tmp = &quot;/tmp/llm_eval_&quot; + std::to_string(rand()) + &quot;.cpp&quot;;\n    std::ofstream(tmp) &lt;&lt; code;\n    int rc = std::system((&quot;g++ -std=c++20 -fsyntax-only -c &quot; + tmp + &quot; 2&gt;/dev/null&quot;).c_str());\n    std::filesystem::remove(tmp);\n    return rc == 0;\n  }\n\n  bool check_parser_output(const std::string &amp;code,\n                           const std::vector&lt;uint8_t&gt; &amp;msg) const {\n    // In production: compile the parser, link a test harness, run against msg.\n    return true; // Placeholder.\n  }\n\n  bool check_undefined_behavior(const std::string &amp;code) const {\n    // Compile with -fsanitize=undefined and run.\n    return false; // Placeholder.\n  }\n\n  double benchmark_parser(const std::string &amp;code) const {\n    // Compare cycles against a hand-written reference.\n    return 0.9; // Placeholder: 90% of hand-written.\n  }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    },
+    {
+      "id": "summary",
+      "title": "Summary"
+    },
+    {
+      "id": "timeline-utc",
+      "title": "Timeline (UTC)"
+    },
+    {
+      "id": "root-cause-analysis",
+      "title": "Root Cause Analysis"
+    },
+    {
+      "id": "impact",
+      "title": "Impact"
+    },
+    {
+      "id": "action-items",
+      "title": "Action Items"
+    }
+  ],
+  "tags": [
+    "phase-16"
+  ],
+  "type": "reference",
+  "toc": false
+}

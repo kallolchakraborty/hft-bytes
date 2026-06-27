@@ -1,0 +1,30 @@
+{
+  "id": "ref-data",
+  "title": "Ref Data",
+  "phase": 12,
+  "phaseName": "Data Engineering",
+  "category": "Phase 12 - Data Engineering",
+  "subcategory": "data-engineering",
+  "language": "cpp",
+  "description": "Symbol master schema: ISIN, CUSIP, SEDOL, exchange, ticker. Instrument reference: currency, lot size, tick increment, market cap",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Symbol master schema: ISIN, CUSIP, SEDOL, exchange, ticker</li>\n<li>Instrument reference: currency, lot size, tick increment, market cap</li>\n<li>Corporate actions: dividends (amount, ex-date, pay-date), stock splits</li>\n<li>Mergers/acquisitions, spin-offs, name changes → symbol mapping history</li>\n<li>Calendar management: trading holidays, early closes, rollover schedules</li>\n<li>Data vendor integration: Bloomberg, Reuters, exchange direct feeds</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>SymbolMaster sm;\nsm.addInstrument(\"AAPL\", \"US0378331005\", \"NASDAQ\");\nCorpActionsProcessor cap;\ncap.applySplit(\"AAPL\", 4, 1, \"2024-08-28\");</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;string&gt;\n#include &lt;unordered_map&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\n\nstruct InstrumentRecord {\n    std::string ticker;\n    std::string isin;\n    std::string cusip;\n    std::string exchange;\n    std::string currency;\n    double      lot_size;\n    double      tick_increment;\n    std::string sector;\n    uint64_t    listed_ns;\n    uint64_t    delisted_ns;\n};\n\nclass SymbolMaster {\n    std::unordered_map&lt;std::string, InstrumentRecord&gt; by_ticker_;\n    std::unordered_map&lt;std::string, std::string&gt; by_isin_;  // ISIN → ticker\n\npublic:\n    void addInstrument(const InstrumentRecord&amp; rec) {\n        by_ticker_[rec.ticker] = rec;\n        by_isin_[rec.isin] = rec.ticker;\n    }\n\n    const InstrumentRecord* lookup(const std::string&amp; ticker_or_isin) {\n        auto it = by_ticker_.find(ticker_or_isin);\n        if (it != by_ticker_.end()) return &amp;it-&gt;second;\n        auto iit = by_isin_.find(ticker_or_isin);\n        if (iit != by_isin_.end()) return &amp;by_ticker_[iit-&gt;second];\n        return nullptr;\n    }\n\n    // Tradeoff: O(1) hash vs ordered map (range queries on sector)\n};\n\n// --------------------------------------------------------------------\n// Corporate Actions Processor\n\nstruct CorpAction {\n    enum Type { DIVIDEND, SPLIT, MERGER, SPINOFF, NAME_CHANGE };\n    Type     type;\n    std::string symbol;\n    uint64_t effective_ns;\n    union {\n        struct { double amount; double currency_rate; } dividend;\n        struct { int from; int to; } split;            // 4:1 split → from=4,to=1\n        struct { std::string target; double ratio; } merger;\n    };\n};\n\nclass CorpActionsProcessor {\n    std::vector&lt;CorpAction&gt; actions_;\n    size_t replay_idx_{0};\n\npublic:\n    void addAction(const CorpAction&amp; ca) {\n        actions_.push_back(ca);\n        // tradeoff: sorted insert vs sort once\n        std::sort(actions_.begin(), actions_.end(),\n                  [](auto&amp; a, auto&amp; b) { return a.effective_ns &lt; b.effective_ns; });\n    }\n\n    // Replay actions to a given time (for backtester)\n    std::vector&lt;CorpAction&gt; replayTo(uint64_t time_ns) {\n        std::vector&lt;CorpAction&gt; triggered;\n        while (replay_idx_ &lt; actions_.size() &amp;&amp;\n               actions_[replay_idx_].effective_ns &lt;= time_ns) {\n            triggered.push_back(actions_[replay_idx_++]);\n        }\n        return triggered;\n    }\n\n    // Adjust historical price for splits\n    static double adjustPrice(double price, const CorpAction&amp; ca) {\n        if (ca.type == CorpAction::SPLIT) {\n            return price * ca.split.from / static_cast&lt;double&gt;(ca.split.to);\n        }\n        return price;\n    }\n};\n\n// --------------------------------------------------------------------\n// Trading Calendar\n\nclass TradingCalendar {\n    struct Session {\n        uint64_t date;       // YYYYMMDD\n        uint64_t open_ns;    // nanoseconds since midnight\n        uint64_t close_ns;\n        bool     early_close;\n    };\n\n    std::vector&lt;Session&gt; sessions_;\n\npublic:\n    bool isTradingDay(uint64_t date_ns) const {\n        auto it = std::lower_bound(sessions_.begin(), sessions_.end(), date_ns,\n                    [](const Session&amp; s, uint64_t d) { return s.date &lt; d; });\n        return it != sessions_.end() &amp;&amp; it-&gt;date == date_ns;\n    }\n\n    // Futures roll schedule\n    struct RollSchedule {\n        std::string contract;\n        uint64_t first_notice_ns;\n        uint64_t last_trade_ns;\n        uint64_t roll_recommend_ns;\n    };\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "data-engineering"
+  ],
+  "type": "reference",
+  "toc": false
+}

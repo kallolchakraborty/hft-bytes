@@ -1,0 +1,30 @@
+{
+  "id": "cross-asset-bt",
+  "title": "Cross Asset Bt",
+  "phase": 11,
+  "phaseName": "Backtesting & Simulation",
+  "category": "Phase 11 - Backtesting & Simulation",
+  "subcategory": "backtesting",
+  "language": "cpp",
+  "description": "Equity modeling: dividends, stock splits, corporate actions. Futures modeling: carry/roll yield, term structure, expiry",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Equity modeling: dividends, stock splits, corporate actions</li>\n<li>Futures modeling: carry/roll yield, term structure, expiry</li>\n<li>Options modeling: Greeks decay (theta), delta/gamma, implied vol</li>\n<li>FX modeling: spot vs forward, swap points, cross rates</li>\n<li>Portfolio-level backtester with multi-instrument NAV tracking</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>CrossAssetBacktester bt;\nbt.addInstrument<EquityModel>(\"AAPL\");\nbt.addInstrument<FuturesModel>(\"ESZ24\");\nbt.run(start, end);</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;string&gt;\n#include &lt;unordered_map&gt;\n#include &lt;memory&gt;\n#include &lt;cmath&gt;\n\n// --------------------------------------------------------------------\n// Abstract instrument model\n\nclass InstrumentModel {\npublic:\n    virtual double adjustPrice(double raw_price, uint64_t timestamp_ns) = 0;\n    virtual double carryCost(uint64_t hold_ns) const = 0;\n    virtual ~InstrumentModel() = default;\n};\n\n// --------------------------------------------------------------------\n// Equity model with dividends\n\nclass EquityModel : public InstrumentModel {\n    double dividend_yield_;  // annualized\n    double last_div_adjust_;\n    uint64_t last_div_time_;\n\npublic:\n    explicit EquityModel(double div_yield = 0.02)\n        : dividend_yield_(div_yield) {}\n\n    double adjustPrice(double raw_price, uint64_t) override {\n        return raw_price;  // no raw→adjusted conversion needed usually\n    }\n\n    // tradeoff: discrete dividend events vs continuous yield\n    double carryCost(uint64_t hold_ns) const override {\n        double years = hold_ns / (3.154e16);  // ns→years\n        return -dividend_yield_ * years;      // carry = -div yield\n    }\n};\n\n// --------------------------------------------------------------------\n// Futures model with carry/roll\n\nclass FuturesModel : public InstrumentModel {\n    double spot_price_;\n    double risk_free_rate_;\n    double convenience_yield_;\n    uint64_t expiry_ns_;\n    uint64_t now_ns_;\n\npublic:\n    FuturesModel(double spot, double r, double conv, uint64_t expiry)\n        : spot_price_(spot), risk_free_rate_(r)\n        , convenience_yield_(conv), expiry_ns_(expiry) {}\n\n    // Futures price = spot * exp((r - c) * T)\n    double theoreticalPrice() const {\n        double T = static_cast&lt;double&gt;(expiry_ns_ - now_ns_) / 3.154e16;\n        return spot_price_ * std::exp((risk_free_rate_ - convenience_yield_) * T);\n    }\n\n    double adjustPrice(double, uint64_t) override { return theoreticalPrice(); }\n\n    // Roll yield: difference between futures return and spot return\n    // tradeoff: constant carry vs term-structure model\n    double carryCost(uint64_t) const override {\n        return risk_free_rate_ - convenience_yield_;\n    }\n};\n\n// --------------------------------------------------------------------\n// Simplified Option Greeks\n\nclass OptionModel {\n    double S_, K_, T_, r_, sigma_;  // spot, strike, time, rate, vol\n\npublic:\n    double delta() const {\n        double d1 = (std::log(S_/K_) + (r_ + sigma_*sigma_/2) * T_)\n                    / (sigma_ * std::sqrt(T_ + 1e-12));\n        return 0.5 * (1.0 + std::erf(d1 / std::sqrt(2.0)));  // call delta\n    }\n\n    double theta() const {\n        // simplified theta = -S * σ * φ(d1) / (2√T) - ... decay\n        double d1 = (std::log(S_/K_) + (r_ + sigma_*sigma_/2) * T_)\n                    / (sigma_ * std::sqrt(T_ + 1e-12));\n        double phi = std::exp(-d1*d1/2) / std::sqrt(2 * M_PI);\n        return -S_ * sigma_ * phi / (2 * std::sqrt(T_ + 1e-12));\n        // tradeoff: analytical vs numerical Greeks (finite difference)\n    }\n};\n\n// --------------------------------------------------------------------\n// Portfolio-Level Backtester\n\nclass CrossAssetPortfolio {\n    std::unordered_map&lt;std::string, std::unique_ptr&lt;InstrumentModel&gt;&gt; instruments_;\n    std::unordered_map&lt;std::string, double&gt; positions_;\n    double nav_{1000000};  // starting NAV\n\npublic:\n    template&lt;typename T, typename... Args&gt;\n    void addInstrument(const std::string&amp; sym, Args&amp;&amp;... args) {\n        instruments_[sym] = std::make_unique&lt;T&gt;(std::forward&lt;Args&gt;(args)...);\n    }\n\n    void update(const std::string&amp; sym, double price, uint64_t ts) {\n        auto it = instruments_.find(sym);\n        if (it != instruments_.end())\n            price = it-&gt;second-&gt;adjustPrice(price, ts);\n        // update NAV\n        nav_ += positions_[sym] * price;\n    }\n\n    double nav() const { return nav_; }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "simd"
+  ],
+  "type": "reference",
+  "toc": false
+}

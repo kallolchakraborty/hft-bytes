@@ -1,0 +1,30 @@
+{
+  "id": "system-architecture",
+  "title": "System Architecture Blueprint",
+  "phase": 1,
+  "phaseName": "Foundations",
+  "category": "Foundations",
+  "subcategory": "foundations",
+  "language": "cpp",
+  "description": "End-to-end HFT system architecture: market data ingestion, feed processing, order-book reconstruction, strategy execution, order management, and exchange gateway. Thread-per-stage pipeline model.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>HFT systems decompose into pipelined stages: market data feed -> parser -> order book -> strategy -> OMS -> SOR -> FIX engine -> exchange gateway</li>\n<li>Each stage runs on a dedicated core with its own thread and lock-free queues between them</li>\n<li>Market data stage: one thread per exchange feed (e.g., CME A, CME B, Eurex); pinned to NUMA node nearest the NIC</li>\n<li>Parser stage: SIMD-accelerated protocol parsing (FIX/ITCH/SBE); produces normalised internal order-book events</li>\n<li>Order-book stage: maintains per-symbol LOB; produces top-of-book, imbalance, and quote events for strategies</li>\n<li>Strategy stage: runs trading logic; subscribes to relevant symbols; produces order requests to OMS</li>\n<li>OMS/SOR stage: manages order lifecycle; routes orders to appropriate venues; tracks fill/partial/reject status</li>\n<li>Gateway stage: implements exchange-specific session logic; handles sequence numbers, resend requests, heartbeats</li>\n<li>Thread isolation: no shared mutable state between pipeline stages; data flows through SPSC queues</li>\n<li>Heartbeat/watchdog: each stage sends periodic liveness signals; monitoring alerts on missed heartbeats</li>\n</ul>\n<div class=\"mermaid-wrapper\"><pre class=\"mermaid\">graph LR\n    NIC[&quot;NIC 100GbE&quot;] --&gt; Parser[&quot;Parser Stage&lt;br/&gt;Core 0&lt;br/&gt;SIMD Decode&quot;]\n    Parser --&gt; OB[&quot;Order-Book Stage&lt;br/&gt;Core 1&lt;br/&gt;LOB Rebuild&quot;]\n    OB --&gt; Strat[&quot;Strategy Stage&lt;br/&gt;Core 2&lt;br/&gt;MM Logic&quot;]\n    Strat --&gt; OMS[&quot;OMS/SOR Stage&lt;br/&gt;Core 3&lt;br/&gt;Order Mgmt&quot;]\n    OMS --&gt; GW[&quot;Gateway Stage&lt;br/&gt;Core 4&lt;br/&gt;FIX Session&quot;]\n    GW --&gt; Exch[&quot;Exchange&lt;br/&gt;Matching Engine&quot;]\n\n    subgraph Legend[&quot; &quot;]\n        direction LR\n        Q[&quot;SPSC Queue&quot;] -.- P\n    end\n\n    style NIC fill:#1e40af,color:#fff\n    style Exch fill:#047857,color:#fff\n    style Parser fill:#1e3a5f,color:#93c5fd\n    style OB fill:#2e1f6e,color:#a5b4fc\n    style Strat fill:#3b1f6e,color:#c4b5fd\n    style OMS fill:#5b1f3e,color:#f9a8d4\n    style GW fill:#5b2a1f,color:#fdba74</pre></div>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Pipeline architecture sketch\nstruct PipelineStage {\n    virtual ~PipelineStage() = default;\n    virtual const char* name() = 0;\n    virtual void start() {\n        thread_ = std::jthread([this](std::stop_token st) { run(st); });\n        // Pin to dedicated core\n        cpu_set_t cpuset;\n        CPU_ZERO(&amp;cpuset);\n        CPU_SET(core_, &amp;cpuset);\n        pthread_setaffinity_np(thread_.native_handle(), sizeof(cpuset), &amp;cpuset);\n    }\n    virtual void run(std::stop_token st) = 0;\n    int core_ = -1;\n    std::jthread thread_;\n    SPSCQueue&lt;Event, 65536&gt;* input_{nullptr};\n    SPSCQueue&lt;Event, 65536&gt;* output_{nullptr};\n};\n\n// Example: five-stage pipeline\n// NIC -&gt; Parser -&gt; OrderBook -&gt; Strategy -&gt; OMS -&gt; Gateway -&gt; Exchange\n// Each arrow is a lock-free SPSC queue\n// Core assignment: 0=Parser, 1=OrderBook, 2=Strategy, 3=OMS, 4=Gateway</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Parser stage skeleton\nclass ParserStage : public PipelineStage {\n    const char* name() override { return &quot;parser&quot;; }\n    void run(std::stop_token st) override {\n        while (!st.stop_requested()) {\n            Event evt;\n            while (input_-&gt;pop(evt)) {\n                // Parse raw packet, produce normalised event\n                MktDataEvent mde = parseITCH(evt.raw_data, evt.len);\n                output_-&gt;push(Event::fromMktData(mde));\n            }\n        }\n    }\n};\n\n// Strategy stage subscribes to symbols\nclass StrategyStage : public PipelineStage {\n    const char* name() override { return &quot;strategy&quot;; }\n    void run(std::stop_token st) override {\n        MarketMakingStrategy mm;\n        while (!st.stop_requested()) {\n            Event evt;\n            while (input_-&gt;pop(evt)) {\n                if (evt.type == EventType::TOP_OF_BOOK) {\n                    auto signal = mm.onTopOfBook(evt.tob);\n                    if (signal.action != Action::NONE) {\n                        output_-&gt;push(Event::fromOrderRequest(signal.order));\n                    }\n                }\n            }\n        }\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

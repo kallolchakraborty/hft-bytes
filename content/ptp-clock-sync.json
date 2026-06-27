@@ -1,0 +1,30 @@
+{
+  "id": "ptp-clock-sync",
+  "title": "PTP & Hardware Clock Sync",
+  "phase": 6,
+  "phaseName": "Network Hardware",
+  "category": "Network Hardware",
+  "subcategory": "network-hardware",
+  "language": "cpp",
+  "description": "Precision Time Protocol (IEEE 1588) provides sub-microsecond clock synchronisation across trading servers. Hardware timestamping, boundary clocks, phc2sys, and ptp4l tuning for HFT.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>PTP (IEEE 1588-2008, aka 1588v2) achieves < 100 ns accuracy with hardware timestamping on modern NICs</li>\n<li>Ordinary Clock (OC) is a single-port PTP node; Boundary Clock (BC) is multi-port with transparent forwarding</li>\n<li>Transparent Clock (TC) measures residence time and corrects for switch latency in the PTP message</li>\n<li>Hardware timestamping is critical: software timestamping adds jitter of 10-50 us; hardware is sub-100 ns</li>\n<li>phc2sys synchronises the system clock to a PTP hardware clock (PHC) via kernel adjtimex</li>\n<li>ptp4l implements the PTP protocol; key options: -2 (layer 2), --step_threshold for leap adjustments</li>\n<li>Clock servo discipline: PI controller with proportional/integral gains tuned to network asymmetry</li>\n<li>GPS-disciplined Grandmaster (e.g., Trimble, Meinberg) provides primary reference; NTP backup for holdover</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Hardware timestamp via SIOCSHWTSTAMP (Linux)\n#include &lt;linux/net_tstamp.h&gt;\n#include &lt;sys/ioctl.h&gt;\n#include &lt;net/if.h&gt;\n\nint enableHwTimestamp(int sockfd, const char* iface) {\n    struct ifreq ifr = {};\n    struct hwtstamp_config cfg = {};\n    strncpy(ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);\n\n    cfg.tx_type = HWTSTAMP_TX_ON;\n    cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;\n    ifr.ifr_data = (void*)&amp;cfg;\n\n    if (ioctl(sockfd, SIOCSHWTSTAMP, &amp;ifr) &lt; 0)\n        return -1;\n    return 0;\n}</code></pre>\n<pre><code class=\"language-bash\"># ptp4l: ordinary clock with hardware timestamping\nptp4l -2 -H -i eth0 -m --step_threshold=1.0\n\n# phc2sys: sync system clock to PHC\nphc2sys -s eth0 -c CLOCK_REALTIME --step_threshold=1.0 -m\n\n# Check sync status\npmc -u -b 0 'GET CURRENT_DATA_SET'\n\n# Measure offset from grandmaster\n# Target: &lt; 1 us offset in steady state</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Read PTP hardware clock via ioctl\n#include &lt;linux/ptp_clock.h&gt;\n\nint64_t readPhc(const char* dev) {\n    int fd = open(dev, O_RDONLY);\n    struct ptp_clock_time ts;\n    struct ptp_sys_offset sysoff = {};\n    ioctl(fd, PTP_SYS_OFFSET, &amp;sysoff);\n    // sysoff contains pairs of [system, phc, system] timestamps\n    int64_t phc_ns = sysoff.ts[1].sec * 1000000000LL + sysoff.ts[1].nsec;\n    close(fd);\n    return phc_ns;\n}</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "clock-synchronization"
+  ],
+  "type": "reference",
+  "toc": false
+}

@@ -1,0 +1,30 @@
+{
+  "id": "historical-vendors",
+  "title": "Historical Data Vendors & Quality",
+  "phase": 12,
+  "phaseName": "Data Engineering",
+  "category": "Data Engineering",
+  "subcategory": "data-engineering",
+  "language": "python",
+  "description": "TickData, OneTick, Dukascopy, Polygon, QuantHouse historical, Kibot — data quality differences, normalization, survivorship bias, corporate action adjustments, tick vs OHLCV tradeoffs for reliable HFT",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>TickData (US equities): best raw tick coverage since 2003; NBBO, trades, quotes in native TH5 format; export to CSV/Parquet; survivorship bias present — delisted securities dropped from monthly files unless explicitly requested (full corporate actions DB)</li>\n<li>OneTick: kdb+ compatible tick database; MS SQL backend; PQL query language inspired by q; used by top systematic funds; one-time license fee + annual maintenance; Python/PHP/REST APIs; can store thousands of symbols in a single database</li>\n<li>Dukascopy (forex): raw tick data for 50+ FX pairs; JForex API; 1-min bar granularity available; free 24-hr delayed, live requires funded account; known issue: tick data has occasional gaps during low-liquidity Asian session</li>\n<li>Polygon.io: REST & gRPC streaming; covers equities, options, futures, forex; corporate actions (splits/dividends) included in <code>aggs/bars</code> endpoint; real-time + historical with single API; gRPC for low-latency data access without WebSocket complexity</li>\n<li>Surveyorship bias: vendors remove delisted stocks from monthly snapshots; backtests that use current S&P 500 look fantastic but fail on historical constituents; must subscribe to full universe files + CRSP delisting returns</li>\n<li>Corporate action adjustments: split adjustment (multiply/dividide prices), dividend adjustment (subtract cash div from prev close), rights offering (dilution factor); unadjusted data introduces false arbitrage signals; split adjustment error of 1 tick per event compounds to 100+ ticks over 10 years</li>\n<li>Tick vs OHLCV: raw tick preserves every quote/trade (orders of magnitude larger), enables microstructure analysis; OHLCV bars (1-min, 5-min, daily) miss intrabar volatility and order-flow dynamics; use tick for strategy research, OHLCV for portfolio-level backtesting</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-python\"># Polygon historical data query (gRPC)\nimport grpc\nfrom polygon.grpc import aggs_pb2, aggs_pb2_grpc\n\nchannel = grpc.insecure_channel(&quot;grpc.polygon.io:443&quot;)\nstub = aggs_pb2_grpc.AggsStub(channel)\nreq = aggs_pb2.AggsRequest(\n    ticker=&quot;AAPL&quot;,\n    multiplier=1,\n    timespan=&quot;minute&quot;,\n    from_=&quot;2026-01-01&quot;,\n    to=&quot;2026-06-01&quot;\n)\nfor bar in stub.GetAggs(req):\n    # bar.open, bar.high, bar.low, bar.close, bar.volume\n    # bar.vwap, bar.transactions, bar.otc\n    pass\n\n# Survivorship bias check: compare backtest PnL using current SPX vs historical constituents\ndef asset_universe_at(date, vendor=&quot;tickdata&quot;):\n    # Query TickData for all securities listed on date\n    pass\n\n# Corporate action adjustment rule:\n# adjusted_close = close * split_factor - dividend_adjustment\n# split_factor = post_split_shares / pre_split_shares (e.g., 4-for-1 → 0.25)</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-python\"># Detect and correct survivorship bias in backtesting\nimport pandas as pd\nfrom datetime import date\n\ndef load_delisted_returns(start: date, end: date) -&gt; pd.DataFrame:\n    &quot;&quot;&quot;Load CRSP delisting returns for vanished tickers.&quot;&quot;&quot;\n    pass\n\ndef adjust_for_corp_actions(raw_df: pd.DataFrame) -&gt; pd.DataFrame:\n    &quot;&quot;&quot;Apply split and dividend adjustments to price series.&quot;&quot;&quot;\n    for event in raw_df.corp_actions:\n        if event.type == &quot;SPLIT&quot;:\n            ratio = float(event.data.split(&quot;/&quot;)[0]) / float(event.data.split(&quot;/&quot;)[1])\n            raw_df.loc[:event.date, [&quot;open&quot;,&quot;high&quot;,&quot;low&quot;,&quot;close&quot;]] /= ratio\n            raw_df.loc[:event.date, &quot;volume&quot;] *= ratio\n        elif event.type == &quot;DIVIDEND&quot;:\n            raw_df.loc[:event.date, [&quot;open&quot;,&quot;high&quot;,&quot;low&quot;,&quot;close&quot;]] -= event.amount\n    return raw_df</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "data-engineering"
+  ],
+  "type": "reference",
+  "toc": false
+}

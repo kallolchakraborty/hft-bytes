@@ -1,0 +1,30 @@
+{
+  "id": "security-architecture",
+  "title": "Security Architecture for Trading",
+  "phase": 14,
+  "phaseName": "Monitoring & Security",
+  "category": "Monitoring",
+  "subcategory": "monitoring",
+  "language": "cpp",
+  "description": "Network segmentation (DMZ, trading VLAN, admin VLAN, management VLAN), mTLS certificate rotation, SSH CA-based authentication, zero-trust principles for trading systems, secrets rotation with Vault, a",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Network segmentation: DMZ for exchange-facing connectivity (FIX gateways, market-data feeds), trading VLAN for strategy/OMS/SOR (low-latency, no encryption), admin VLAN (SSH, config, monitoring), management VLAN (IPMI, BMC). Firewalls between DMZ and trading VLAN only permit known ports/protocols</li>\n<li>mTLS certificate rotation: internal services use mutual TLS; short-lived certs (24h) issued by internal CA; auto-renew via cert-manager/ Vault; cert revocation list checked per connection; rotation must not add > 1us to connection setup</li>\n<li>SSH CA-based auth: no SSH keys distributed per-user; user certs signed by SSH CA; certs embed principal, expiry, source IP; revocation via CA cert reissue + cert list</li>\n<li>Zero-trust for trading: every service-to-service call authenticated and authorized; no implicit trust within trading VLAN; policy: service A can only call service B on specific port, no lateral movement</li>\n<li>Secrets rotation: credentials (exchange passwords, API keys, database passwords) rotated every 30 days; Vault dynamic secrets for databases (auto-expiring credentials); rotation must be live (no restart)</li>\n<li>Audit log tamper-proofing: logs written to append-only storage (WORM drive or cloud object lock); SHA-256 hash chain links consecutive log entries; integrity verified daily</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Network segmentation mapping (simplified)\n// VLAN 100 — Exchange DMZ (public IPs, FIX/market-data)\n//   → Gateways: TCP 9100-9199 (FIX), UDP 5000-5100 (MDP)\n// VLAN 200 — Trading (no outbound to internet)\n//   → Strategies, OMS, SOR, order-book handlers\n// VLAN 300 — Admin (SSH access only from jump box)\n//   → Jump box: SSH CA-signed certs only\n// VLAN 400 — Management (IPMI, iDRAC, BMC)\n//   → Isolated, no internet, VPN-only access\n\n// Secrets rotation via Vault (API)\nstruct SecretsManager {\n    std::string getSecret(const std::string&amp; path) {\n        // vault read -field=value secret/trading/exchange/cme_password\n        // Returns cached secret with expiry TTL\n        // On expiry (TTL &lt; 60s), re-read from Vault\n    }\n\n    void rotate() {\n        // For each secret:\n        // 1. Issue new secret in Vault (old still valid for overlap)\n        // 2. Update application config (live reload)\n        // 3. Verify new secret works\n        // 4. Revoke old secret in Vault\n    }\n};\n\n// Audit log entry with hash chain\nstruct AuditEntry {\n    uint64_t index_;\n    std::string payload_;       // JSON event\n    std::string prev_hash_;     // SHA-256 of previous entry\n    std::string hash_;          // SHA-256(prev_hash + payload)\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// mTLS certificate path (internal services)\n// ┌────────────┐     mTLS     ┌────────────┐\n// │ Strategy   │◄────────────►│ OMS        │\n// │ (client)   │              │ (server)   │\n// └────────────┘              └────────────┘\n// Each service has:\n//   /etc/certs/tls.crt   (signed by internal CA, valid 24h)\n//   /etc/certs/tls.key   (private key, 0600 perms)\n//   /etc/certs/ca.crt    (internal CA cert)\n\n// Access control policy (example):\n// allow strategy-oms-api if:\n//   source.service == &quot;strategy-es-mm&quot;\n//   dest.service == &quot;oms&quot;\n//   protocol == &quot;sbe&quot;\n//   port == 9001\n\n// SSH CA cert request:\n// $ ssh-keygen -s ca_key -I &quot;kallol&quot; -n &quot;kallol&quot; \\\n//     -V &quot;+52w&quot; -O source-address=10.0.0.0/8 \\\n//     /home/kallol/.ssh/id_ed25519.pub</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "operations"
+  ],
+  "type": "reference",
+  "toc": false
+}

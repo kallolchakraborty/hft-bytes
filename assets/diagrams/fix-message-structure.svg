@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">FIX Protocol — Message Structure &amp; NewOrderSingle</text>
+
+  <!-- FIX Message Layout -->
+  <rect x="30" y="70" width="940" height="200" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="50" y="92" font-size="12" font-weight="bold" fill="#FF1744">FIX Message = Tag=Value pairs delimited by SOH (0x01)</text>
+  <line x1="50" y1="98" x2="950" y2="98" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- Session layer -->
+  <rect x="50" y="110" width="920" height="36" rx="4" fill="#EDE9FE" stroke="#A855F7" stroke-width="1"/>
+  <text x="70" y="132" font-size="9" fill="#7E22CE">Session Layer (header)</text>
+  <text x="230" y="132" font-size="9" fill="#475569">8=</text>
+  <text x="260" y="132" font-size="9" fill="#A855F7">BeginString</text>
+  <text x="350" y="132" font-size="9" fill="#475569">| 9=</text>
+  <text x="380" y="132" font-size="9" fill="#A855F7">BodyLength</text>
+  <text x="480" y="132" font-size="9" fill="#475569">| 35=</text>
+  <text x="510" y="132" font-size="9" fill="#A855F7">MsgType</text>
+  <text x="580" y="132" font-size="9" fill="#475569">| 34=</text>
+  <text x="610" y="132" font-size="9" fill="#A855F7">MsgSeqNum</text>
+  <text x="720" y="132" font-size="9" fill="#475569">| 52=</text>
+  <text x="750" y="132" font-size="9" fill="#A855F7">SendingTime</text>
+
+  <!-- Application layer -->
+  <rect x="50" y="155" width="920" height="36" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="70" y="177" font-size="9" fill="#1E40AF">Application Layer (body)</text>
+  <text x="230" y="177" font-size="9" fill="#475569">55=</text>
+  <text x="260" y="177" font-size="9" fill="#3B82F6">Symbol</text>
+  <text x="330" y="177" font-size="9" fill="#475569">| 54=</text>
+  <text x="360" y="177" font-size="9" fill="#3B82F6">Side</text>
+  <text x="410" y="177" font-size="9" fill="#475569">| 38=</text>
+  <text x="440" y="177" font-size="9" fill="#3B82F6">OrderQty</text>
+  <text x="530" y="177" font-size="9" fill="#475569">| 44=</text>
+  <text x="560" y="177" font-size="9" fill="#3B82F6">Price</text>
+  <text x="630" y="177" font-size="9" fill="#475569">| 11=</text>
+  <text x="660" y="177" font-size="9" fill="#3B82F6">ClOrdID</text>
+  <text x="750" y="177" font-size="9" fill="#475569">| 40=</text>
+  <text x="780" y="177" font-size="9" fill="#3B82F6">OrdType</text>
+
+  <!-- Trailer -->
+  <rect x="50" y="200" width="920" height="30" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="70" y="219" font-size="9" fill="#B45309">Trailer</text>
+  <text x="150" y="219" font-size="9" fill="#475569">10=</text>
+  <text x="180" y="219" font-size="9" fill="#F59E0B">CheckSum (3 chars)</text>
+
+  <!-- Session Tags Detail -->
+  <rect x="30" y="285" width="460" height="145" rx="8" fill="#EDE9FE" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="50" y="307" font-size="12" font-weight="bold" fill="#7E22CE">Session Layer Tags</text>
+  <line x1="50" y1="313" x2="470" y2="313" stroke="#A855F7" stroke-width="0.5"/>
+  <text x="50" y="333" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Tag 8</tspan>  BeginString  → "FIX.4.4" (protocol version)</text>
+  <text x="50" y="351" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Tag 9</tspan>  BodyLength   → Length of body (chars after tag 9)</text>
+  <text x="50" y="369" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Tag 35</tspan>  MsgType      → "D"=NewOrder, "8"=ExecRpt, "F"=Cancel</text>
+  <text x="50" y="387" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Tag 34</tspan>  MsgSeqNum    → Monotonically increasing sequence</text>
+  <text x="50" y="405" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Tag 43</tspan>  PossDupFlag  → "Y" if retransmitted (gap fill)</text>
+  <text x="50" y="423" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Tag 52</tspan>  SendingTime  → UTC timestamp "YYYYMMDD-HH:MM:SS.sss"</text>
+
+  <!-- Application Tags Detail -->
+  <rect x="510" y="285" width="460" height="145" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="530" y="307" font-size="12" font-weight="bold" fill="#1E40AF">Application Layer Tags</text>
+  <line x1="530" y1="313" x2="950" y2="313" stroke="#3B82F6" stroke-width="0.5"/>
+  <text x="530" y="333" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#3B82F6">Tag 55</tspan>  Symbol       → "AAPL", "ESU4", "EUR/USD"</text>
+  <text x="530" y="351" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#3B82F6">Tag 54</tspan>  Side         → "1"=Buy, "2"=Sell, "5"=Sell Short</text>
+  <text x="530" y="369" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#3B82F6">Tag 38</tspan>  OrderQty     → Number of shares/contracts</text>
+  <text x="530" y="387" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#3B82F6">Tag 44</tspan>  Price        → Limit price (not used for MKT orders)</text>
+  <text x="530" y="405" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#3B82F6">Tag 11</tspan>  ClOrdID      → Client-generated unique order ID</text>
+  <text x="530" y="423" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#3B82F6">Tag 40</tspan>  OrdType      → "1"=Market, "2"=Limit, "3"=Stop</text>
+
+  <!-- Complete NewOrderSingle -->
+  <rect x="30" y="445" width="940" height="150" rx="8" fill="#1E293B"/>
+  <text x="50" y="465" font-size="10" font-weight="bold" fill="#94A3B8">Complete NewOrderSingle (MsgType=D) Message — Wire Format</text>
+  <text x="50" y="485" font-size="9" fill="#A855F7">8=FIX.4.4<tspan fill="#64748B">|</tspan>9=65<tspan fill="#64748B">|</tspan>35=D<tspan fill="#64748B">|</tspan>34=42<tspan fill="#64748B">|</tspan>49=HFT_BYTES<tspan fill="#64748B">|</tspan>56=BROKER<tspan fill="#64748B">|</tspan>52=20240610-14:30:00.123</text>
+  <text x="50" y="505" font-size="9" fill="#3B82F6">11=ORD001<tspan fill="#64748B">|</tspan>55=AAPL<tspan fill="#64748B">|</tspan>54=1<tspan fill="#64748B">|</tspan>38=100<tspan fill="#64748B">|</tspan>44=150.25<tspan fill="#64748B">|</tspan>40=2<tspan fill="#64748B">|</tspan>59=1<tspan fill="#64748B">|</tspan>60=20240610-14:30:00.124</text>
+  <text x="50" y="525" font-size="9" fill="#F59E0B">10=234</text>
+
+  <text x="50" y="548" font-size="10" fill="#22C55E">// Legend:  tag=value  separated by SOH (0x01) — shown as | for readability</text>
+  <text x="50" y="566" font-size="10" fill="#94A3B8">// 8=BeginString  9=BodyLength  35=MsgType  34=MsgSeqNum  49=SenderCompID  56=TargetCompID  52=SendingTime</text>
+  <text x="50" y="584" font-size="10" fill="#94A3B8">// 11=ClOrdID  55=Symbol  54=Side(1=Buy)  38=OrderQty  44=Price  40=OrdType(2=Limit)  59=TimeInForce  60=TransactTime  10=CheckSum</text>
+
+  <!-- FIX Engine Architecture -->
+  <rect x="30" y="610" width="940" height="120" rx="8" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="50" y="632" font-size="12" font-weight="bold" fill="#7E22CE">FIX Engine State Machine</text>
+  <line x1="50" y1="638" x2="950" y2="638" stroke="#A855F7" stroke-width="0.5"/>
+
+  <rect x="50" y="650" width="120" height="30" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="110" y="670" text-anchor="middle" font-size="9" fill="#1E40AF">Not Connected</text>
+  <text x="230" y="670" text-anchor="middle" font-size="14" fill="#A855F7">→</text>
+  <rect x="250" y="650" width="100" height="30" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="300" y="670" text-anchor="middle" font-size="9" fill="#166534">Logon Sent</text>
+  <text x="410" y="670" text-anchor="middle" font-size="14" fill="#A855F7">→</text>
+  <rect x="430" y="650" width="120" height="30" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1"/>
+  <text x="490" y="670" text-anchor="middle" font-size="9" fill="#166534">Session Active</text>
+  <text x="610" y="670" text-anchor="middle" font-size="14" fill="#A855F7">→</text>
+  <rect x="630" y="650" width="100" height="30" rx="4" fill="#FEE2E2" stroke="#EF4444" stroke-width="1"/>
+  <text x="680" y="670" text-anchor="middle" font-size="9" fill="#991B1B">Logout</text>
+  <text x="790" y="670" text-anchor="middle" font-size="14" fill="#A855F7">→</text>
+  <rect x="810" y="650" width="120" height="30" rx="4" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1"/>
+  <text x="870" y="670" text-anchor="middle" font-size="9" fill="#475569">Disconnected</text>
+
+  <text x="50" y="715" font-size="9" fill="#64748B">Session recovery: Gap fill (ResendRequest) → sequence number reset (Logon with ResetSeqNumFlag=Y) → replay from persistent store</text>
+</svg>

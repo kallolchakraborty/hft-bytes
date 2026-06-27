@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kallolchakraborty.github.io/hft-bytes/sitemap.xml

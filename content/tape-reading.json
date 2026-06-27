@@ -1,0 +1,31 @@
+{
+  "id": "tape-reading",
+  "title": "Tape Reading & Level 2 Data",
+  "phase": 9,
+  "phaseName": "Order Book & Microstructure",
+  "category": "Order Book",
+  "subcategory": "order-book",
+  "language": "cpp",
+  "description": "Reading the tape (time & sales), print vs quote analysis, large-order iceberg detection, spoofing/layering signal patterns, Level 2 ladder visualization, order flow imbalance in practice, and actionab",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Tape reading (time & sales): every print (execution) reveals aggressor side, size, price, timestamp; sequence of prints reveals momentum, absorption, and exhaustion</li>\n<li>Print vs quote analysis: compare print price against NBBO at time of execution; prints at the near side indicate aggressive buying/selling; prints inside the spread indicate patient liquidity taking</li>\n<li>Iceberg detection: large order hidden behind displayed size; signals: repeated fills at same price level with constant displayed size refresh; count displayed size × number of refresh cycles to estimate total</li>\n<li>Spoofing/layering signals: large orders at distant price levels that cancel before being tested; pattern: new large limit → market moves toward it → cancel before execution; high cancel-to-trade ratio</li>\n<li>Level 2 ladder: best bid/ask depth with cumulative size; key signals: bid size growing without price improvement (support), ask wall breaking (resistance), sudden depth disappearance (fake liquidity)</li>\n<li>Order flow imbalance (OFI): net aggressive volume at each price level; OFI > threshold predicts short-term price movement; used as input to market-making skew</li>\n<li>Actionable patterns: absorption (size eaten without price move = support/resistance), exhaustion (failed breakout after large prints), momentum failure (acceleration then rapid deceleration)</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Tape analysis: detect aggressive vs passive flow\nstruct TapePrint {\n    uint64_t ts_ns_;\n    double price_;\n    uint64_t size_;\n    Side aggressor_side_; // Buy = initiator bought (crossed spread)\n    bool is_passive() const { /* fill at or inside NBBO */ }\n};\n\nstruct IcebergDetector {\n    double price_level_;\n    uint64_t displayed_qty_;\n    uint64_t estimated_total_ = 0;\n    int refresh_count_ = 0;\n\n    void onFill(const TapePrint&amp; p) {\n        if (p.price_ == price_level_ &amp;&amp; p.size_ == displayed_qty_) {\n            refresh_count_++;\n            estimated_total_ += p.size_;\n            // Iceberg persists: same price, same displayed qty\n        }\n    }\n    bool is_iceberg() const { return refresh_count_ &gt;= 3; }\n};\n\n// Order flow imbalance\nstruct OFI {\n    double bid_size_added_, bid_size_cancelled_;\n    double ask_size_added_, ask_size_cancelled_;\n    double imbalance() const {\n        return (bid_size_added_ - bid_size_cancelled_) -\n               (ask_size_added_ - ask_size_cancelled_);\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Level 2 visualization data structure\nstruct L2Ladder {\n    struct Level {\n        double price_;\n        uint64_t bid_qty_;\n        uint64_t ask_qty_;\n        int bid_order_count_;\n        int ask_order_count_;\n    };\n    std::array&lt;Level, 10&gt; levels_; // 10 deep each side\n\n    // Support: cumulative bid size, Resistance: cumulative ask size\n    double support(size_t depth) const {\n        double total = 0;\n        for (size_t i = 0; i &lt; depth; ++i) total += levels_[i].bid_qty_;\n        return total;\n    }\n    double resistance(size_t depth) const {\n        double total = 0;\n        for (size_t i = 0; i &lt; depth; ++i) total += levels_[i].ask_qty_;\n        return total;\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "exchange-protocols",
+    "market-data"
+  ],
+  "type": "reference",
+  "toc": false
+}

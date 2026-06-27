@@ -1,0 +1,30 @@
+{
+  "id": "colo-deep-dive",
+  "title": "Co-Location Deep Dive",
+  "phase": 1,
+  "phaseName": "Foundations",
+  "category": "Foundations",
+  "subcategory": "foundations",
+  "language": "cpp",
+  "description": "Exchange-specific colocation halls, fiber path optimization, cross-connect pricing, cage selection vs matching engine location, microwave vs fiber, exchange colo RFP process, and multi-exchange colo s",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Exchange colo facilities: CME uses Equinix NY4/NY5 and Cermak (IL), Nasdaq uses NY11/Equinix NY4, Eurex uses Equinix FR2 (Frankfurt), ICE uses Equinix NY4 and LD4 (London)</li>\n<li>Cage positioning: distance to exchange matching engine cabinet determines fiber length; each meter of fiber adds ~5 ns one-way latency; choose cages on the same row/aisle as the exchange rack</li>\n<li>Cross-connect pricing: $500-2000/month per 10G/100G cross-connect; a typical firm has 4-8 cross-connects per exchange (primary A, primary B, backup A, backup B, admin)</li>\n<li>Fiber path: never use the exchange-provided patch panel if you can run direct fiber; each patch panel adds 1-3 us latency; use single-mode LC-LC direct fiber runs</li>\n<li>Microwave vs fiber: microwave (1-2 us/mile) beats fiber (8 us/mile) for long distances (> 20 miles); fiber at speed of light in glass ~5 us/km vs microwave ~3.3 us/km (air)</li>\n<li>Multi-exchange strategy: if trading CME + ICE + Nasdaq, choose a colo that minimizes aggregate latency (e.g., Equinix NY4 provides access to NYSE, Nasdaq, CME's NY feed, ICE's NY feed)</li>\n<li>Colo RFP: request specific rack row/aisle, power density (kW/rack), cross-connect type (10G/100G/400G), fiber path length guarantee, and PTP grandmaster proximity</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Latency budget for colo selection\nstruct ColoOption {\n    std::string facility_;\n    std::string provider_;\n    double fiber_length_meters_;  // to exchange matching engine\n    int patch_panel_count_;\n    bool ptp_available_;\n\n    double estimated_one_way_us() const {\n        double fiber_ns = fiber_length_meters_ * 5.0;  // ~5 ns/m in fiber\n        double patch_ns = patch_panel_count_ * 1000;   // ~1 us per patch panel\n        return (fiber_ns + patch_ns) / 1000.0;\n    }\n};\n\n// Exchange colo quick reference\n// Exchange | Facility             | Row/Area          | PTP\n// ---------+----------------------+-------------------+------\n// CME      | Equinix NY4          | CME Cermak PoP   |  Yes\n// CME      | Equinix Cermak (IL) | Matching Engine   |  Yes\n// Nasdaq   | Equinix NY4 / NY11   | Nasdaq cage area  |  Yes\n// NYSE     | Equinix NY4          | NYSE MAK area     |  Yes\n// Eurex    | Equinix FR2          | Eurex T7 room     |  Yes\n// ICE      | Equinix NY4 / LD4   | ICE gateway       |  Yes</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Fiber path optimisation checklist\n// 1. Confirm cross-connect length in writing from colo provider\n// 2. Measure RTT to exchange gateway (ping with hardware timestamp)\n// 3. Baseline: RTT should be within 10% of 2 * fiber_length * 5 ns/m\n// 4. If RTT &gt; expected + 5 us, check for patch panels or signal regen\n// 5. Request direct光纤 route bypassing colo middle-of-row (MOR) switch\n\n// Cross-connect order form fields\n// struct CrossConnectOrder {\n//     std::string exchange_;\n//     std::string colo_facility_;\n//     std::string cage_id_;\n//     std::string rack_id_;\n//     std::string port_type_;   // 10GBASE-LR, 100GBASE-LR4\n//     std::string destination_; // exchange cage/rack/port\n//     double expected_rtt_us_;\n//     bool ptp_sync_required_;\n// };</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "infrastructure"
+  ],
+  "type": "reference",
+  "toc": false
+}

@@ -1,0 +1,30 @@
+{
+  "id": "wait-free-hazard-pointers",
+  "title": "Wait-Free Hazard Pointers",
+  "phase": 3,
+  "phaseName": "C++ Low-Latency Patterns",
+  "category": "C++ Low-Latency Patterns",
+  "subcategory": "cpp-patterns",
+  "language": "cpp",
+  "description": "Hazard pointers protect objects being read by one thread while another thread reclaims them. Wait-free publication via atomic exchange. Epoch-based reclamation and RCU are alternatives.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Hazard pointers solve the safe-reclamation problem: thread A reads a pointer while thread B wants to delete it</li>\n<li>Each reader thread publishes the pointer it currently reads in a per-slot hazard pointer array</li>\n<li>Before deletion, a thread scans all hazard pointers; if the pointer is not among them, it is safe to reclaim</li>\n<li>ABA problem prevention: hazard pointers ensure no node is reused while a reader references it</li>\n<li>Epoch-based reclamation (EBR) is faster but less flexible; RCU is best for read-mostly workloads</li>\n<li>Wait-free publication: atomic exchange on the head pointer enables lock-free push without CAS retry</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">#include &lt;atomic&gt;\n#include &lt;array&gt;\n#include &lt;functional&gt;\n\ntemplate&lt;typename T&gt;\nclass HazardPointerOwner;\n\ntemplate&lt;typename T&gt;\nclass HazardPointerDomain {\n    static constexpr size_t MAX_THREADS = 64;\n    std::array&lt;std::atomic&lt;T*&gt;, MAX_THREADS&gt; hazard_{};\npublic:\n    friend class HazardPointerOwner&lt;T&gt;;\n\n    // Retire a node for later reclamation\n    void retire(T* ptr, std::function&lt;void(T*)&gt; deleter) {\n        // In production: push to a per-thread retired list,\n        // scan hazard pointers, delete if safe\n        if (!isHazardous(ptr)) {\n            deleter(ptr);\n        }\n    }\n\nprivate:\n    bool isHazardous(T* ptr) {\n        for (auto&amp; h : hazard_) {\n            if (h.load(std::memory_order_acquire) == ptr)\n                return true;\n        }\n        return false;\n    }\n};\n\ntemplate&lt;typename T&gt;\nclass HazardPointerOwner {\n    std::atomic&lt;T*&gt;&amp; slot_;\npublic:\n    explicit HazardPointerOwner(HazardPointerDomain&lt;T&gt;&amp; domain, size_t slot)\n        : slot_(domain.hazard_[slot]) {}\n\n    // Publish a pointer as currently in use\n    void protect(T* ptr) {\n        slot_.store(ptr, std::memory_order_release);\n    }\n\n    // Clear hazard pointer when done\n    void reset() {\n        slot_.store(nullptr, std::memory_order_release);\n    }\n};\n\n// Wait-free stack with hazard-pointer safe reclamation\ntemplate&lt;typename T&gt;\nclass WaitFreeStack {\n    struct Node { T value; Node* next; };\n    std::atomic&lt;Node*&gt; head_{nullptr};\n    HazardPointerDomain&lt;Node&gt; hpDomain_;\n\npublic:\n    void push(T val) {\n        Node* node = new Node{std::move(val), nullptr};\n        // Wait-free publication: exchange does not retry\n        node-&gt;next = head_.exchange(node, std::memory_order_release);\n    }\n\n    bool pop(T&amp; out) {\n        // Using hazard pointers: read head, protect it,\n        // verify it hasn't changed, then update\n        return false; // simplified; full implementation in source\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Full hazard pointer implementation with batch reclamation\n// and thread-local retired lists is ~200 lines.\n// Key tuning: retired list threshold (e.g., 1000 nodes) triggers scan.</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "lock-free"
+  ],
+  "type": "reference",
+  "toc": false
+}

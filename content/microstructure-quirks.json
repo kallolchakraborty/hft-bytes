@@ -1,0 +1,30 @@
+{
+  "id": "microstructure-quirks",
+  "title": "Exchange Microstructure Quirks",
+  "phase": 8,
+  "phaseName": "Exchange Architecture",
+  "category": "Exchange Architecture",
+  "subcategory": "exchange-architecture",
+  "language": "cpp",
+  "description": "Exchange-specific edge cases: CME calendar spread implied pricing with butterflies, Nasdaq Nordic vs US market model differences, ICE block trade minimum sizes, Eurex T7 entry service login timing, LS",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>CME calendar spread implied pricing: 3-legged butterfly (e.g., ESZ6-ESH7-ESM7) creates complex implied IN/OUT chains; a fill on one leg of a butterfly can trigger implied orders on 3 different outright books simultaneously; partial fills on multi-leg spreads can leave orphaned implied orders</li>\n<li>Nasdaq Nordic vs US: Nordic markets (Stockholm, Copenhagen, Helsinki) use a different market model — auction-only for 30 minutes at open, continuous trading with volatility auctions, and different order types than Nasdaq US; INET order book vs Genium INET transition quirks</li>\n<li>ICE block trade mechanics: minimum block size varies by product (e.g., 50 lots for Brent vs 10 for Gasoil) and changes intraday relative to market conditions; block trade reporting deadline is 3 minutes in most ICE products (vs 5 min for Eurex)</li>\n<li>Eurex T7 entry service: mandatory GapFill before trading after reconnection; exchange sends all missed messages since last seqno; firm must process GapFill before sending any new orders — trading during GapFill is a regulatory violation</li>\n<li>LSE SETSqx: periodic auction book for less liquid securities; auctions run every 10-60 minutes depending on symbol; no continuous trading during auction periods; order types differ from SETS (continuous) — no icebergs, no pegged orders in SETSqx</li>\n<li>CME STP (Straight-Through Processing) flag: exchange rejects orders with invalid STP flag combinations; STP = 1 (self-match prevention), STP = 2 (different accounts), STP = 3 (same account, different sub-account); wrong STP flag causes silent rejection</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// CME implied pricing chain example\n// Given outright books:\n// Near:  Bid(4521.00) Ask(4521.50)\n// Far:   Bid(4518.00) Ask(4518.50)\n// Calendar spread implied: Bid(2.50) Ask(3.50)\n// Butterfly implied from: Near - Mid(2) + Far\nstruct ImpliedChain {\n    bool isButterfly() const;\n    // Edge case: butterfly fill on leg 1 may imply\n    // 2 separate calendar spreads simultaneously\n};\n\n// Eurex T7 reconnection flow:\n// 1. Connect TCP → send Logon\n// 2. Receive Logon Ack + sequence number\n// 3. Exchange sends GapFill (all missed messages)\n// 4. Wait for GapFillEnd message\n// 5. Only then send ResendRequest (if gaps remain) or start trading\n// ⚠ Sending orders before step 4 = violation\n\n// ICE block trade minimum size check:\nstruct ICEBlockCheck {\n    bool isBlockEligible(uint64_t qty, const std::string&amp; product) {\n        // Block minimum: Brent=50, Gasoil=10, WTI=25, NatGas=10\n        // Thresholds can change intraday based on OI\n        static const std::unordered_map&lt;std::string, int&gt; MIN_BLOCK = {\n            {&quot;B&quot;, 50}, {&quot;QG&quot;, 10}, {&quot;CL&quot;, 25}, {&quot;NG&quot;, 10}\n        };\n        return qty &gt;= MIN_BLOCK.at(product);\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// CME STP flag handling\n// enum STP_FLAG { SELF=1, ACCOUNT=2, SUB_ACCOUNT=3 };\n// // STP=SELF: prevents matching own orders in same account\n// // STP=ACCOUNT: prevents matching across accounts in same firm\n// // STP=SUB_ACCT: prevents matching within sub-accounts\n// // Wrong flag → exchange rejects with &quot;InvalidSTPFlag&quot; (371=118)\n\n// Nasdaq Nordic volatility auction parameters:\n// Stock:  Static Price Range (5-20%), Dynamic Price Range (2-10%)\n// Auction: 5 min duration, no order cancellation in last 30s</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "exchange-protocols"
+  ],
+  "type": "reference",
+  "toc": false
+}

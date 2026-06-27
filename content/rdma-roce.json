@@ -1,0 +1,30 @@
+{
+  "id": "rdma-roce",
+  "title": "RDMA & RoCE",
+  "phase": 4,
+  "phaseName": "System Programming & IPC",
+  "category": "System Programming & IPC",
+  "subcategory": "system-programming",
+  "language": "cpp",
+  "description": "Remote Direct Memory Access bypasses the kernel for ultra-low-latency data transfer. RoCE v2 encapsulates InfiniBand verbs over Ethernet. ibverbs API for one-sided reads/writes.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>RDMA bypasses the kernel networking stack entirely: zero-copy, no context-switch, no syscall on data path</li>\n<li>Verbs API: ibv_open_device, ibv_alloc_pd, ibv_create_cq, ibv_create_qp, ibv_post_send/recv, ibv_poll_cq</li>\n<li>One-sided operations (READ/WRITE) access remote memory without remote CPU involvement; atomic operations (CAS/FAA) for distributed data structures</li>\n<li>Two-sided operations (SEND/RECV) involve both sides; lower latency than TCP but require remote CPU</li>\n<li>RoCE v2 runs over standard Ethernet fabric (UDP port 4791); requires PFC (Priority Flow Control) for lossless transport</li>\n<li>RoCE congestion control: DCQCN (Data Center Quantised Congestion Notification) for fabric fairness</li>\n<li>ibv_wr semantics: WR (Work Request) submitted via post_send/post_recv, completion polled from CQ</li>\n<li>Registration: ibv_reg_mr pins memory pages and creates memory region for DMA access</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">#include &lt;infiniband/verbs.h&gt;\n#include &lt;vector&gt;\n\nstruct RdmaEndpoint {\n    ibv_context*  ctx = nullptr;\n    ibv_pd*       pd  = nullptr;\n    ibv_cq*       cq  = nullptr;\n    ibv_qp*       qp  = nullptr;\n    ibv_mr*       mr  = nullptr;\n    void*         buf = nullptr;\n    size_t        buf_size = 1'000'000;\n\n    bool init(const char* dev_name = &quot;mlx5_0&quot;) {\n        int dev_count = 0;\n        ibv_device** dev_list = ibv_get_device_list(&amp;dev_count);\n        if (!dev_count) return false;\n\n        ctx = ibv_open_device(dev_list[0]);\n        pd  = ibv_alloc_pd(ctx);\n        cq  = ibv_create_cq(ctx, 1024, nullptr, nullptr, 0);\n\n        ibv_qp_init_attr qp_attr = {};\n        qp_attr.send_cq = cq;\n        qp_attr.recv_cq = cq;\n        qp_attr.qp_type = IBV_QPT_RC;  // Reliable Connection\n        qp_attr.cap.max_send_wr  = 128;\n        qp_attr.cap.max_recv_wr  = 128;\n        qp_attr.cap.max_send_sge = 1;\n        qp_attr.cap.max_recv_sge = 1;\n        qp = ibv_create_qp(pd, &amp;qp_attr);\n\n        buf = aligned_alloc(4096, buf_size);\n        mr  = ibv_reg_mr(pd, buf, buf_size,\n                         IBV_ACCESS_LOCAL_WRITE |\n                         IBV_ACCESS_REMOTE_READ |\n                         IBV_ACCESS_REMOTE_WRITE);\n        return true;\n    }\n\n    // One-sided RDMA read (pulls data from remote memory)\n    void rdmaRead(uint64_t remote_addr, uint32_t rkey, size_t len) {\n        ibv_sge sge = { (uint64_t)buf, (uint32_t)len, mr-&gt;lkey };\n        ibv_send_wr wr = {};\n        wr.wr_id = 1;\n        wr.opcode = IBV_WR_RDMA_READ;\n        wr.num_sge = 1;\n        wr.sg_list = &amp;sge;\n        wr.wr.rdma.remote_addr = remote_addr;\n        wr.wr.rdma.rkey = rkey;\n\n        ibv_send_wr* bad = nullptr;\n        ibv_post_send(qp, &amp;wr, &amp;bad);\n        // Poll CQ for completion\n    }\n\n    ~RdmaEndpoint() {\n        if (qp)  ibv_destroy_qp(qp);\n        if (cq)  ibv_destroy_cq(cq);\n        if (mr)  ibv_dereg_mr(mr);\n        if (pd)  ibv_dealloc_pd(pd);\n        if (ctx) ibv_close_device(ctx);\n        if (buf) free(buf);\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// In HFT: RDMA used for synchronising order-book snapshots\n// between primary and backup trading engines (&lt; 5 us latency)\n// QP (Queue Pair) setup requires connection establishment\n// via TCP out-of-band exchange of QP numbers and keys</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "rdma"
+  ],
+  "type": "reference",
+  "toc": false
+}

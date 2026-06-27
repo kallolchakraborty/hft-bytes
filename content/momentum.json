@@ -1,0 +1,30 @@
+{
+  "id": "momentum",
+  "title": "Momentum",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Phase 10 - Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "cpp",
+  "description": "Time-series momentum: long if return over lookback > 0. Cross-sectional momentum: rank assets by return, long top, short bottom",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Time-series momentum: long if return over lookback > 0</li>\n<li>Cross-sectional momentum: rank assets by return, long top, short bottom</li>\n<li>Mean reversion with Bollinger Bands: z-score > 2 → fade the move</li>\n<li>Ornstein-Uhlenbeck process: estimate θ (mean reversion speed), μ (mean), σ</li>\n<li>Holding period optimization via signal decay estimation</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>MomentumSignal sig(/<em> lookback= </em>/ 20);</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">*   for (auto px : prices) { sig.update(px); auto s = sig.signal(); }\n *\n * PERFORMANCE TARGET:\n *   signal generation &lt; 100 ns per tick\n * ====================================================================\n */\n\n#include &lt;vector&gt;\n#include &lt;numeric&gt;\n#include &lt;cmath&gt;\n\nclass MomentumSignal {\n    int lookback_;\n    std::vector&lt;double&gt; returns_;  // rolling window\n\npublic:\n    explicit MomentumSignal(int lb) : lookback_(lb) {\n        returns_.reserve(lookback_ + 1);\n    }\n\n    void update(double price) {\n        if (!returns_.empty()) {\n            double ret = std::log(price / last_price_);\n            returns_.push_back(ret);\n            if (returns_.size() &gt; lookback_)\n                returns_.erase(returns_.begin());\n        }\n        last_price_ = price;\n    }\n\n    // time-series momentum: +1 if positive trend, -1 if negative, 0 if flat\n    int signal(double threshold = 0.0) {\n        double avg = std::accumulate(returns_.begin(), returns_.end(), 0.0)\n                     / std::max(returns_.size(), size_t(1));\n        return (avg &gt; threshold) ? 1 : (avg &lt; -threshold) ? -1 : 0;\n    }\n\n    // cross-sectional rank signal (call across many instruments)\n    static double rankSignal(double instrument_return,\n                             const std::vector&lt;double&gt;&amp; all_returns) {\n        // tradeoff: O(n log n) per bar — fine for &lt; 5000 instruments\n        int rank = 1;\n        for (auto r : all_returns)\n            if (instrument_return &gt; r) ++rank;\n        return 2.0 * rank / all_returns.size() - 1.0;  // [-1, 1]\n    }\n\nprivate:\n    double last_price_{0.0};\n};\n\n// --------------------------------------------------------------------\n// Ornstein-Uhlenbeck Mean Reversion\n\nclass OUMeanReversion {\n    double theta_, mu_, sigma_;  // OU parameters\n    double dt_{1.0};\n    double prev_price_;\n\npublic:\n    explicit OUMeanReversion(double dt = 1.0) : dt_(dt) {}\n\n    void estimateParameters(const std::vector&lt;double&gt;&amp; prices) {\n        // Simplified MLE for OU process (Bergstrom 1990 approximation)\n        // dX = θ(μ - X)dt + σdW\n        int n = prices.size() - 1;\n        double sum_xy = 0, sum_x = 0, sum_y = 0, sum_xx = 0;\n\n        for (int i = 0; i &lt; n; ++i) {\n            double x = prices[i];\n            double y = prices[i+1] - prices[i];  // ΔX\n            sum_xy += x * y;\n            sum_x  += x;\n            sum_y  += y;\n            sum_xx += x * x;\n        }\n        // θ̂ = - (n*sum_xy - sum_x*sum_y) / (n*sum_xx - sum_x*sum_x) / dt\n        double denom = n * sum_xx - sum_x * sum_x;\n        if (std::abs(denom) &lt; 1e-12) { theta_ = 1e-6; return; }\n        theta_ = -(n * sum_xy - sum_x * sum_y) / denom / dt_;\n    }\n\n    double zScore(double current_price) {\n        double dev = current_price - mu_;\n        return dev / (sigma_ / std::sqrt(2.0 * theta_));\n    }\n\n    int signal(double current_price, double entry_z = 2.0) {\n        double z = zScore(current_price);\n        if (z &gt; entry_z)  return -1;  // overbought → short\n        if (z &lt; -entry_z) return  1;  // oversold  → long\n        return 0;\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "phase-10"
+  ],
+  "type": "reference",
+  "toc": false
+}

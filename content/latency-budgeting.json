@@ -1,0 +1,30 @@
+{
+  "id": "latency-budgeting",
+  "title": "Latency Budgeting",
+  "phase": 1,
+  "phaseName": "Foundations",
+  "category": "Foundations",
+  "subcategory": "foundations",
+  "language": "cpp",
+  "description": "End-to-end latency decomposition: NIC ~1 us, kernel bypass ~2 us, parser ~1 us, book update ~0.5 us, strategy ~1 us, OMS ~0.5 us, FIX encode ~1 us, NIC transmit ~1 us. Hardware timestamping for measur",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>End-to-end latency budget for a typical HFT round trip: 8-15 us total; any stage exceeding its allocation creates systemic delay</li>\n<li>Budget breakdown (greensheet targets): NIC DMA + kernel bypass ~1 us, parsing ~1 us, order-book update ~0.5 us, strategy ~1 us, OMS + FIX ~1.5 us, NIC transmit ~1 us</li>\n<li>Measurement methodology: hardware timestamps (PTP PHC) at wire, RDTSC at application boundaries, correlated via seqno</li>\n<li>Key insight: 1 microsecond of added latency costs ~100-1000 USD/month in lost alpha for a typical MM desk</li>\n<li>Each cache miss (LLC) adds ~100 ns, each context switch adds ~5 us, each syscall adds ~1-5 us</li>\n<li>Profiling tools: perf stat for hardware counters, bpftrace for kernel-boundary tracing, RDTSC for in-process sampling</li>\n<li>Tail latency: p99 = p50 <em> 2-3x in well-tuned systems; p99.9 = p50 </em> 5-10x; monitor p99.9 for outlier events</li>\n<li>Headroom: keep stage utilisation below 70% to avoid queuing delay amplification (Little's Law: queue_depth = utilisation / (1 - utilisation))</li>\n</ul>\n<div class=\"mermaid-wrapper\"><pre class=\"mermaid\">graph LR\n    RX[&quot;NIC RX + DMA&lt;br/&gt;~1.0 μs&quot;] --&gt; KP[&quot;Kernel Bypass&lt;br/&gt;~1.5 μs&quot;]\n    KP --&gt; Parse[&quot;Protocol Parse&lt;br/&gt;~1.0 μs&quot;]\n    Parse --&gt; Book[&quot;Order-Book Update&lt;br/&gt;~0.5 μs&quot;]\n    Book --&gt; Strat[&quot;Strategy Logic&lt;br/&gt;~1.0 μs&quot;]\n    Strat --&gt; OMS[&quot;OMS + FIX Encode&lt;br/&gt;~1.5 μs&quot;]\n    OMS --&gt; TX[&quot;NIC TX&lt;br/&gt;~1.0 μs&quot;]\n    TX --&gt; Result[&quot;Total: ~7.5 μs&lt;br/&gt;Greensheet: 6.0 μs&quot;]\n\n    style RX fill:#1e40af,color:#fff\n    style KP fill:#1e3a5f,color:#93c5fd\n    style Parse fill:#2e1f6e,color:#a5b4fc\n    style Book fill:#3b1f6e,color:#c4b5fd\n    style Strat fill:#5b1f3e,color:#f9a8d4\n    style OMS fill:#5b2a1f,color:#fdba74\n    style TX fill:#92400e,color:#fde68a\n    style Result fill:#047857,color:#fff</pre></div>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Latency measurement with hardware timestamps\n#include &lt;time.h&gt;\n#include &lt;linux/net_tstamp.h&gt;\n#include &lt;sys/socket.h&gt;\n\nstruct LatencyBudget {\n    // Target nanoseconds per stage\n    static constexpr uint64_t NIC_RX     = 1000;   // 1 us\n    static constexpr uint64_t PARSE      = 1000;   // 1 us\n    static constexpr uint64_t BOOK_UPDATE = 500;    // 0.5 us\n    static constexpr uint64_t STRATEGY   = 1000;   // 1 us\n    static constexpr uint64_t OMS_FIX    = 1500;   // 1.5 us\n    static constexpr uint64_t NIC_TX     = 1000;   // 1 us\n    static constexpr uint64_t TOTAL      = 6000;   // 6 us (greensheet)\n\n    static void report(uint64_t measured_ns, uint64_t budget_ns,\n                       const char* stage) {\n        double ratio = static_cast&lt;double&gt;(measured_ns) / budget_ns;\n        if (ratio &gt; 1.0) {\n            fprintf(stderr, &quot;OVER BUDGET: %s %.1f us (budget %.1f us, x%.1f)\\n&quot;,\n                    stage, measured_ns / 1000.0, budget_ns / 1000.0, ratio);\n        }\n    }\n};\n\n// RDTSC-based stage timer\nstatic inline uint64_t rdtscp() {\n    uint32_t lo, hi;\n    asm volatile(&quot;rdtscp&quot; : &quot;=a&quot;(lo), &quot;=d&quot;(hi) :: &quot;ecx&quot;);\n    return ((uint64_t)hi &lt;&lt; 32) | lo;\n}\n\nstruct StageTimer {\n    const char* name_;\n    uint64_t budget_ns_;\n    uint64_t tsc_hz_ = 2.6e9;  // measure at init via /proc/cpuinfo\n    uint64_t start_ = rdtscp();\n    ~StageTimer() {\n        uint64_t elapsed_cycles = rdtscp() - start_;\n        uint64_t elapsed_ns = elapsed_cycles * 1'000'000'000 / tsc_hz_;\n        LatencyBudget::report(elapsed_ns, budget_ns_, name_);\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Hardware timestamping on receive\n// recvmsg with SO_TIMESTAMPING flag returns\n// hardware timestamp in cmsg ancillary data\nstruct msghdr msg = {};\nstruct iovec iov = {buf, len};\nmsg.msg_iov = &amp;iov;\nmsg.msg_iovlen = 1;\nchar ctrl[64];\nmsg.msg_control = ctrl;\nmsg.msg_controllen = sizeof(ctrl);\n\nrecvmsg(sock, &amp;msg, 0);\nstruct cmsghdr* cmsg = CMSG_FIRSTHDR(&amp;msg);\n// Search for SCM_TIMESTAMPING_OPT_STATS to get hw timestamp</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

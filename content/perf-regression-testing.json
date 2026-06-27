@@ -1,0 +1,30 @@
+{
+  "id": "perf-regression-testing",
+  "title": "Performance Regression Testing",
+  "phase": 15,
+  "phaseName": "Testing & Production",
+  "category": "Testing & Production",
+  "subcategory": "testing-production",
+  "language": "cpp",
+  "description": "Automated latency gates in CI/CD, A/B latency tests with statistical significance, micro-regression detection, production canary analysis, hardware-counter profiling in test pipelines, and golden-late",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>CI/CD performance gate: every PR triggers a latency benchmark suite (median, p99, p99.9); regression > 5% auto-rejects the PR; uses dedicated benchmark hardware (same SKU as prod)</li>\n<li>A/B latency testing: deploy new binary on shadow core alongside production; compare latency histograms; Kolmogorov–Smirnov test for distribution difference at 99% confidence</li>\n<li>Micro-regression detection: track cycle-level changes via RDTSC snapshots at pipeline stage boundaries; flag stages where mean cycle count drifts > 2 sigma from baseline</li>\n<li>Production canary: deploy new version on 1 of N cores; compare order latency, market-data processing latency, and order-to-trade ratio; rollback if any metric degrades</li>\n<li>Hardware-counter profiling in CI: capture <code>perf stat</code> counters (L1 miss rate, LLC miss rate, branch mispredict, IPC) for each benchmark; compare against golden profile</li>\n<li>Golden latency baseline: store per-stage latency histograms in git-lfs; CI compares PR histogram to baseline with Mann-Whitney U test</li>\n<li>Statistical significance: benchmark must run minimum <code>n</code> iterations for power (typically > 10k samples per metric); warm-up cache before measurement; detect outlier runs via IQR</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Benchmark harness for latency regression detection\nstruct PerfRegression {\n    static constexpr size_t MIN_SAMPLES = 10'000;\n    static constexpr double REGRESSION_THRESHOLD = 0.05; // 5%\n\n    std::vector&lt;uint64_t&gt; baseline_;\n    std::vector&lt;uint64_t&gt; candidate_;\n\n    bool detectRegression(const std::vector&lt;uint64_t&gt;&amp; new_samples) {\n        double base_median = percentile(baseline_, 50);\n        double cand_median = percentile(new_samples, 50);\n        double rel_change = (cand_median - base_median) / base_median;\n        // Mann-Whitney U test for statistical significance\n        double p = mannWhitneyU(baseline_, new_samples);\n        return std::abs(rel_change) &gt; REGRESSION_THRESHOLD &amp;&amp; p &lt; 0.01;\n    }\n\n    // Hardware counter baseline check\n    struct PerfCounters {\n        double ipc_;\n        double l1_miss_rate_;\n        double llc_miss_rate_;\n        double branch_mispredict_rate_;\n    };\n\n    bool checkCounters(const PerfCounters&amp; golden, const PerfCounters&amp; now) {\n        return (now.l1_miss_rate_ &lt; golden.l1_miss_rate_ * 1.1 &amp;&amp;   // max 10% degradation\n                now.llc_miss_rate_ &lt; golden.llc_miss_rate_ * 1.1 &amp;&amp;\n                now.ipc_ &gt; golden.ipc_ * 0.95);\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// CI benchmark invocation (Makefile target)\n// bench-latency:\n//     taskset -c 2 ./build/bench/order_book_bench --samples 50000\n//     python3 scripts/compare_latency.py \\\n//         --baseline ./baselines/latest.json \\\n//         --candidate /tmp/bench_output.json \\\n//         --threshold 0.05\n\n// Golden baseline stored as JSON:\n// {\n//   &quot;median_ns&quot;: 425,\n//   &quot;p99_ns&quot;: 1280,\n//   &quot;p99.9_ns&quot;: 3400,\n//   &quot;ipc&quot;: 2.8,\n//   &quot;l1_miss_pct&quot;: 1.2,\n//   &quot;branch_mispredict_pct&quot;: 0.8,\n//   &quot;timestamp&quot;: &quot;2026-06-27T03:20:00Z&quot;,\n//   &quot;cpu_model&quot;: &quot;Intel Xeon Platinum 8480+&quot;\n// }</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "testing"
+  ],
+  "type": "reference",
+  "toc": false
+}

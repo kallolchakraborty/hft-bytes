@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FF1744"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">Market Making Loop — Core Engine Flow</text>
+
+  <!-- Main loop -->
+  <rect x="30" y="70" width="940" height="450" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">Market Maker Decision Loop</text>
+  <line x1="50" y1="98" x2="950" y2="98" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- Box 1: Market Data In -->
+  <rect x="350" y="110" width="300" height="50" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="500" y="132" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">Market Data In</text>
+  <text x="500" y="148" text-anchor="middle" font-size="8" fill="#64748B">LOB updates, trades, order imbalances</text>
+
+  <!-- Arrow down -->
+  <line x1="500" y1="160" x2="500" y2="185" stroke="#FF1744" stroke-width="1.5"/>
+  <polygon points="493,183 500,190 507,183" fill="#FF1744"/>
+
+  <!-- Box 2: Signal Processing -->
+  <rect x="350" y="190" width="300" height="50" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="500" y="212" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">Signal Processing</text>
+  <text x="500" y="228" text-anchor="middle" font-size="8" fill="#64748B">Micro-price, imbalance, volatility, order flow</text>
+
+  <line x1="500" y1="240" x2="500" y2="265" stroke="#FF1744" stroke-width="1.5"/>
+  <polygon points="493,263 500,270 507,263" fill="#FF1744"/>
+
+  <!-- Box 3: Price Calculation -->
+  <rect x="350" y="270" width="300" height="50" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="500" y="292" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309">Price Calculation</text>
+  <text x="500" y="308" text-anchor="middle" font-size="8" fill="#64748B">Bid/ask skew, spread, inventory adjustment</text>
+
+  <line x1="500" y1="320" x2="500" y2="345" stroke="#FF1744" stroke-width="1.5"/>
+  <polygon points="493,343 500,350 507,343" fill="#FF1744"/>
+
+  <!-- Box 4: Quote Generation -->
+  <rect x="350" y="350" width="300" height="50" rx="6" fill="#EDE9FE" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="500" y="372" text-anchor="middle" font-size="11" font-weight="bold" fill="#7E22CE">Quote Generation</text>
+  <text x="500" y="388" text-anchor="middle" font-size="8" fill="#64748B">Limit orders at calculated prices + sizes</text>
+
+  <line x1="500" y1="400" x2="500" y2="425" stroke="#FF1744" stroke-width="1.5"/>
+  <polygon points="493,423 500,430 507,423" fill="#FF1744"/>
+
+  <!-- Box 5: Risk Check -->
+  <rect x="350" y="430" width="300" height="50" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="500" y="452" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">Risk Check</text>
+  <text x="500" y="468" text-anchor="middle" font-size="8" fill="#64748B">Position limits, credit, fat-finger, rate limits</text>
+
+  <!-- Right branch: Send to Exchange -->
+  <line x1="650" y1="455" x2="730" y2="455" stroke="#FF1744" stroke-width="1.5"/>
+  <polygon points="728,448 735,455 728,462" fill="#FF1744"/>
+
+  <rect x="735" y="430" width="220" height="50" rx="6" fill="#FFEBEE" stroke="#FF1744" stroke-width="1.5"/>
+  <text x="845" y="452" text-anchor="middle" font-size="11" font-weight="bold" fill="#FF1744">Send to Exchange</text>
+  <text x="845" y="468" text-anchor="middle" font-size="8" fill="#64748B">FIX/SBE order entry → iLink/ETI/ICE</text>
+
+  <line x1="845" y1="480" x2="845" y2="505" stroke="#FF1744" stroke-width="1.5"/>
+  <polygon points="838,503 845,510 852,503" fill="#FF1744"/>
+
+  <!-- Box: Fill/Cancel -->
+  <rect x="735" y="510" width="220" height="50" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="845" y="532" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309">Fill / Cancel</text>
+  <text x="845" y="548" text-anchor="middle" font-size="8" fill="#64748B">Execution reports, drop copy, cancels</text>
+
+  <line x1="845" y1="560" x2="845" y2="585" stroke="#FF1744" stroke-width="1.5"/>
+  <polygon points="838,583 845,590 852,583" fill="#FF1744"/>
+
+  <!-- Box: Position Update -->
+  <rect x="735" y="590" width="220" height="50" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="845" y="612" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">Position Update</text>
+  <text x="845" y="628" text-anchor="middle" font-size="8" fill="#64748B">Inventory + P&amp;L update</text>
+
+  <!-- Arrow back to start -->
+  <line x1="735" y1="615" x2="50" y2="615" stroke="#94A3B8" stroke-width="1" stroke-dasharray="5,3"/>
+  <polygon points="52,608 45,615 52,622" fill="#94A3B8"/>
+  <line x1="45" y1="615" x2="45" y2="135" stroke="#94A3B8" stroke-width="1" stroke-dasharray="5,3"/>
+  <polygon points="38,137 45,130 52,137" fill="#94A3B8"/>
+
+  <text x="380" y="633" font-size="9" fill="#64748B">Loop repeats every market data event (typically 1-100µs depending on venue &amp; strategy)</text>
+
+  <!-- Decision: Reject -->
+  <line x1="350" y1="455" x2="270" y2="455" stroke="#EF4444" stroke-width="1.5"/>
+  <polygon points="272,448 265,455 272,462" fill="#EF4444"/>
+
+  <rect x="50" y="430" width="220" height="50" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="160" y="452" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">Reject / Skip</text>
+  <text x="160" y="468" text-anchor="middle" font-size="8" fill="#64748B">Quote not sent, risk limit exceeded</text>
+
+  <!-- Inventory management detail -->
+  <rect x="30" y="535" width="300" height="195" rx="8" fill="#1E293B"/>
+  <text x="50" y="557" font-size="10" font-weight="bold" fill="#94A3B8">Inventory-Aware Quoting (Avellaneda-Stoikov)</text>
+  <text x="50" y="577" font-size="9" fill="#22C55E">// Skew prices based on current inventory</text>
+  <text x="50" y="597" font-size="9" fill="#94A3B8">reservation_price = mid_price - gamma *</text>
+  <text x="50" y="614" font-size="9" fill="#94A3B8">                     sigma^2 * (T - t) * inventory</text>
+  <text x="50" y="634" font-size="9" fill="#94A3B8">spread = gamma * sigma^2 * (T - t) +</text>
+  <text x="50" y="651" font-size="9" fill="#94A3B8">         2/gamma * log(1 + gamma/kappa)</text>
+  <text x="50" y="675" font-size="9" fill="#64748B">Where:</text>
+  <text x="50" y="693" font-size="8" fill="#64748B">gamma = risk aversion, sigma = volatility</text>
+  <text x="50" y="709" font-size="8" fill="#64748B">T = time horizon, kappa = order arrival rate</text>
+
+  <!-- P&L tracking -->
+  <rect x="350" y="535" width="300" height="195" rx="8" fill="#1E293B"/>
+  <text x="370" y="557" font-size="10" font-weight="bold" fill="#94A3B8">P&amp;L Tracking</text>
+  <text x="370" y="577" font-size="9" fill="#22C55E">// Realized + Unrealized P&amp;L</text>
+  <text x="370" y="597" font-size="9" fill="#94A3B8">realized_pnl  = sum(sell_price - buy_price)</text>
+  <text x="370" y="617" font-size="9" fill="#94A3B8">unrealized_pnl = inventory * (mid_price - avg_cost)</text>
+  <text x="370" y="641" font-size="9" fill="#94A3B8">total_pnl = realized_pnl + unrealized_pnl</text>
+  <text x="370" y="665" font-size="9" fill="#64748B">Metrics tracked:</text>
+  <text x="370" y="685" font-size="8" fill="#64748B">• Sharpe ratio (daily, weekly)</text>
+  <text x="370" y="701" font-size="8" fill="#64748B">• Win rate, avg tick capture</text>
+  <text x="370" y="717" font-size="8" fill="#64748B">• Adverse selection ratio</text>
+
+  <!-- Strategy Parameters -->
+  <rect x="670" y="535" width="300" height="195" rx="8" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="820" y="557" text-anchor="middle" font-size="11" font-weight="bold" fill="#7E22CE">Strategy Parameters</text>
+  <line x1="685" y1="563" x2="955" y2="563" stroke="#A855F7" stroke-width="0.5"/>
+  <text x="685" y="585" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Spread</tspan>  base spread + inventory skew</text>
+  <text x="685" y="605" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Quote Size</tspan>  based on var target + risk</text>
+  <text x="685" y="625" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Max Inventory</tspan>  position limit + hedge trigger</text>
+  <text x="685" y="645" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Hedge Logic</tspan>  cross, futures, or delta-neutral</text>
+  <text x="685" y="665" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Cancel/Replace</tspan>  price improvement timer</text>
+  <text x="685" y="685" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Kill Switch</tspan>  P&amp;L threshold, order flood</text>
+  <text x="685" y="705" font-size="10" fill="#1e293b"><tspan font-weight="bold" fill="#A855F7">Venue Selection</tspan>  fee-aware routing</text>
+</svg>

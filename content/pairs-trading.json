@@ -1,0 +1,30 @@
+{
+  "id": "pairs-trading",
+  "title": "Pairs Trading",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Phase 10 - Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "cpp",
+  "description": "Engle-Granger test: regress Y on X, test residuals for stationarity (ADF). Johansen test: eigenvalue-based cointegration for multiple series",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Engle-Granger test: regress Y on X, test residuals for stationarity (ADF)</li>\n<li>Johansen test: eigenvalue-based cointegration for multiple series</li>\n<li>Spread normalization via z-score for entry/exit thresholds</li>\n<li>Kalman filter for dynamic hedge ratio (time-varying beta)</li>\n<li>Entry when z-score crosses ±2σ, exit when crosses ±0.5σ</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>KalmanPairsTrader trader(0.001, 0.01);\ntrader.update(price_a, price_b);\nif (auto sig = trader.signal()) { exec->trade(*sig); }</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;cmath&gt;\n#include &lt;vector&gt;\n#include &lt;optional&gt;\n\n// --------------------------------------------------------------------\n// Kalman Filter for Dynamic Hedge Ratio\n// State: [hedge_ratio, bias]^T\n// Observation: price_a = hedge_ratio * price_b + bias + noise\n\nclass KalmanPairsTrader {\n    double delta_;       // transition covariance (how fast beta changes)\n    double ev_;          // evolution variance\n    double ox_;          // observation variance\n    double dt_;          // measurement noise scaling\n\n    // state\n    double beta_;        // hedge ratio\n    double beta_var_;    // uncertainty\n    double bias_;        // constant offset\n    double bias_var_;\n\n    double z_score_;\n    int    position_;    // +1 long pair, -1 short pair, 0 flat\n\npublic:\n    KalmanPairsTrader(double delta = 0.001, double ev = 0.01)\n        : delta_(delta), ev_(ev), ox_(0.001), dt_(1.0)\n        , beta_(1.0), beta_var_(1.0), bias_(0.0), bias_var_(1.0)\n        , z_score_(0.0), position_(0) {}\n\n    void update(double price_a, double price_b) {\n        // Predict step: add evolution noise\n        // tradeoff: constant variance model — simpler than GARCH, adequate for intraday\n        beta_var_ += ev_;\n        bias_var_ += delta_;\n\n        // Observation: spread = price_a - beta * price_b - bias\n        double predicted_spread = price_a - beta_ * price_b - bias_;\n        double h_var = price_b * price_b * beta_var_ + bias_var_ + ox_;\n\n        // Kalman gain\n        double k_beta  = (beta_var_ * price_b) / h_var;\n        double k_bias  = bias_var_ / h_var;\n\n        // Update\n        beta_ += k_beta * predicted_spread;\n        bias_ += k_bias * predicted_spread;\n        beta_var_ *= (1.0 - k_beta * price_b);\n        bias_var_ *= (1.0 - k_bias);\n\n        // Normalized spread (z-score) using EWMA of spread stddev\n        updateZScore(predicted_spread);\n    }\n\n    std::optional&lt;int&gt; signal() {\n        // entry: |z| &gt; 2.0, exit: |z| &lt; 0.5\n        if (position_ == 0) {\n            if (z_score_ &gt; 2.0)  return position_ = -1;  // short spread\n            if (z_score_ &lt; -2.0) return position_ =  1;  // long spread\n        } else {\n            if (std::abs(z_score_) &lt; 0.5) {\n                position_ = 0;\n                return 0;  // exit\n            }\n        }\n        return std::nullopt;\n    }\n\nprivate:\n    double spread_ewma_{0};  // running mean\n    double spread_ewvar_{1};\n    double alpha_{0.01};     // EWMA decay\n\n    void updateZScore(double spread) {\n        // tradeoff: single EWMA vs full window — no history needed\n        spread_ewma_  = alpha_ * spread + (1 - alpha_) * spread_ewma_;\n        spread_ewvar_ = alpha_ * (spread - spread_ewma_) * (spread - spread_ewma_)\n                       + (1 - alpha_) * spread_ewvar_;\n        z_score_ = (spread - spread_ewma_) / std::sqrt(spread_ewvar_ + 1e-12);\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "phase-10"
+  ],
+  "type": "reference",
+  "toc": false
+}

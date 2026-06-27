@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">Limit Order Book — Depth Visualization</text>
+
+  <!-- Bids side -->
+  <rect x="30" y="70" width="460" height="370" rx="8" fill="#F0FDF4" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="260" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Bids (Buy Orders)</text>
+
+  <!-- Bid levels -->
+  <rect x="40" y="105" width="220" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="123" font-size="9" fill="#166534">3,500</text>
+  <text x="150" y="123" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">150.21</text>
+
+  <rect x="40" y="137" width="200" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="155" font-size="9" fill="#166534">5,200</text>
+  <text x="150" y="155" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">150.20</text>
+
+  <rect x="40" y="169" width="260" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="187" font-size="9" fill="#166534">8,100</text>
+  <text x="150" y="187" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">150.19</text>
+
+  <rect x="40" y="201" width="300" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="219" font-size="9" fill="#166534">12,000</text>
+  <text x="150" y="219" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">150.18</text>
+
+  <rect x="40" y="233" width="240" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="251" font-size="9" fill="#166534">6,000</text>
+  <text x="150" y="251" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">150.17</text>
+
+  <rect x="40" y="265" width="180" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="283" font-size="9" fill="#166534">2,800</text>
+  <text x="150" y="283" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">150.16</text>
+
+  <!-- Best bid marker -->
+  <rect x="340" y="105" width="135" height="28" rx="3" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="407" y="123" text-anchor="middle" font-size="8" font-weight="bold" fill="#B45309">Best Bid</text>
+
+  <!-- More bids -->
+  <rect x="40" y="297" width="160" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="315" font-size="9" fill="#166534">1,200</text>
+  <text x="150" y="315" text-anchor="middle" font-size="10" fill="#166534">150.15</text>
+
+  <rect x="40" y="329" width="120" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="347" font-size="9" fill="#166534">900</text>
+  <text x="150" y="347" text-anchor="middle" font-size="10" fill="#166534">150.14</text>
+
+  <rect x="40" y="361" width="100" height="28" rx="3" fill="#DCFCE7" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="50" y="379" font-size="9" fill="#166534">500</text>
+  <text x="150" y="379" text-anchor="middle" font-size="10" fill="#166534">150.13</text>
+
+  <text x="50" y="420" font-size="9" fill="#64748B">Depth shown: size (shares) @ price (USD)</text>
+
+  <!-- Asks side -->
+  <rect x="510" y="70" width="460" height="370" rx="8" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="740" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#991B1B">Asks (Sell Orders)</text>
+
+  <rect x="720" y="105" width="135" height="28" rx="3" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="787" y="123" text-anchor="middle" font-size="8" font-weight="bold" fill="#B45309">Best Ask</text>
+
+  <rect x="520" y="105" width="220" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="630" y="123" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">150.22</text>
+  <text x="720" y="123" font-size="9" fill="#991B1B">2,100</text>
+
+  <rect x="520" y="137" width="250" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="645" y="155" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">150.23</text>
+  <text x="720" y="155" font-size="9" fill="#991B1B">4,500</text>
+
+  <rect x="520" y="169" width="200" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="630" y="187" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">150.24</text>
+  <text x="720" y="187" font-size="9" fill="#991B1B">7,200</text>
+
+  <rect x="520" y="201" width="170" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="615" y="219" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">150.25</text>
+  <text x="720" y="219" font-size="9" fill="#991B1B">10,000</text>
+
+  <rect x="520" y="233" width="210" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="635" y="251" text-anchor="middle" font-size="10" fill="#991B1B">150.26</text>
+  <text x="720" y="251" font-size="9" fill="#991B1B">5,500</text>
+
+  <rect x="520" y="265" width="230" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="645" y="283" text-anchor="middle" font-size="10" fill="#991B1B">150.27</text>
+  <text x="720" y="283" font-size="9" fill="#991B1B">3,800</text>
+
+  <rect x="520" y="297" width="180" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="620" y="315" text-anchor="middle" font-size="10" fill="#991B1B">150.28</text>
+  <text x="720" y="315" font-size="9" fill="#991B1B">1,500</text>
+
+  <rect x="520" y="329" width="140" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="600" y="347" text-anchor="middle" font-size="10" fill="#991B1B">150.29</text>
+  <text x="720" y="347" font-size="9" fill="#991B1B">800</text>
+
+  <rect x="520" y="361" width="120" height="28" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="590" y="379" text-anchor="middle" font-size="10" fill="#991B1B">150.30</text>
+  <text x="720" y="379" font-size="9" fill="#991B1B">400</text>
+
+  <text x="520" y="420" font-size="9" fill="#64748B">Depth shown: price (USD) @ size (shares)</text>
+
+  <!-- Spread and Mid -->
+  <rect x="30" y="455" width="940" height="40" rx="6" fill="#1E293B"/>
+  <text x="50" y="480" font-size="11" fill="#94A3B8">Spread: 1 cent (</text>
+  <text x="170" y="480" font-size="11" font-weight="bold" fill="#22C55E">150.22</text>
+  <text x="220" y="480" font-size="11" fill="#94A3B8"> - </text>
+  <text x="240" y="480" font-size="11" font-weight="bold" fill="#EF4444">150.21</text>
+  <text x="300" y="480" font-size="11" fill="#94A3B8">)  |  Mid Price: 150.215  |  Micro Price: 150.2132  |  Book Imbalance: (bid_size - ask_size) / (bid_size + ask_size) = 0.12</text>
+
+  <!-- Micro-price inset -->
+  <rect x="30" y="515" width="940" height="215" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="50" y="537" font-size="12" font-weight="bold" fill="#FF1744">Micro-Price &amp; Order Flow</text>
+  <line x1="50" y1="543" x2="950" y2="543" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <rect x="50" y="558" width="420" height="80" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="260" y="578" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">Micro-Price Calculation</text>
+  <line x1="70" y1="584" x2="450" y2="584" stroke="#3B82F6" stroke-width="0.5"/>
+  <text x="260" y="602" text-anchor="middle" font-size="10" fill="#1e293b">P_micro = (bid_price × ask_size + ask_price × bid_size)</text>
+  <text x="260" y="620" text-anchor="middle" font-size="10" fill="#1e293b">           / (bid_size + ask_size)</text>
+  <text x="260" y="638" text-anchor="middle" font-size="10" fill="#64748B">= (150.21 × 2,100 + 150.22 × 3,500) / (3,500 + 2,100)</text>
+
+  <rect x="490" y="558" width="460" height="80" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="720" y="578" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309">Strategy Signals</text>
+  <line x1="510" y1="584" x2="930" y2="584" stroke="#F59E0B" stroke-width="0.5"/>
+  <text x="720" y="602" text-anchor="middle" font-size="10" fill="#1e293b">Book Imbalance → short-term direction</text>
+  <text x="720" y="620" text-anchor="middle" font-size="10" fill="#1e293b">Cancel-to-Trade Ratio → toxicity</text>
+  <text x="720" y="638" text-anchor="middle" font-size="10" fill="#1e293b">Price vs Micro-Price → undervalued/overvalued</text>
+
+  <!-- Market order hitting -->
+  <rect x="50" y="652" width="440" height="65" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1"/>
+  <text x="270" y="672" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">Market Order Hits the Book</text>
+  <line x1="60" y1="678" x2="480" y2="678" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="270" y="694" text-anchor="middle" font-size="10" fill="#1e293b">Sell 5,000 @ Market → consumes 3,500 @ 150.21 + 1,500 @ 150.20 (price impact: -2 cents)</text>
+  <text x="270" y="710" text-anchor="middle" font-size="10" fill="#64748B">VWAP of fill = (3,500×150.21 + 1,500×150.20) / 5,000 = 150.207</text>
+
+  <rect x="510" y="652" width="440" height="65" rx="6" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="730" y="672" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">Limit Order Placement Strategy</text>
+  <line x1="520" y1="678" x2="940" y2="678" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="730" y="694" text-anchor="middle" font-size="10" fill="#1e293b">Maker: post @ 150.22 to earn rebate (if taker hits)</text>
+  <text x="730" y="710" text-anchor="middle" font-size="10" fill="#1e293b">Taker: cross spread to get immediate execution (pay fee)</text>
+</svg>

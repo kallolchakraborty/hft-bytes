@@ -1,0 +1,30 @@
+{
+  "id": "p4-switches",
+  "title": "P4 & Programmable Switches",
+  "phase": 6,
+  "phaseName": "Network Hardware",
+  "category": "Network Hardware",
+  "subcategory": "network-hardware",
+  "language": "cpp",
+  "description": "P4_16 language for programming packet-processing pipelines in hardware. Tofino-based switches enable line-rate custom logic: market-data fan-out, latency measurement, order routing based on packet con",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>P4_16 defines a protocol-independent packet forwarding plane; compiled to ASIC (Tofino) or software (BMv2, eBPF)</li>\n<li>Match-action tables: parser extracts headers, match on header fields, action executes on matched entries</li>\n<li>In-band telemetry writes per-hop latency directly into packet headers as it traverses the fabric</li>\n<li>HFT use case 1: market data fan-out — replicate a single input feed to multiple servers at line rate without CPU</li>\n<li>HFT use case 2: latency-based order routing — measure path latency in-band, route orders via the lowest-latency path</li>\n<li>HFT use case 3: packet filtering — drop unwanted symbol feeds, only forward selected instruments to the trading engine</li>\n<li>P4 program elements: parser (header extraction), ingress/egress match-action pipelines, deparser (packet reassembly)</li>\n<li>Tofino Native Architecture (TNA): P4 program on Intel Tofino ASIC with 12 stages of match-action logic</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-p4\">// P4_16: simple market-data feed filter\n#include &lt;core.p4&gt;\n#include &lt;v1model.p4&gt;\n\nheader ethernet_t {\n    bit&lt;48&gt; dst_addr;\n    bit&lt;48&gt; src_addr;\n    bit&lt;16&gt; ether_type;\n}\n\nheader udp_t {\n    bit&lt;16&gt; src_port;\n    bit&lt;16&gt; dst_port;\n    bit&lt;16&gt; length;\n    bit&lt;16&gt; checksum;\n}\n\n// Custom market-data header (simplified)\nheader mdf_header_t {\n    bit&lt;16&gt; symbol_id;\n    bit&lt;8&gt;  msg_type;\n    bit&lt;32&gt; sequence;\n}\n\nstruct headers {\n    ethernet_t     ethernet;\n    udp_t          udp;\n    mdf_header_t   mdf;\n}\n\nparser MyParser(packet_in packet, out headers hdr,\n                inout metadata meta, inout standard_metadata_t sm) {\n    state start {\n        packet.extract(hdr.ethernet);\n        packet.extract(hdr.udp);\n        packet.extract(hdr.mdf);\n        transition accept;\n    }\n}\n\ncontrol MyIngress(inout headers hdr, inout metadata meta,\n                  inout standard_metadata_t sm) {\n    // Drop packets for non-interesting symbols\n    action drop() { mark_to_drop(sm); }\n    table symbol_filter {\n        key = { hdr.mdf.symbol_id : exact; }\n        actions = { NoAction; drop; }\n        size = 1024;\n        default_action = drop;\n    }\n    apply { symbol_filter.apply(); }\n}\n\n// Fan-out replication: Tofino can replicate packets\n// to multiple ports via multicast groups\ncontrol MyEgress(inout headers hdr, inout metadata meta,\n                 inout standard_metadata_t sm) {\n    apply { /* multicast replication happens here */ }\n}</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Example P4Runtime controller (in C++ using grpc)\n// Program the symbol_filter table at runtime\n// p4runtime_client --grpc-addr 10.0.0.1:9559 \\\n//   --table symbol_filter --match symbol_id:42 --action NoAction</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "programmable-networking"
+  ],
+  "type": "reference",
+  "toc": false
+}

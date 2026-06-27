@@ -1,0 +1,30 @@
+{
+  "id": "kdb",
+  "title": "KDB",
+  "phase": 12,
+  "phaseName": "Data Engineering",
+  "category": "Phase 12 - Data Engineering",
+  "subcategory": "data-engineering",
+  "language": "cpp",
+  "description": "q language: tables as columnar lists, k-syntax for vectors. As-of join (aj): real-time best bid/ask at event time (key insight)",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>q language: tables as columnar lists, k-syntax for vectors</li>\n<li>As-of join (aj): real-time best bid/ask at event time (key insight)</li>\n<li>Splayed tables: column stored as individual files, good for HDB</li>\n<li>Partitioned tables: date partitions for daily query pruning</li>\n<li>RDB (in-memory) + HDB (on-disk): chained queries with .u.sub</li>\n<li>Chained queries: select with each (') for time-decay operations</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>q script: <code>\\l feed.q</code> then <code>select mid:(bid+ask)%2 from quote where sym=</code>AAPL`\nC++ via kdb+ C API: khp, k, exec from libk.h</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// kdb+ C API interface (simplified illustrative fragments)\n// Compile: gcc -I$QHOME/l64 -L$QHOME/l64 -lkdb hf.cpp -o hf\n\nextern &quot;C&quot; {\n    #include &lt;k.h&gt;    // kdb+ C API type definitions (I, K, etc.)\n    #include &lt;kdb.h&gt;  // khp, k, kR\n}\n\n#include &lt;cstdio&gt;\n#include &lt;cstdint&gt;\n\n// q schema:\n//   quote:([sym:`symbol$(); time:`timestamp$()] bid:`float$(); ask:`float$(); bsz:`int$(); asz:`int$())\n//   trade:([sym:`symbol$(); time:`timestamp$()] price:`float$(); size:`int$())\n\nclass KdbIngest {\n    K conn_;  // kdb+ connection handle\n    int port_{5010};\n    const char* host_{&quot;localhost&quot;};\n\npublic:\n    bool connect() {\n        conn_ = khp(const_cast&lt;char*&gt;(host_), port_);\n        return conn_ != nullptr;\n    }\n\n    // Bulk insert into kdb+ using vector attributes\n    // tradeoff: single-row insert vs batch (batch is 100x faster)\n    void insertQuotes(const std::vector&lt;double&gt;&amp; bids,\n                      const std::vector&lt;double&gt;&amp; asks,\n                      const std::vector&lt;int&gt;&amp; bsizes,\n                      const std::vector&lt;int&gt;&amp; asizes) {\n        // Build columnar q table\n        // q: `quote insert (sym; time; bid; ask; bsz; asz)\n        // tradeoff: kdb+ columnar engine thrives on vector inserts\n        K cols = ktn(0, 6);  // list of 6 columns\n        kK(cols)[0] = ktn(KG, bids.size());   // sym (symbol list, simplified)\n        kK(cols)[1] = ktn(KP, bids.size());   // time (timestamp)\n        kK(cols)[2] = kf(bids.data());        // bid\n        kK(cols)[3] = kf(asks.data());        // ask\n        kK(cols)[4] = ki(bsizes.data());      // bsz\n        kK(cols)[5] = ki(asizes.data());      // asz\n\n        // Synchronous q exec (tradeoff: sync vs async with .u.sub)\n        K result = k(conn_, &quot;insert&quot;, ki(0), kp(const_cast&lt;char*&gt;(&quot;quote&quot;)), cols, (K)0);\n        if (result-&gt;t == -128) { // error type\n            printf(&quot;kdb+ error: %s\\n&quot;, result-&gt;s);\n        }\n        r0(result);  // release reference\n    }\n\n    // As-of join in C++: select mid from aj[`sym`time; trade; quote]\n    double queryMidPrice(const char* sym, int64_t time_ns) {\n        // q: aj[`sym`time; select from trade where sym=x;\n        //     select from quote where sym=x]\n        K sym_k = kp(const_cast&lt;char*&gt;(sym));\n        K time_k = kp(const_cast&lt;char*&gt;(&quot;timestamp&quot;));  // type cast\n        // tradeoff: string query vs k construction (k() is simpler but slower)\n        K q = k(conn_, &quot;select mid:(0.5*bid+ask)%2 from aj[`sym`time;&quot;\n               &quot;(select from trade where sym=$1);&quot;\n               &quot;(select from quote where sym=$1)]&quot;\n               &quot;where time=$2&quot;, sym_k, time_k, (K)0);\n        if (q-&gt;t == 0) return -1;  // null\n        double mid = kF(q);\n        r0(q);\n        return mid;\n    }\n\n    ~KdbIngest() {\n        if (conn_) kclose(conn_);\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "phase-12"
+  ],
+  "type": "reference",
+  "toc": false
+}

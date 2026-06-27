@@ -1,0 +1,30 @@
+{
+  "id": "perf-optimization-advanced",
+  "title": "Advanced Performance Optimization",
+  "phase": 3,
+  "phaseName": "C++ Low-Latency Patterns",
+  "category": "C++ Patterns",
+  "subcategory": "cpp-patterns",
+  "language": "cpp",
+  "description": "PGO (Profile-Guided Optimization) instrumented and sample-based flows, LTO (Link-Time Optimization) cross-module inlining, BOLT (Binary Optimization and Layout Tool) function/block reordering, perf c2",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>PGO (Profile-Guided Optimization): two-phase compilation — first build with <code>-fprofile-generate</code>, run workload to collect profiling data, rebuild with <code>-fprofile-use</code>; GCC/Clang reorder basic blocks, inline hot callers, optimize branch layout</li>\n<li>Instrumented vs sample-based PGO: instrumented (<code>-fprofile-generate</code>) adds counter instrumentation (slower binary, ~1.5x runtime) but more precise; sample-based (<code>-fprofile-sample-use</code>) uses <code>perf record</code> data with <code>-fprofile-sample-use</code>; no instrumentation overhead but statistical noise</li>\n<li>LTO (Link-Time Optimization): <code>-flto</code> enables cross-module inlining, constant propagation, dead code elimination across translation units; combine with PGO for maximum benefit</li>\n<li>BOLT (Binary Optimization and Layout Tool): post-link optimizer by Meta/Facebook; rewrites ELF binary layout; reorders functions by call frequency (hot functions contiguous), reorders basic blocks intra-function for fall-through branches; typically gains 5-15% on CPU-bound code</li>\n<li>CI integration: maintain profiling harness that replays production-like workload; regenerate profiles nightly; store baseline profile in git LFS; gate PRs on perf regression</li>\n<li>Compiler flags for HFT: <code>-march=native -mtune=native -O3 -ffast-math -flto -fprofile-use</code>; avoid <code>-funroll-loops</code> (increases code size); prefer <code>-fomit-frame-pointer</code> for registers</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// PGO workflow (Makefile targets)\n// Step 1: Instrumented build\n// CXXFLAGS += -fprofile-generate=/tmp/pgo_data\n// make clean &amp;&amp; make\n// # Run workload\n// taskset -c 2 ./bench/trading_bench --samples 100000\n//\n// Step 2: Profile-use build\n// CXXFLAGS += -fprofile-use=/tmp/pgo_data\n// make clean &amp;&amp; make\n// # Binary now has PGO-optimized layout\n\n// LTO + PGO combined:\n// CXXFLAGS = -O3 -flto -fprofile-use=/tmp/pgo_data \\\n//            -march=native -mtune=native -fomit-frame-pointer\n// LDFLAGS = -flto -fuse-ld=lld\n\n// BOLT invocation:\n// llvm-bolt trading_binary -o trading_binary.bolted \\\n//   --data=/tmp/perf.data \\\n//   --reorder-blocks=cache+ \\\n//   --reorder-functions=hfsort+ \\\n//   --split-functions --icf=all \\\n//   --peepholes=all\n\n// Verify improvement:\n// hyperfine --warmup 3 './trading_binary' './trading_binary.bolted'</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// perf c2c for false sharing detection\n// # perf c2c record -a --ldlat=30 -- ./trading_strategy\n// # perf c2c report --stdio\n// Look for &quot;Shared Data Cache Line&quot; with high &quot;llc_miss&quot; on cacheline\n\n// Hardware counters for HFT (via perf stat):\n// # perf stat -e cycles,instructions,L1-dcache-load-misses,\\\n//   LLC-load-misses,branch-misses,context-switches \\\n//   taskset -c 2 ./feed_handler\n\n// Typical targets for HFT pipeline:\n// IPC &gt; 2.5 (instruction-level parallelism)\n// L1 miss &lt; 5% (working set fits L1)\n// LLC miss &lt; 0.5% (prefetch-friendly access)\n// Branch mispredict &lt; 2% (predictable patterns)</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

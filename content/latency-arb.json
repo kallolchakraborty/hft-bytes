@@ -1,0 +1,31 @@
+{
+  "id": "latency-arb",
+  "title": "Cross-Exchange Latency Arbitrage",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "cpp",
+  "description": "Tick-to-trade latency measurement, exchange timestamp provenance, arb detection probability, microwave vs fiber path case studies (Chicago-NJ, London-Frankfurt), co-location distance arbitrage, and la",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Tick-to-trade latency: time from a price change on exchange A to the resulting order arriving at exchange B; decompose into: packet propagation A → colo → parse → strategy → OMS → FIX → packet propagation B</li>\n<li>Exchange timestamp provenance: CME timestamps at matching engine (PTP), Nasdaq timestamps at SIP (SG), Eurex timestamps at gateway (PTP); each has different accuracy (±100ns to ±1μs)</li>\n<li>Arb probability: arb exists when price on B is stale relative to A for longer than tick-to-trade latency + exchange B round-trip; probability = P(|price_A - price_B| > spread_before latency_window)</li>\n<li>Microwave vs fiber paths: Chicago-NY: fiber ~7.4ms, microwave ~4.3ms (save ~3ms); London-Frankfurt: fiber ~4.5ms, microwave ~2.1ms (save ~2.4ms); microwave still requires conversion at endpoints</li>\n<li>Co-location distance arb: exchange A matching engine in same facility as B gives ~5μs cross-connect; across facilities (e.g., NY4 to NY11) adds ~50-200μs; across metros adds milliseconds</li>\n<li>Latency leaderboard: firms continuously measure and compare tick-to-trade latency; target is top quartile; publish pseudonymous rankings; drives colo and hardware investment decisions</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Arb detection window\nstruct LatencyArb {\n    struct Path {\n        double one_way_us_;\n        std::string exchange_a_;\n        std::string exchange_b_;\n    };\n\n    // Given price update on A, is B stale enough to trade?\n    bool detectArb(const Path&amp; path, double bid_a, double ask_a,\n                   double bid_b, double ask_b, double round_trip_b_us) {\n        // Theoretical fastest arb: A price → B order (one-way path) + B fill (round-trip)\n        double min_arb_time_us = path.one_way_us_ + round_trip_b_us;\n        // Is B's price stale enough?\n        double fair_b_mid = (bid_a + ask_a) / 2;\n        double stale_b_mid = (bid_b + ask_b) / 2;\n        double arb_window = /* time since last B update */;\n        return arb_window &gt; min_arb_time_us &amp;&amp;\n               std::abs(fair_b_mid - stale_b_mid) &gt; (ask_b - bid_b) * 0.5;\n    }\n};\n\n// Known paths (approximate one-way, 2026)\n// CME Cermak → NY4:         7,100 us (fiber)\n// CME Cermak → NY4:         4,100 us (microwave)\n// FR2 (Frankfurt) → LD4:    4,500 us (fiber)\n// FR2 (Frankfurt) → LD4:    2,100 us (microwave)\n// NY4 → NY11:                  60 us (dark fiber)\n// NY4 cross-connect:            5 us (direct cage-to-cage)</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Latency measurement framework\nstruct LatencyProbe {\n    uint64_t tick_to_order_ns_;\n    uint64_t tick_to_fill_ns_;\n\n    void measure() {\n        auto start = hardwareTimestamp(); // PTP or RDTSC\n        // 1. Market data packet arrives at NIC\n        // 2. Parse → book update → strategy → OMS\n        // 3. FIX encode → NIC transmit\n        auto end = hardwareTimestamp();\n        tick_to_order_ns_ = end - start;\n    }\n};\n\n// Exchange timestamp sources\n// CME   : PTP (IEEE 1588) at matching engine → ±100ns\n// Nasdaq: SG (Self-contained GPS) at SIP → ±100ns\n// Eurex : PTP at gateway → ±200ns\n// ICE   : NTP at gateway → ±1ms (no PTP)\n// NYSE  : PTP at matching engine → ±100ns</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "performance",
+    "trading"
+  ],
+  "type": "reference",
+  "toc": false
+}

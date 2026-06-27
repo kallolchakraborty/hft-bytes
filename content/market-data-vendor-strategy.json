@@ -1,0 +1,33 @@
+{
+  "id": "market-data-vendor-strategy",
+  "title": "Market Data Vendor Strategy",
+  "phase": 9,
+  "phaseName": "Order Book & Microstructure",
+  "category": "Order Book",
+  "subcategory": "order-book",
+  "language": "cpp",
+  "description": "Direct-feed vs SIP comparison, feed redundancy and failover, gap detection and recovery, nanosecond timestamp provenance, vendor selection (Exegy, MayStreet, Redline, SFTI, QuantHouse), and co-located",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Direct feeds (CME MDP 3.0, Nasdaq ITCH, OPRA MultiCast) vs SIP feeds (CTA, UTP, OPRA SIP): direct feeds are 5-50 us faster but require full feed handler; SIPs are consolidated but slower by design</li>\n<li>Feed redundancy: primary (A feed) + backup (B feed) from exchange; primary + backup (diverse path) via colo; vendor feed as tertiary; failover via seqnum gap detection</li>\n<li>Gap detection strategy: monitor incoming seqno monotonicity; gap > 100ms triggers failover; gap > 1s triggers reconnect; always verify feed state before switching</li>\n<li>Nanosecond timestamp provenance: SG (NASDAQ), PTP timestamp (CME), RDTSC at NIC (bonded); know the timestamp source for each feed; hardware PPS reference for NTP-free operation</li>\n<li>Vendor evaluation criteria: feed coverage (Cboe, CME, Eurex, ICE, OPRA, etc.), protocol support (ITCH, MoldUDP64, SoupBinTCP, SBE), colo presence, nanosecond precision, SLA on gap/latency</li>\n<li>Feed handler topology: one handler per feed per exchange; each pinned to a dedicated core; shared-memory ring buffer for consolidated order-book stage</li>\n<li>Recovery: on gap, request retransmission from exchange (MoldUDP64 recovery channel); on vendor fail, replay from local capture archive</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Feed failover logic\nstruct FeedManager {\n    enum Feed { PRIMARY, BACKUP, VENDOR };\n    struct FeedState {\n        uint64_t expected_seq_;\n        uint64_t last_seq_;\n        uint64_t last_ts_ns_;\n        bool healthy_;\n        int target_seq_gap() const {\n            return static_cast&lt;int&gt;(last_seq_ - expected_seq_);\n        }\n    };\n\n    FeedState primary_, backup_, vendor_;\n    Feed active_feed_ = Feed::PRIMARY;\n\n    void onSeqno(const char* source, uint64_t seqno) {\n        FeedState* s = feedState(source);\n        if (seqno &lt; s-&gt;expected_seq_) return; // duplicate\n        if (seqno &gt; s-&gt;expected_seq_) {\n            // Gap detected on this feed\n            if (s-&gt;target_seq_gap() &gt; MAX_ACCEPTABLE_GAP) {\n                failoverToNext(source);\n            }\n        }\n        s-&gt;expected_seq_ = seqno + 1;\n    }\n\n    void failoverToNext(const char* failed_source) {\n        if (active_feed_ == Feed::PRIMARY &amp;&amp; backup_.healthy_)\n            active_feed_ = Feed::BACKUP;\n        else if (vendor_.healthy_)\n            active_feed_ = Feed::VENDOR;\n        else\n            trigger_alarm(&quot;ALL FEEDS DOWN&quot;);\n        // Reset expected seqno from new feed\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Feed latency comparison (simplified vendor matrix)\n// Vendor     | CME MDP | Nasdaq ITCH | OPRA | Colo | Nanosecond\n// -----------+---------+-------------+------+------+-----------\n// Exegy      |   Yes   |    Yes      | Yes  |  Yes |   PTP\n// MayStreet  |   Yes   |    Yes      | Yes  |  Yes |   PTP\n// Redline    |   Yes   |    Yes      | Yes  |  Yes |   PTP\n// QuantHouse  |  Yes   |    Yes      | Yes  |  No  |   NTP\n// SFTI       |   Yes   |    No       | Yes  |  Yes |   PTP</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "data-engineering",
+    "market-data",
+    "order-types",
+    "trading"
+  ],
+  "type": "reference",
+  "toc": false
+}

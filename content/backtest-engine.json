@@ -1,0 +1,31 @@
+{
+  "id": "backtest-engine",
+  "title": "Backtest Engine",
+  "phase": 11,
+  "phaseName": "Backtesting & Simulation",
+  "category": "Phase 11 - Backtesting & Simulation",
+  "subcategory": "backtesting",
+  "language": "cpp",
+  "description": "Event loop architecture: tick/bar/order event queue. Market data cursor: deterministic iteration over historical data",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Event loop architecture: tick/bar/order event queue</li>\n<li>Market data cursor: deterministic iteration over historical data</li>\n<li>Order handler simulator: fill/stay/cancel decisions with latency</li>\n<li>P&L tracker: realized and unrealized with FIFO cost basis</li>\n<li>Fill simulation with configurable latency model + partial fills</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>BacktestEngine engine(data_loader);\nengine.run<MyStrategy>(start_date, end_date);</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;queue&gt;\n#include &lt;vector&gt;\n#include &lt;functional&gt;\n#include &lt;memory&gt;\n\nenum class EventType { TICK, ORDER_ACK, FILL, CANCEL, EOD };\n\nstruct Event {\n    EventType type;\n    uint64_t  timestamp_ns;\n    union {\n        struct { double bid, ask, last; uint32_t bsz, asz, lsz; } tick;\n        struct { uint64_t order_id; bool accepted; } ack;\n        struct { uint64_t order_id; double price; uint32_t qty; } fill;\n    };\n    bool operator&gt;(const Event&amp; o) const { return timestamp_ns &gt; o.timestamp_ns; }\n};\n\nclass EventQueue {\n    std::priority_queue&lt;Event, std::vector&lt;Event&gt;, std::greater&lt;Event&gt;&gt; queue_;\n\npublic:\n    void push(Event e) { queue_.push(e); }\n    Event pop() {\n        Event e = queue_.top();\n        queue_.pop();\n        return e;\n    }\n    bool empty() const { return queue_.empty(); }\n};\n\n// --------------------------------------------------------------------\n// Order Simulator with Latency Model\n\nclass OrderSimulator {\n    struct PendingOrder {\n        uint64_t id;\n        double   price;\n        uint32_t qty;\n        bool     is_buy;\n        uint64_t sent_ns;\n    };\n\n    std::vector&lt;PendingOrder&gt; pending_;\n    uint64_t latency_model_ns_{5000};  // 5μs exchange round-trip\n\npublic:\n    // fill simulation: crosses price? partial? latency?\n    // tradeoff: naive price-cross vs queue position model\n    std::vector&lt;Event&gt; simulateFill(const Event&amp; tick, uint64_t now_ns) {\n        std::vector&lt;Event&gt; fills;\n        for (auto&amp; po : pending_) {\n            if (now_ns - po.sent_ns &lt; latency_model_ns_) continue;\n            bool cross = po.is_buy\n                         ? tick.tick.ask &lt;= po.price\n                         : tick.tick.bid &gt;= po.price;\n            if (cross) {\n                // partial fill model: 50% fill probability\n                uint32_t fill_qty = (rand() % 2) ? po.qty : po.qty / 2;\n                fills.push_back({EventType::FILL, now_ns, .fill={po.id, po.price, fill_qty}});\n                po.qty -= fill_qty;\n            }\n        }\n        // prune fully filled\n        pending_.erase(std::remove_if(pending_.begin(), pending_.end(),\n                       [](auto&amp; p) { return p.qty == 0; }), pending_.end());\n        return fills;\n    }\n};\n\n// --------------------------------------------------------------------\n// P&amp;L Tracker (FIFO)\n\nclass PnLTracker {\n    std::queue&lt;std::pair&lt;double, uint32_t&gt;&gt; long_inventory_;   // (price, qty)\n    std::queue&lt;std::pair&lt;double, uint32_t&gt;&gt; short_inventory_;\n    double realized_{0};\n\npublic:\n    void addFill(bool buy, double price, uint32_t qty) {\n        auto&amp; inv = buy ? long_inventory_ : short_inventory_;\n        inv.push({price, qty});\n    }\n\n    void removeFill(bool buy, double price, uint32_t qty) {\n        // FIFO: match oldest first\n        // tradeoff: FIFO vs LIFO vs specific identification\n        auto&amp; inv = buy ? short_inventory_ : long_inventory_;\n        while (qty &gt; 0 &amp;&amp; !inv.empty()) {\n            auto [entry_px, entry_qty] = inv.front();\n            uint32_t match = std::min(qty, entry_qty);\n            realized_ += match * (buy ? (entry_px - price) : (price - entry_px));\n            qty -= match;\n            entry_qty -= match;\n            if (entry_qty == 0) inv.pop();\n            else inv.front().second = entry_qty;\n        }\n    }\n\n    double realized() const { return realized_; }\n    double unrealized(double current_price) const { /* compute */ return 0; }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "backtesting",
+    "testing"
+  ],
+  "type": "reference",
+  "toc": false
+}

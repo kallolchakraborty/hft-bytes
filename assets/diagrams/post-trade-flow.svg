@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FF1744"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">Post-Trade Flow — Trade Lifecycle</text>
+
+  <!-- Main flow -->
+  <rect x="30" y="70" width="940" height="380" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">Trade Lifecycle — Execution → Settlement</text>
+  <line x1="50" y1="98" x2="950" y2="98" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- 1. Exchange -->
+  <rect x="40" y="115" width="115" height="55" rx="5" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="97" y="137" text-anchor="middle" font-size="10" font-weight="bold" fill="#1E40AF">1. Exchange</text>
+  <text x="97" y="155" text-anchor="middle" font-size="8" fill="#64748B">Execution Report</text>
+
+  <polygon points="160,142 168,142 168,137 176,145 168,153 168,148 160,148" fill="#FF1744"/>
+
+  <!-- 2. Trade Capture -->
+  <rect x="182" y="115" width="115" height="55" rx="5" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="239" y="137" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">2. Trade Capture</text>
+  <text x="239" y="155" text-anchor="middle" font-size="8" fill="#64748B">Drop Copy Feed</text>
+
+  <polygon points="302,142 310,142 310,137 318,145 310,153 310,148 302,148" fill="#FF1744"/>
+
+  <!-- 3. Affirmation -->
+  <rect x="324" y="115" width="115" height="55" rx="5" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="381" y="137" text-anchor="middle" font-size="10" font-weight="bold" fill="#B45309">3. Affirmation</text>
+  <text x="381" y="155" text-anchor="middle" font-size="8" fill="#64748B">Match trade details</text>
+
+  <polygon points="444,142 452,142 452,137 460,145 452,153 452,148 444,148" fill="#FF1744"/>
+
+  <!-- 4. Allocation -->
+  <rect x="466" y="115" width="115" height="55" rx="5" fill="#EDE9FE" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="523" y="137" text-anchor="middle" font-size="10" font-weight="bold" fill="#7E22CE">4. Allocation</text>
+  <text x="523" y="155" text-anchor="middle" font-size="8" fill="#64748B">Split to accounts</text>
+
+  <polygon points="586,142 594,142 594,137 602,145 594,153 594,148 586,148" fill="#FF1744"/>
+
+  <!-- 5. Confirmation -->
+  <rect x="608" y="115" width="115" height="55" rx="5" fill="#FEFCE8" stroke="#EAB308" stroke-width="1.5"/>
+  <text x="665" y="137" text-anchor="middle" font-size="10" font-weight="bold" fill="#CA8A04">5. Confirmation</text>
+  <text x="665" y="155" text-anchor="middle" font-size="8" fill="#64748B">Final trade confirm</text>
+
+  <polygon points="728,142 736,142 736,137 744,145 736,153 736,148 728,148" fill="#FF1744"/>
+
+  <!-- 6. Clearing -->
+  <rect x="750" y="115" width="115" height="55" rx="5" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="807" y="133" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">6. Clearing</text>
+  <text x="807" y="151" text-anchor="middle" font-size="8" fill="#64748B">DTCC / NSCC / ECC</text>
+
+  <!-- 7. Settlement -->
+  <rect x="360" y="195" width="250" height="55" rx="5" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="485" y="217" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">7. Settlement (T+0 / T+1 / T+2)</text>
+  <text x="485" y="235" text-anchor="middle" font-size="8" fill="#64748B">Cash + Securities transfer</text>
+
+  <line x1="485" y1="195" x2="485" y2="185" stroke="#16A34A" stroke-width="1.5"/>
+  <polygon points="480,187 485,180 490,187" fill="#16A34A"/>
+
+  <!-- 8. Custody -->
+  <rect x="155" y="275" width="250" height="55" rx="5" fill="#F3E8FF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="280" y="297" text-anchor="middle" font-size="10" font-weight="bold" fill="#7E22CE">8. Custody</text>
+  <text x="280" y="315" text-anchor="middle" font-size="8" fill="#64748B">Asset safekeeping (Bank of NY, Citi, etc.)</text>
+
+  <line x1="280" y1="275" x2="280" y2="250" stroke="#A855F7" stroke-width="1.5"/>
+  <polygon points="275,252 280,245 285,252" fill="#A855F7"/>
+
+  <!-- 9. Reconciliation -->
+  <rect x="560" y="275" width="250" height="55" rx="5" fill="#FFF3ED" stroke="#EA580C" stroke-width="1.5"/>
+  <text x="685" y="297" text-anchor="middle" font-size="10" font-weight="bold" fill="#9A3412">9. Reconciliation</text>
+  <text x="685" y="315" text-anchor="middle" font-size="8" fill="#64748B">Trade / Position / Cash matching</text>
+
+  <line x1="685" y1="275" x2="685" y2="250" stroke="#EA580C" stroke-width="1.5"/>
+  <polygon points="680,252 685,245 690,252" fill="#EA580C"/>
+
+  <!-- Feedback loop -->
+  <line x1="810" y1="275" x2="870" y2="200" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="870" y1="200" x2="750" y2="170" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4,3"/>
+  <polygon points="752,165 758,173 747,171" fill="#94A3B8"/>
+
+  <!-- Clearing House Detail -->
+  <rect x="30" y="350" width="940" height="380" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="372" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">Clearing &amp; Settlement Detail</text>
+  <line x1="50" y1="378" x2="950" y2="378" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- DTCC -->
+  <rect x="50" y="395" width="290" height="140" rx="6" fill="#EDE9FE" stroke="#A855F7" stroke-width="1"/>
+  <text x="195" y="415" text-anchor="middle" font-size="10" font-weight="bold" fill="#7E22CE">DTCC (US Equities)</text>
+  <line x1="65" y1="422" x2="325" y2="422" stroke="#A855F7" stroke-width="0.5"/>
+  <text x="65" y="442" font-size="9" fill="#1e293b">• NSCC — netting + clearing</text>
+  <text x="65" y="460" font-size="9" fill="#1e293b">• DTC — settlement + custody</text>
+  <text x="65" y="478" font-size="9" fill="#1e293b">• Real-time trade matching (CTM)</text>
+  <text x="65" y="496" font-size="9" fill="#1e293b">• SDFS — settlement instruction file</text>
+  <text x="65" y="514" font-size="9" fill="#1e293b">• T+1 settlement (2024 mandate)</text>
+
+  <!-- ECC -->
+  <rect x="355" y="395" width="290" height="140" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1"/>
+  <text x="500" y="415" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">ECC (Eurex Clearing)</text>
+  <line x1="370" y1="422" x2="630" y2="422" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="370" y="442" font-size="9" fill="#1e293b">• Central counterparty (CCP)</text>
+  <text x="370" y="460" font-size="9" fill="#1e293b">• Margin management (SPAN)</text>
+  <text x="370" y="478" font-size="9" fill="#1e293b">• Trade netting by currency</text>
+  <text x="370" y="496" font-size="9" fill="#1e293b">• Delivery vs Payment (DVP)</text>
+  <text x="370" y="514" font-size="9" fill="#1e293b">• T+1 / T+2 settlement</text>
+
+  <!-- CME Clearing -->
+  <rect x="660" y="395" width="290" height="140" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="805" y="415" text-anchor="middle" font-size="10" font-weight="bold" fill="#B45309">CME Clearing</text>
+  <line x1="675" y1="422" x2="935" y2="422" stroke="#F59E0B" stroke-width="0.5"/>
+  <text x="675" y="442" font-size="9" fill="#1e293b">• Futures/options clearing</text>
+  <text x="675" y="460" font-size="9" fill="#1e293b">• SPAN margining system</text>
+  <text x="675" y="478" font-size="9" fill="#1e293b">• Variation margin (daily)</text>
+  <text x="675" y="496" font-size="9" fill="#1e293b">• Initial margin (upfront)</text>
+  <text x="675" y="514" font-size="9" fill="#1e293b">• T+1 mark-to-market</text>
+
+  <!-- Settlement schedule -->
+  <rect x="50" y="555" width="900" height="155" rx="6" fill="#1E293B"/>
+  <text x="70" y="577" font-size="10" font-weight="bold" fill="#94A3B8">Settlement Timeline</text>
+
+  <rect x="70" y="595" width="280" height="50" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="210" y="615" text-anchor="middle" font-size="9" font-weight="bold" fill="#1E40AF">T+0 (Intraday)</text>
+  <text x="210" y="633" text-anchor="middle" font-size="8" fill="#64748B">FX, crypto, same-day settlement</text>
+
+  <rect x="360" y="595" width="280" height="50" rx="4" fill="#DCFCE7" stroke="#22C55E" stroke-width="1"/>
+  <text x="500" y="615" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">T+1 (Next Day)</text>
+  <text x="500" y="633" text-anchor="middle" font-size="8" fill="#64748B">US equities (2024+), ETF, corporate bonds</text>
+
+  <rect x="650" y="595" width="280" height="50" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="790" y="615" text-anchor="middle" font-size="9" font-weight="bold" fill="#B45309">T+2 (Two Days)</text>
+  <text x="790" y="633" text-anchor="middle" font-size="8" fill="#64748B">Options, FI, listed derivatives</text>
+
+  <text x="70" y="678" font-size="9" fill="#64748B">• T+0: time-critical (FX delivers, crypto settles same day, internal crossing)</text>
+  <text x="70" y="696" font-size="9" fill="#64748B">• T+1: standard for US equities since May 2024 (was T+2 for decades)</text>
+  <text x="70" y="714" font-size="9" fill="#64748B">• Failed trades trigger buy-in / sell-out penalties (Settlement Discipline Regime)</text>
+</svg>

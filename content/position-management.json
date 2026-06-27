@@ -1,0 +1,30 @@
+{
+  "id": "position-management",
+  "title": "Position Management",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Phase 10 - Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "cpp",
+  "description": "Max position limits per instrument and total portfolio VaR. Aging force: time-based unwind of stale positions",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Max position limits per instrument and total portfolio VaR</li>\n<li>Aging force: time-based unwind of stale positions</li>\n<li>Inventory target zones: neutral band where no hedging is needed</li>\n<li>Cross-product hedging using futures and options</li>\n<li>Position keeping across multiple venues (netting)</li>\n<li>P&L attribution by strategy, instrument, venue, and time bucket</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>PositionManager pm;\npm.setLimit(\"AAPL\", 10000);\npm.update(\"AAPL\", +200, 150.0, \"NASDAQ\");\npm.hedge(\"AAPL\", \"ES\", -200);  // delta hedge with ES futures</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;unordered_map&gt;\n#include &lt;string&gt;\n#include &lt;chrono&gt;\n\nstruct Position {\n    double  quantity;       // +long / -short\n    double  avg_entry;      // average entry price\n    double  realized_pnl;\n    double  unrealized_pnl;\n    uint64_t first_trade_ns;\n    uint64_t last_trade_ns;\n};\n\nclass PositionManager {\n    std::unordered_map&lt;std::string, Position&gt; positions_;\n    std::unordered_map&lt;std::string, double&gt; limits_;\n    double portfolio_var_limit_;\n\npublic:\n    void setLimit(const std::string&amp; symbol, double max_qty) {\n        limits_[symbol] = max_qty;\n    }\n\n    bool checkLimit(const std::string&amp; symbol, double delta_qty) {\n        auto it = positions_.find(symbol);\n        double current = it != positions_.end() ? it-&gt;second.quantity : 0;\n        return std::abs(current + delta_qty) &lt;= limits_[symbol];\n    }\n\n    void update(const std::string&amp; symbol, double delta_qty,\n                double price, const std::string&amp; venue) {\n        if (!checkLimit(symbol, delta_qty)) {\n            // reject — risk limit breached; tradeoff: drop vs queue\n            return;\n        }\n        auto&amp; pos = positions_[symbol];\n        if (pos.quantity == 0) {\n            pos.avg_entry = price;\n            pos.first_trade_ns = now();\n        } else {\n            // update average entry (FIFO simplification)\n            // tradeoff: FIFO vs LIFO vs average — affects P&amp;L attribution\n            pos.avg_entry = (pos.avg_entry * std::abs(pos.quantity)\n                            + price * std::abs(delta_qty))\n                            / (std::abs(pos.quantity) + std::abs(delta_qty));\n        }\n        pos.quantity += delta_qty;\n        pos.last_trade_ns = now();\n        pos.unrealized_pnl = pos.quantity * (price - pos.avg_entry);\n    }\n\n    // aging: force-unwind positions older than max_age\n    void agingForce(uint64_t max_age_ns) {\n        uint64_t cutoff = now() - max_age_ns;\n        for (auto&amp; [sym, pos] : positions_) {\n            if (pos.last_trade_ns &lt; cutoff &amp;&amp; std::abs(pos.quantity) &gt; 0) {\n                // emit unwind signal\n                // tradeoff: aggressive unwind vs waiting for natural flow\n                emitUnwind(sym, -pos.quantity);\n            }\n        }\n    }\n\n    // hedging: offset delta with correlated instrument\n    void hedge(const std::string&amp; symbol, const std::string&amp; hedge_instr,\n               double hedge_qty) {\n        // simplified: hedge ratio could come from regression\n        // tradeoff: cross-margining vs separate position tracking\n    }\n\n    struct PnLAttribution {\n        double strategy_pnl;\n        double instrument_pnl;\n        double venue_pnl;\n        double time_pnl;  // by minute bucket\n    };\n\n    PnLAttribution attribute(const std::string&amp; strategy) {\n        return {};  // decompose P&amp;L by dimension\n    }\n\nprivate:\n    static uint64_t now() {\n        return std::chrono::steady_clock::now().time_since_epoch().count();\n    }\n    void emitUnwind(const std::string&amp;, double) {}\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "queue-dynamics"
+  ],
+  "type": "reference",
+  "toc": false
+}

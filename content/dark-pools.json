@@ -1,0 +1,32 @@
+{
+  "id": "dark-pools",
+  "title": "Dark Pools & Alternative Liquidity",
+  "phase": 9,
+  "phaseName": "Order Book & Microstructure",
+  "category": "Order Book",
+  "subcategory": "order-book",
+  "language": "cpp",
+  "description": "Dark pool matching preferences (size-only, time-at-size, conditional, continuous), dark-to-lit sweep logic, midpoint peg orders, ATS/ECN comparison, dark liquidity detection indicators, and SOR integr",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Dark pool types: ATS-operated (UBS ATS, Credit Suisse Crossfinder, Goldman Sachs Sigma X) vs exchange-operated (NYSE Dark, Nasdaq BX Dark); ~40% of US equity volume trades off-exchange</li>\n<li>Matching preferences: each dark pool uses distinct matching logic — size-only (match only when order size matches displayed interest), time-at-size (first to submit at a given size gets priority), conditional (negotiated, not automatic), continuous (price-time like lit, but dark)</li>\n<li>Dark-to-lit sweep: SQR (Standard Quote Router) sends a sweep order to all dark pools and then the lit exchange as a single logical operation; NMS requires best execution regardless of venue</li>\n<li>Midpoint peg: order pegs to the midpoint of NBBO; no spread cost, but no price improvement either; order may not fill if NBBO spread is wide (no midpoint stability)</li>\n<li>Conditional orders: indication of interest (IOI) sent when two contra-side conditional orders overlap; negotiation/confirmation before execution; used for large-in-scale (LIS) blocks</li>\n<li>Dark liquidity detection: repetitive small dark prints at the same price may indicate a hidden iceberg; large dark print followed by lit price move indicates informed flow; NBBO bounce frequency as dark presence proxy</li>\n<li>SOR integration: route order to dark pool first (midpoint save), if unfilled within N ms, sweep to lit; configurable per-symbol based on historical dark fill probability</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Dark pool SOR routing\nstruct DarkSOR {\n    struct Venue {\n        std::string name_;         // &quot;UBS ATS&quot;, &quot;CS Crossfinder&quot;\n        double fill_prob_mid_;     // P(fill) at midpoint\n        double latency_us_;        // round-trip to venue\n        bool is_exchange_;         // lit exchange or dark pool\n    };\n\n    int selectVenue(const Order&amp; order, const std::vector&lt;Venue&gt;&amp; venues) {\n        // To dark first (midpoint save), then lit\n        for (const auto&amp; v : venues) {\n            if (v.is_exchange_) continue;\n            if (v.fill_prob_mid_ &gt; 0.05)  // &gt;= 5% fill probability\n                return &amp;v - &amp;venues[0];\n        }\n        // No dark venue with sufficient probability — go to lit\n        for (const auto&amp; v : venues) {\n            if (v.is_exchange_) return &amp;v - &amp;venues[0];\n        }\n        return -1;\n    }\n};\n\n// Midpoint peg order\nstruct MidpointPeg {\n    double midpoint() const { return (nbbid_ + nboffer_) / 2.0; }\n    bool isPegValid() const {\n        return nboffer_ - nbbid_ &lt; MAX_SPREAD_TICKS;  // dont peg on wide spread\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Major US equity dark pools (approx market share, 2026)\n// UBS ATS:           ~5% equity volume\n// Credit Suisse CX:  ~4%\n// Goldman Sachs SX:  ~3%\n// Virtu POS:         ~3%\n// CitiMatch:         ~3%\n// JP Morgan Xist:   ~2%\n// NYSE Dark:         ~2%\n// Nasdaq BX Dark:   ~2%\n\n// Dark pool fill probability signal model:\n// P(fill) = sigmoid(a * depth_at_mid + b * spread_bps + c * time_to_close)\n// Calibrated per-symbol per-venue from historical fill data\n\n// Lit-to-dark sweep order (NMS intermarket sweep):\n// Send to all dark pools + primary exchange simultaneously\n// Cancel unfilled legs once first fill received</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "dark-pools",
+    "market-data",
+    "trading"
+  ],
+  "type": "reference",
+  "toc": false
+}

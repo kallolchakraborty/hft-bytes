@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">SBE Serialization — Binary Wire Format &amp; Flyweight Pattern</text>
+
+  <!-- Message layout -->
+  <rect x="30" y="70" width="940" height="250" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">SBE Message — Wire Format (Little-Endian)</text>
+  <line x1="50" y1="98" x2="950" y2="98" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- Message Header -->
+  <rect x="50" y="112" width="160" height="50" rx="4" fill="#EDE9FE" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="130" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#7E22CE">Message Header</text>
+  <text x="130" y="148" text-anchor="middle" font-size="8" fill="#64748B">8 bytes fixed</text>
+
+  <!-- Fields box -->
+  <rect x="220" y="112" width="250" height="50" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="345" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#1E40AF">Fields (in order)</text>
+  <text x="345" y="148" text-anchor="middle" font-size="8" fill="#64748B">field1, field2, field3 ...</text>
+
+  <!-- Groups box -->
+  <rect x="480" y="112" width="200" height="50" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="580" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#B45309">Repeating Groups</text>
+  <text x="580" y="148" text-anchor="middle" font-size="8" fill="#64748B">groupCount + group entries</text>
+
+  <!-- Variable data -->
+  <rect x="690" y="112" width="200" height="50" rx="4" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="790" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">Variable Data</text>
+  <text x="790" y="148" text-anchor="middle" font-size="8" fill="#64748B">length + data[]</text>
+
+  <!-- Header detail -->
+  <rect x="50" y="175" width="160" height="55" rx="3" fill="#1E293B"/>
+  <text x="60" y="192" font-size="8" fill="#94A3B8">Schema ID  |  Version  |  Template ID  |  BlockLength</text>
+  <text x="60" y="208" font-size="8" fill="#64748B">(uint16)     (uint16)     (uint16)        (uint16)</text>
+  <text x="60" y="222" font-size="8" fill="#64748B">0            2            4               6</text>
+
+  <rect x="220" y="175" width="250" height="55" rx="3" fill="#1E293B"/>
+  <text x="230" y="192" font-size="8" fill="#94A3B8">clOrdId[20]  |  side(uint8)  |  ordQty(uint32)  |  price(int64)</text>
+  <text x="230" y="208" font-size="8" fill="#64748B">offset=0        offset=20       offset=21          offset=25</text>
+  <text x="230" y="222" font-size="8" fill="#64748B">Fixed-length fields at known offsets for O(1) access</text>
+
+  <rect x="480" y="175" width="200" height="55" rx="3" fill="#1E293B"/>
+  <text x="490" y="192" font-size="8" fill="#94A3B8">numInGroup(uint8)  |  [leg1]  |  [leg2]  |  ...</text>
+  <text x="490" y="208" font-size="8" fill="#64748B">Each leg has its own BlockLength</text>
+  <text x="490" y="222" font-size="8" fill="#64748B">Groups are contiguous in memory</text>
+
+  <rect x="690" y="175" width="200" height="55" rx="3" fill="#1E293B"/>
+  <text x="700" y="192" font-size="8" fill="#94A3B8">freeTextLen(uint8)  |  freeText[]</text>
+  <text x="700" y="208" font-size="8" fill="#64748B">Length-prefixed, variable</text>
+  <text x="700" y="222" font-size="8" fill="#64748B">Placed after all fixed fields</text>
+
+  <!-- Flyweight Pattern -->
+  <rect x="30" y="335" width="940" height="200" rx="8" fill="#1E293B"/>
+  <text x="50" y="357" font-size="10" font-weight="bold" fill="#94A3B8">Flyweight Pattern — Zero-Copy Access</text>
+
+  <text x="50" y="380" font-size="9" fill="#22C55E">// SBE decoder is a view over the buffer — no deserialization</text>
+  <text x="50" y="400" font-size="9" fill="#94A3B8">class NewOrderDecoder {</text>
+  <text x="70" y="420" font-size="9" fill="#94A3B8">  const char* buffer_;  <tspan fill="#64748B">// Points directly into received message</tspan></text>
+  <text x="70" y="440" font-size="9" fill="#94A3B8">  uint64_t offset_;     <tspan fill="#64748B">// Current field offset</tspan></text>
+  <text x="50" y="460" font-size="9" fill="#94A3B8"></text>
+  <text x="70" y="480" font-size="9" fill="#EAB308">  uint64_t price() const {  <tspan fill="#64748B">// O(1) access by fixed offset</tspan></text>
+  <text x="90" y="500" font-size="9" fill="#94A3B8">    return *reinterpret_cast&lt;const uint64_t*&gt;(buffer_ + PRICE_OFFSET);</text>
+  <text x="70" y="520" font-size="9" fill="#94A3B8">  }</text>
+
+  <!-- Comparison table -->
+  <rect x="30" y="550" width="940" height="180" rx="8" fill="#F3E8FF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="500" y="572" text-anchor="middle" font-size="12" font-weight="bold" fill="#7E22CE">SBE vs FIX vs FAST — Protocol Comparison</text>
+  <line x1="50" y1="578" x2="950" y2="578" stroke="#A855F7" stroke-width="0.5"/>
+
+  <rect x="50" y="590" width="160" height="28" rx="3" fill="#FF1744"/>
+  <text x="130" y="609" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">Attribute</text>
+  <rect x="210" y="590" width="180" height="28" rx="3" fill="#22C55E"/>
+  <text x="300" y="609" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">SBE (Binary)</text>
+  <rect x="390" y="590" width="180" height="28" rx="3" fill="#F59E0B"/>
+  <text x="480" y="609" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">FIX (Tag=Value)</text>
+  <rect x="570" y="590" width="180" height="28" rx="3" fill="#EF4444"/>
+  <text x="660" y="609" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">FAST (Compressed)</text>
+  <rect x="750" y="590" width="180" height="28" rx="3" fill="#3B82F6"/>
+  <text x="840" y="609" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFF">Cap'n Proto</text>
+
+  <text x="60" y="643" font-size="9" fill="#475569">Encoding</text>
+  <text x="300" y="643" text-anchor="middle" font-size="9" fill="#166534">Binary (no parsing)</text>
+  <text x="480" y="643" text-anchor="middle" font-size="9" fill="#B45309">ASCII (parse each tag)</text>
+  <text x="660" y="643" text-anchor="middle" font-size="9" fill="#991B1B">Binary + templates</text>
+  <text x="840" y="643" text-anchor="middle" font-size="9" fill="#1E40AF">Binary (no parsing)</text>
+  <line x1="50" y1="650" x2="930" y2="650" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="670" font-size="9" fill="#475569">Access time</text>
+  <text x="300" y="670" text-anchor="middle" font-size="9" fill="#166534">O(1) fixed offset</text>
+  <text x="480" y="670" text-anchor="middle" font-size="9" fill="#B45309">O(n) linear scan</text>
+  <text x="660" y="670" text-anchor="middle" font-size="9" fill="#991B1B">O(1) with template</text>
+  <text x="840" y="670" text-anchor="middle" font-size="9" fill="#1E40AF">O(1) fixed offset</text>
+  <line x1="50" y1="677" x2="930" y2="677" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="697" font-size="9" fill="#475569">Message size</text>
+  <text x="300" y="697" text-anchor="middle" font-size="9" fill="#166534">~50 bytes</text>
+  <text x="480" y="697" text-anchor="middle" font-size="9" fill="#B45309">~200+ bytes</text>
+  <text x="660" y="697" text-anchor="middle" font-size="9" fill="#991B1B">~40 bytes</text>
+  <text x="840" y="697" text-anchor="middle" font-size="9" fill="#1E40AF">~60 bytes</text>
+  <line x1="50" y1="704" x2="930" y2="704" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="724" font-size="9" fill="#475569">Human readable</text>
+  <text x="300" y="724" text-anchor="middle" font-size="9" fill="#EF4444">No</text>
+  <text x="480" y="724" text-anchor="middle" font-size="9" fill="#22C55E">Yes</text>
+  <text x="660" y="724" text-anchor="middle" font-size="9" fill="#EF4444">No</text>
+  <text x="840" y="724" text-anchor="middle" font-size="9" fill="#EF4444">No</text>
+</svg>

@@ -1,0 +1,31 @@
+{
+  "id": "ebpf-xdp",
+  "title": "eBPF/XDP for HFT",
+  "phase": 5,
+  "phaseName": "Kernel Bypass & Protocols",
+  "category": "Kernel Bypass",
+  "subcategory": "kernel-bypass",
+  "language": "cpp",
+  "description": "XDP early packet filtering, eBPF redirect to userspace, custom TCP stack bypass via AF_XDP sockets, kernel compile tuning, and bpftrace for production tracing.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>XDP (eXpress Data Path) attaches BPF program to NIC driver before <code>skb</code> allocation; packets processed at wire rate with action <code>XDP_PASS</code>, <code>XDP_DROP</code>, <code>XDP_TX</code>, <code>XDP_REDIRECT</code></li>\n<li>For HFT: use <code>XDP_REDIRECT</code> to steer market-data flows directly to a userspace AF_XDP socket, bypassing the kernel network stack entirely</li>\n<li>AF_XDP socket: zero-copy ring buffer (UMEM) shared between kernel and userspace; eliminates <code>recvmsg</code> syscall overhead</li>\n<li>eBPF map (BPF_MAP_TYPE_HASH/ARRAY) for per-flow packet filters: drop non-market-data traffic at the NIC level, reducing CPU load</li>\n<li>Kernel compile tuning: <code>CONFIG_XDP_SOCKETS=y</code>, <code>CONFIG_BPF=y</code>, tune <code>net.core.busy_poll</code> and <code>net.core.busy_read</code> for AF_XDP; isolate cores via <code>isolcpus</code> kernel param</li>\n<li>bpftrace for production tracing: trace XDP drop/miss/redirect events, measure packet processing latency, track UMEM ring underruns</li>\n<li>Key metric: AF_XDP zero-copy adds ~50-100 ns vs raw DPDK but avoids dedicated kernel-bypass driver complexity; hybrid approach for non-HFT flows</li>\n<li>XDP program must be simple (~200 instructions max for inlining); use tail calls for complex multi-stage filters</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// AF_XDP socket setup (simplified)\nstruct XDPSocket {\n    int fd_;\n    struct xsk_ring_cons* rx_;\n    struct xsk_ring_prod* tx_;\n    struct xsk_umem* umem_;\n    void* umem_buf_;  // pre-allocated huge-page buffer\n\n    void setup(const char* ifname, uint32_t queue_id) {\n        // 1. Open XSK socket via xsk_socket__create\n        // 2. Bind to ifname/queue_id\n        // 3. Fill UMEM with buffer addresses\n        // 4. eBPF map entry: redirect queue -&gt; fd\n    }\n\n    // Zero-copy receive (no syscall)\n    int recv_pkts(std::span&lt;packet&gt; out) {\n        unsigned int idx_rx = 0;\n        unsigned int rcvd = xsk_ring_cons__peek(rx_, batch, &amp;idx_rx);\n        if (!rcvd) return 0;\n        for (unsigned int i = 0; i &lt; rcvd; ++i) {\n            auto* desc = xsk_ring_cons__rx_desc(rx_, idx_rx + i);\n            out[i] = {umem_buf_ + desc-&gt;addr, desc-&gt;len};\n        }\n        xsk_ring_cons__release(rx_, rcvd);\n        return rcvd;\n    }\n};\n\n// XDP program (C, compiled to BPF bytecode)\n// SEC(&quot;xdp&quot;) int filter(struct xdp_md* ctx) {\n//     // Parse eth-&gt;ip-&gt;udp header\n//     // Check destination port for market-data range\n//     if (is_market_data_port) return XDP_REDIRECT;\n//     return XDP_PASS;  // non-MD traffic goes to kernel\n// }</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// bpftrace one-liners for HFT XDP monitoring\n// XDP drop/miss/redirect:\n//   bpftrace -e 'kprobe:xdp:* { @[probe] = count(); }'\n// AF_XDP UMEM underrun:\n//   bpftrace -e 'tracepoint:xsk:xdp_*_umem { @[args-&gt;xdp]++; }'\n// Per-queue packet distribution:\n//   bpftrace -e 'kprobe:ixgbe_clean_rx_irq { @queue = args-&gt;queue; }'\n\n// Kernel boot params for AF_XDP HFT:\n//   isolcpus=2-15 nohz_full=2-15 rcu_nocbs=2-15\n//   default_hugepagesz=1G hugepagesz=1G hugepages=4</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "kernel-bypass",
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#EF4444"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">Incident Timeline — Knight Capital (Aug 1, 2012)</text>
+
+  <!-- Timeline line -->
+  <line x1="80" y1="100" x2="920" y2="100" stroke="#CBD5E1" stroke-width="3"/>
+
+  <!-- Event 1: 09:30 Market Opens -->
+  <circle cx="120" cy="100" r="12" fill="#EF4444" stroke="#991B1B" stroke-width="2"/>
+  <text x="120" y="126" text-anchor="middle" font-size="9" font-weight="bold" fill="#991B1B">09:30</text>
+  <rect x="40" y="138" width="160" height="85" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="120" y="156" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">Market Opens</text>
+  <line x1="55" y1="162" x2="185" y2="162" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="120" y="178" text-anchor="middle" font-size="9" fill="#1e293b">Power Peg code</text>
+  <text x="120" y="194" text-anchor="middle" font-size="9" fill="#1e293b">misdeployed</text>
+  <text x="120" y="210" text-anchor="middle" font-size="9" fill="#1e293b">on 8 servers</text>
+
+  <!-- Arrow between 1 and 2 -->
+  <line x1="200" y1="100" x2="240" y2="100" stroke="#CBD5E1" stroke-width="2"/>
+  <polygon points="238,95 248,100 238,105" fill="#CBD5E1"/>
+
+  <!-- Event 2: 09:30:15 Rogue Orders -->
+  <circle cx="280" cy="100" r="12" fill="#EF4444" stroke="#991B1B" stroke-width="2"/>
+  <text x="280" y="126" text-anchor="middle" font-size="9" font-weight="bold" fill="#991B1B">09:30:15</text>
+  <rect x="223" y="138" width="115" height="85" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="280" y="156" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">Rogue Orders</text>
+  <line x1="235" y1="162" x2="325" y2="162" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="280" y="178" text-anchor="middle" font-size="9" fill="#1e293b">Flood NYSE</text>
+  <text x="280" y="194" text-anchor="middle" font-size="9" fill="#1e293b">ARCA</text>
+  <text x="280" y="210" text-anchor="middle" font-size="9" fill="#1e293b">NASDAQ</text>
+
+  <line x1="338" y1="100" x2="378" y2="100" stroke="#CBD5E1" stroke-width="2"/>
+  <polygon points="376,95 386,100 376,105" fill="#CBD5E1"/>
+
+  <!-- Event 3: 09:33 NYSE Cancels -->
+  <circle cx="420" cy="100" r="12" fill="#F59E0B" stroke="#B45309" stroke-width="2"/>
+  <text x="420" y="126" text-anchor="middle" font-size="9" font-weight="bold" fill="#B45309">09:33</text>
+  <rect x="355" y="138" width="130" height="85" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="420" y="156" text-anchor="middle" font-size="10" font-weight="bold" fill="#B45309">NYSE Cancels</text>
+  <line x1="367" y1="162" x2="472" y2="162" stroke="#F59E0B" stroke-width="0.5"/>
+  <text x="420" y="178" text-anchor="middle" font-size="9" fill="#1e293b">400+ symbols</text>
+  <text x="420" y="194" text-anchor="middle" font-size="9" fill="#1e293b">NYSE halts</text>
+  <text x="420" y="210" text-anchor="middle" font-size="9" fill="#1e293b">trading</text>
+
+  <line x1="485" y1="100" x2="525" y2="100" stroke="#CBD5E1" stroke-width="2"/>
+  <polygon points="523,95 533,100 523,105" fill="#CBD5E1"/>
+
+  <!-- Event 4: 09:45 Capital Drop -->
+  <circle cx="565" cy="100" r="12" fill="#EF4444" stroke="#991B1B" stroke-width="2"/>
+  <text x="565" y="126" text-anchor="middle" font-size="9" font-weight="bold" fill="#991B1B">09:45</text>
+  <rect x="500" y="138" width="130" height="85" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="565" y="156" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">Capital Drops</text>
+  <line x1="512" y1="162" x2="617" y2="162" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="565" y="178" text-anchor="middle" font-size="9" fill="#1e293b">$365M to</text>
+  <text x="565" y="194" text-anchor="middle" font-size="9" fill="#1e293b">negative</text>
+  <text x="565" y="210" text-anchor="middle" font-size="9" fill="#1e293b">equity</text>
+
+  <line x1="630" y1="100" x2="670" y2="100" stroke="#CBD5E1" stroke-width="2"/>
+  <polygon points="668,95 678,100 668,105" fill="#CBD5E1"/>
+
+  <!-- Event 5: 10:15 Kill Switch -->
+  <circle cx="710" cy="100" r="12" fill="#22C55E" stroke="#166534" stroke-width="2"/>
+  <text x="710" y="126" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">10:15</text>
+  <rect x="640" y="138" width="140" height="85" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="710" y="156" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">Kill Switch</text>
+  <text x="710" y="172" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">Engaged</text>
+  <line x1="652" y1="178" x2="768" y2="178" stroke="#22C55E" stroke-width="0.5"/>
+  <text x="710" y="194" text-anchor="middle" font-size="9" fill="#1e293b">45 minutes too late</text>
+  <text x="710" y="210" text-anchor="middle" font-size="9" fill="#1e293b">System shut down</text>
+
+  <line x1="780" y1="100" x2="820" y2="100" stroke="#CBD5E1" stroke-width="2"/>
+  <polygon points="818,95 828,100 818,105" fill="#CBD5E1"/>
+
+  <!-- Event 6: Bankruptcy -->
+  <circle cx="860" cy="100" r="12" fill="#991B1B" stroke="#7F1D1D" stroke-width="2"/>
+  <text x="860" y="126" text-anchor="middle" font-size="9" font-weight="bold" fill="#7F1D1D">End</text>
+  <rect x="800" y="138" width="120" height="85" rx="6" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="860" y="158" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Company</text>
+  <text x="860" y="174" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Bankrupt</text>
+  <line x1="812" y1="180" x2="908" y2="180" stroke="#94A3B8" stroke-width="0.5"/>
+  <text x="860" y="196" text-anchor="middle" font-size="9" fill="#1e293b">Acquired by</text>
+  <text x="860" y="212" text-anchor="middle" font-size="9" fill="#1e293b">Getco LLC</text>
+
+  <!-- Root Cause Analysis section -->
+  <rect x="30" y="250" width="940" height="480" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="272" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">Root Cause Analysis</text>
+  <line x1="50" y1="278" x2="950" y2="278" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- What happened -->
+  <rect x="50" y="295" width="440" height="140" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1"/>
+  <text x="270" y="315" text-anchor="middle" font-size="10" font-weight="bold" fill="#991B1B">What Went Wrong</text>
+  <line x1="60" y1="321" x2="480" y2="321" stroke="#EF4444" stroke-width="0.5"/>
+  <text x="65" y="340" font-size="9" fill="#1e293b">1. Power Peg (2005) was retired code, but SMARS still</text>
+  <text x="65" y="356" font-size="9" fill="#1e293b">   referenced the flag PowerPeg flag in the router</text>
+  <text x="65" y="376" font-size="9" fill="#1e293b">2. New RLP code was deployed to 7/8 servers;</text>
+  <text x="65" y="392" font-size="9" fill="#1e293b">   SMARS sent PowerPeg=true on all 8</text>
+  <text x="65" y="412" font-size="9" fill="#1e293b">3. The 1 server with new code ignored the flag;</text>
+  <text x="65" y="428" font-size="9" fill="#1e293b">   the 7 servers with old code started Power Peg</text>
+
+  <!-- Why it wasn't caught -->
+  <rect x="510" y="295" width="440" height="140" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="730" y="315" text-anchor="middle" font-size="10" font-weight="bold" fill="#B45309">Why It Wasn't Caught</text>
+  <line x1="520" y1="321" x2="940" y2="321" stroke="#F59E0B" stroke-width="0.5"/>
+  <text x="520" y="340" font-size="9" fill="#1e293b">• No pre-production testing of the new RLP</text>
+  <text x="520" y="358" font-size="9" fill="#1e293b">• No canary deployment (all servers at once)</text>
+  <text x="520" y="376" font-size="9" fill="#1e293b">• Kill switch was not tested (45 min to activate)</text>
+  <text x="520" y="394" font-size="9" fill="#1e293b">• No max-order-rate risk control</text>
+  <text x="520" y="412" font-size="9" fill="#1e293b">• No max-notional risk check in the router</text>
+  <text x="520" y="430" font-size="9" fill="#1e293b">• SMARS sent to all 8 routers regardless of deployment</text>
+
+  <!-- Lessons learned -->
+  <rect x="50" y="455" width="900" height="155" rx="6" fill="#1E293B"/>
+  <text x="70" y="477" font-size="10" font-weight="bold" fill="#22C55E">// Lessons &amp; Remediations</text>
+  <text x="70" y="500" font-size="10" fill="#94A3B8">constexpr auto LESSONS = {</text>
+  <text x="90" y="522" font-size="10" fill="#94A3B8">  "Phased rollouts + canary deployments (not all servers at once)",</text>
+  <text x="90" y="544" font-size="10" fill="#94A3B8">  "Automated kill switch with circuit breaker (max order rate + max notional)",</text>
+  <text x="90" y="566" font-size="10" fill="#94A3B8">  "Dead code removal — retire unused functionality from production systems",</text>
+  <text x="90" y="588" font-size="10" fill="#94A3B8">  "Staged risk limits: pre-trade (per-order) + intraday (cumulative)</text>
+  <text x="70" y="610" font-size="10" fill="#94A3B8">};</text>
+
+  <!-- Financial impact -->
+  <rect x="50" y="625" width="900" height="90" rx="6" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="500" y="647" text-anchor="middle" font-size="10" font-weight="bold" fill="#7E22CE">Aftermath</text>
+  <line x1="65" y1="653" x2="935" y2="653" stroke="#A855F7" stroke-width="0.5"/>
+  <text x="500" y="672" text-anchor="middle" font-size="9" fill="#1e293b">$460M total loss → Stock price dropped from $10.33 to $2.51 → Company had to accept rescue from Getco LLC</text>
+  <text x="500" y="692" text-anchor="middle" font-size="9" fill="#64748B">The kill switch should have been triggered within seconds, not 45 minutes. Every trading system must have automated circuit breakers.</text>
+</svg>

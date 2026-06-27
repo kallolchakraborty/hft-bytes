@@ -1,0 +1,30 @@
+{
+  "id": "feed-protocols-deep",
+  "title": "Exchange Feed Protocol Internals",
+  "phase": 5,
+  "phaseName": "Kernel Bypass & Protocols",
+  "category": "Kernel Bypass",
+  "subcategory": "kernel-bypass",
+  "language": "cpp",
+  "description": "MoldUDP64 packet framing and recovery, SoupBinTCP session login and message framing, SLIP (CME) protocol, Linear Binary (ICE) format, retransmission request/reply, and sequence number management per p",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>MoldUDP64 (Nasdaq): each packet has a 64-byte header (session ID, sequence number, message count, flags); payload contains concatenated messages; trailer has no CRC (recovery channel provides reliability)</li>\n<li>MoldUDP64 recovery: separate TCP channel requests retransmission of missed seqnos; <code>RetransmissionRequest(endpoint, seqno, count)</code> → <code>RetransmissionReply</code> with requested messages; gap detection via seqno gap in packet header</li>\n<li>SoupBinTCP (Nasdaq): login sequence (LogonRequest → LogonAccepted/Rejected); each message length-prefixed (2-byte big-endian length); no checksum (TCP provides reliability); uses heartbeat/packet interval to detect disconnection</li>\n<li>SLIP (CME Secure Line Interface Protocol): framing with STX/ETX bytes, CRC-16 at trailer; supports login/gap-fill/heartbeat sub-protocols; uses \"logged-in\" / \"disconnected\" session states</li>\n<li>Linear Binary (ICE): each message is a concatenation of fixed-width fields packed without delimiters; schema defined by template; header contains message type + sequence number + timestamp + symbol count</li>\n<li>Retransmission mechanics: MoldUDP64 uses separate TCP channel; SLIP uses inline resend request via control message; SoupBinTCP uses <code>SequencedData</code> with out-of-sequence reconnect</li>\n<li>Endpoint addressing: MoldUDP64 uses multicast groups + ports; SoupBinTCP uses TCP sessions per feed; SLIP uses TCP sessions per link; Linear Binary uses multicast + TCP recovery</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// MoldUDP64 packet header\n#pragma pack(push, 1)\nstruct MoldUDP64Header {\n    uint64_t session_id_;\n    uint64_t sequence_number_;  // first msg seqno in this packet\n    uint16_t message_count_;\n    uint16_t flags_;            // 0x0001 = end of session\n    // Followed by message_count_ messages\n    // Each message: 2-byte msg_length (big-endian) + payload\n};\n\n// SoupBinTCP login\nstruct SoupBinTCPLogin {\n    char username_[6];     // padded with spaces\n    char password_[10];    // padded with spaces\n    char requested_session_[10];\n    char requested_sequence_[20];  // numeric ASCII\n};\n\n// SLIP packet framing\nstruct SLIPPacket {\n    uint8_t stx_ = 0x02;   // Start of Text\n    char type_;              // 'L'=Logon, 'D'=Data, 'R'=Retrans, 'H'=Heartbeat\n    uint16_t length_;        // payload length (big-endian)\n    // payload (varies by type)\n    uint16_t crc_;           // CRC-16 of type+length+payload\n    uint8_t etx_ = 0x03;    // End of Text\n};\n#pragma pack(pop)\n\n// MoldUDP64 recovery request (TCP)\nstruct RecoveryRequest {\n    char request_type_ = 'R';\n    uint64_t begin_seqno_;\n    uint64_t end_seqno_;  // 0 = up to most recent\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Protocol-to-common internal event mapping\n// MoldUDP64 seqno       → internal seqno (session scoped)\n// SoupBinTCP seqno      → internal seqno (session scoped)\n// SLIP sequence number  → internal seqno\n// Linear Binary seqno   → internal seqno\n\n// Recovery channel connectivity matrix\n// ┌────────────┬──────────────┬────────────┬──────────────┐\n// │ Protocol   │ Primary      │ Recovery   │ Gap Fill     │\n// ├────────────┼──────────────┼────────────┼──────────────┤\n// │ MoldUDP64  │ Multicast    │ TCP         │ RetransReq   │\n// │ SoupBinTCP │ TCP          │ N/A (TCP)  │ Reconnect    │\n// │ SLIP       │ TCP          │ TCP (same) │ ResendReq    │\n// │ LinearBin  │ Multicast+Tcp│ TCP         │ RetransReq   │\n// └────────────┴──────────────┴────────────┴──────────────┘</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "exchange-protocols"
+  ],
+  "type": "reference",
+  "toc": false
+}

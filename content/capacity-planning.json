@@ -1,0 +1,30 @@
+{
+  "id": "capacity-planning",
+  "title": "Capacity Planning",
+  "phase": 1,
+  "phaseName": "Foundations",
+  "category": "Foundations",
+  "subcategory": "foundations",
+  "language": "cpp",
+  "description": "Sizing cores, memory, and network bandwidth for HFT systems. Throughput math: packets/sec per feed, orders/sec peak, NUMA-aware allocation. Core budgeting, NIC queue distribution, and headroom targets",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Market data throughput: one equity options feed (e.g., OPRA) peaks at 10+ million packets/sec during volatile periods</li>\n<li>Order-to-trade ratio: HFT firms typically send 50-200 cancels/modifies per executed trade; peak order rates exceed 10k orders/sec per instrument</li>\n<li>Core budgeting: reserve one core per data feed parser, one per order-book reconstruction (per symbol group), one per strategy instance, one per OMS/gateway instance</li>\n<li>NIC queue distribution: RSS (Receive-Side Scaling) distributes flows across RX queues; each queue pinned to a dedicated core</li>\n<li>NUMA awareness: NIC must be on the same NUMA node as the cores processing its traffic; cross-NUMA latency adds 100-300 ns</li>\n<li>Memory sizing: order book per symbol is ~1-2 KB (LOB depth of 10-20 levels); 10,000 symbols ~ 20 MB for books + overhead</li>\n<li>Network bandwidth: one 100 Gbps link per feed pair; two links (primary + backup) per exchange; 20-40 Gbps typical utilisation with 2:1 headroom</li>\n<li>Headroom rule: never exceed 70% sustained CPU utilisation; the remaining 30% absorbs volatility spikes without packet-loss</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Capacity calculation helpers\nstruct CapacityMath {\n    // Packets per second from line rate\n    static double maxPktPerSec(double lineRateGbps, double avgPktSizeBytes) {\n        // lineRateGbps * 1e9 / (8 * (pktSize + 20))  -- 20 bytes for ethernet framing\n        return lineRateGbps * 1e9 / (8.0 * (avgPktSizeBytes + 20.0));\n    }\n\n    // Cores needed for a load at target utilisation\n    static int coresNeeded(double pktPerSec, double pktPerSecPerCore, double maxUtil) {\n        // pktPerSecPerCore: measured empirically (~2M pkts/sec per core for simple parsing)\n        return static_cast&lt;int&gt;(std::ceil(pktPerSec / (pktPerSecPerCore * maxUtil)));\n    }\n\n    // Memory for N symbols with M levels of depth\n    static size_t lobMemory(size_t symbols, size_t depth) {\n        // Each level: price(8) + qty(4) + orderCount(4) + padding = ~32 bytes\n        // Book: bid + ask sides * depth * 32 bytes * symbols\n        return 2 * depth * 32 * symbols;\n    }\n};\n\n// Example: OPRA peak = 12M pkts/s, core capacity = 2M pkts/s\n// cores_needed = ceil(12_000_000 / (2_000_000 * 0.7)) = 9 cores\n// LOB memory for 5000 symbols at depth 20 = 2 * 20 * 32 * 5000 = 6.4 MB</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// NIC RSS queue pinning via ethtool\n// ethtool -L eth0 combined 8    # 8 RX queues\n// ethtool -X eth0 hkey &lt;key&gt;    # set RSS hash key\n// # Pin IRQs to cores\n// for irq in /proc/irq/*/smp_affinity; do\n//   echo 1 &gt; $irq               # pin to core 0\n// done</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

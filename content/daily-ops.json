@@ -1,0 +1,30 @@
+{
+  "id": "daily-ops",
+  "title": "Continuous Optimization & Daily Operations",
+  "phase": 15,
+  "phaseName": "Testing & Production",
+  "category": "Testing & Production",
+  "subcategory": "testing-production",
+  "language": "cpp",
+  "description": "Morning health checks, overnight batch processing, pre-market data validation, post-market P&L reconciliation, strategy tuning cadence, war room prep, and weekly optimization cycle for HFT systems.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Morning health checks (T-60 min to open): verify exchange connectivity (logon heartbeat), market-data feed (seqno / gap count), kill-switch state (armed/ disarmed), strategy status (paper/live), colo cross-connect link light</li>\n<li>Pre-market data validation: compare current day's market data baseline to historical (volume profile, spread distribution, volatility); flag anomalies: unusually wide spreads, missing symbols, stale timestamp</li>\n<li>Overnight batch: backfill previous day's data, run TCA report, compute P&L attribution (PnL explained by alpha vs gamma vs theta vs residual), update risk limits for new day</li>\n<li>Post-market P&L reconciliation: trade blotter vs exchange confirmations; resolve breaks (missing fills, wrong price, wrong symbol); accept/reject after-trades within exchange deadlines</li>\n<li>Strategy tuning cadence: weekly review of each strategy's Sharpe, P&L, fill rate, adverse selection; parameter adjustments gated through CI/CD config PR</li>\n<li>War room prep: daily market structure review (upcoming events, earnings, economic data, exchange changes); pre-brief team on expected trading conditions and risk limits</li>\n<li>Optimization cycle: monitor → identify degradation → hypothesize cause → test in sim → deploy via canary → confirm improvement → document</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Morning health check runbook\nstruct MorningChecks {\n    bool allPassed() {\n        bool ok = true;\n        ok &amp;= checkExchangeLogon(&quot;CME&quot;);\n        ok &amp;= checkExchangeLogon(&quot;Eurex&quot;);\n        ok &amp;= checkExchangeLogon(&quot;ICE&quot;);\n        ok &amp;= checkFeedSeqno(&quot;CME_MDP&quot;, last_gap_ &lt; 10);\n        ok &amp;= checkFeedSeqno(&quot;OPRA&quot;, last_gap_ &lt; 100);\n        ok &amp;= checkKillSwitch(&quot;global&quot;, false);  // must be disarmed\n        ok &amp;= checkStrategyStatus(&quot;es-mm&quot;, StrategyState::LIVE);\n        ok &amp;= checkLinkLight(&quot;colo-cross-connect-0&quot;);\n        return ok;\n    }\n\n    void sendReport() {\n        // Slack: Daily health report\n        // ✅ CME:  OK (seq=1234567, gaps=0)\n        // ✅ Eurex: OK (seq=765432, gaps=1)\n        // ❌ ICE:  RECONNECTING (seq gap &gt; 1000)\n        // ⚠️ Strategy es-mm: SIM MODE (P&amp;L yesterday = +$12k)\n    }\n};\n\n// Post-market P&amp;L reconciliation\nstruct PnlReconciliation {\n    double trade_blotter_pnl_;\n    double exchange_confirm_pnl_;\n    double break_ = trade_blotter_pnl_ - exchange_confirm_pnl_;\n\n    bool hasBreaks() const { return std::abs(break_) &gt; 1.0; }\n\n    void resolve(const std::vector&lt;TradeBreak&gt;&amp; breaks) {\n        // Each break: match trade blotter entry to exchange confirm\n        // If missing confirm: request exchange trade report\n        // If wrong price: initiate trade correction with exchange\n        // Resolve within T+1 deadline\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Daily operations timeline\n// 06:00 UTC — Overnight batch complete, morning checks begin\n// 06:30    — Pre-market data validation report sent\n// 07:00    — Strategy status review, risk limits confirmed\n// 07:30    — Markets open (US equity pre-market)\n// 09:30    — US equity open (NYSE/Nasdaq)\n// 16:00    — US equity close\n// 17:00    — Post-market P&amp;L reconciliation\n// 18:00    — TCA report generated\n// 19:00    — Overnight batch starts (data backfill)\n// 20:00    — Team standup: issues, metrics, next-day plan\n\n// Weekly optimization cycle\n// Monday:   Review weekend performance, parameter proposals\n// Tuesday:  Code/config changes via PR\n// Wednesday:Shadow deploy + paper test\n// Thursday: Staged rollout (tiny → half)\n// Friday:   Full go-live if canary gates pass</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "operations"
+  ],
+  "type": "reference",
+  "toc": false
+}

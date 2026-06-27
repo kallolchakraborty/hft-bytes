@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">Tick-to-Trade Latency Waterfall</text>
+
+  <!-- Waterfall bars -->
+  <rect x="30" y="70" width="940" height="660" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">Latency Decomposition — Tick to Trade</text>
+  <line x1="50" y1="98" x2="950" y2="98" stroke="#CBD5E1" stroke-width="0.5"/>
+  <text x="500" y="718" text-anchor="middle" font-size="11" font-weight="bold" fill="#FF1744">Total: ~15µs Tick-to-Trade</text>
+
+  <!-- Exchange propagation -->
+  <rect x="50" y="115" width="900" height="35" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="70" y="138" font-size="11" font-weight="bold" fill="#1E40AF">1. Exchange → Fiber</text>
+  <text x="850" y="138" text-anchor="end" font-size="10" fill="#475569">5ns/m × 50m = 250ns</text>
+
+  <!-- Fiber bar (proportional) -->
+  <rect x="50" y="160" width="8" height="30" rx="2" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.5"/>
+
+  <rect x="50" y="165" width="900" height="30" rx="4" fill="#FFEBEE" stroke="#FF1744" stroke-width="1"/>
+  <text x="70" y="185" font-size="11" font-weight="bold" fill="#FF1744">2. Fiber Propagation (5ns/m)</text>
+  <text x="850" y="185" text-anchor="end" font-size="10" fill="#475569">~250ns (50m fiber, colo)</text>
+
+  <!-- Switch -->
+  <rect x="50" y="210" width="900" height="35" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="70" y="233" font-size="11" font-weight="bold" fill="#B45309">3. ToR Switch</text>
+  <text x="850" y="233" text-anchor="end" font-size="10" fill="#475569">~500ns (cut-through)</text>
+
+  <!-- NIC + Kernel Bypass -->
+  <rect x="50" y="260" width="900" height="35" rx="4" fill="#DCFCE7" stroke="#22C55E" stroke-width="1"/>
+  <text x="70" y="283" font-size="11" font-weight="bold" fill="#166534">4. NIC → Kernel Bypass</text>
+  <text x="850" y="283" text-anchor="end" font-size="10" fill="#475569">~1µs (DPDK/Onload/VMA)</text>
+
+  <!-- App Parse -->
+  <rect x="50" y="310" width="900" height="35" rx="4" fill="#EDE9FE" stroke="#A855F7" stroke-width="1"/>
+  <text x="70" y="333" font-size="11" font-weight="bold" fill="#7E22CE">5. App Parse (FIX/ITCH/SBE)</text>
+  <text x="850" y="333" text-anchor="end" font-size="10" fill="#475569">~500ns (SIMD-accelerated)</text>
+
+  <!-- Signal Generation -->
+  <rect x="50" y="360" width="900" height="35" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="70" y="383" font-size="11" font-weight="bold" fill="#166534">6. Signal Generation</text>
+  <text x="850" y="383" text-anchor="end" font-size="10" fill="#475569">~1µs (micro-price, imbalance)</text>
+
+  <!-- Order Encode -->
+  <rect x="50" y="410" width="900" height="35" rx="4" fill="#FEE2E2" stroke="#EF4444" stroke-width="1"/>
+  <text x="70" y="433" font-size="11" font-weight="bold" fill="#991B1B">7. Order Encode (SBE binary)</text>
+  <text x="850" y="433" text-anchor="end" font-size="10" fill="#475569">~200ns (flyweight pattern)</text>
+
+  <!-- Risk Check -->
+  <rect x="50" y="460" width="900" height="35" rx="4" fill="#FFF3ED" stroke="#EA580C" stroke-width="1"/>
+  <text x="70" y="483" font-size="11" font-weight="bold" fill="#9A3412">8. Pre-Trade Risk Check</text>
+  <text x="850" y="483" text-anchor="end" font-size="10" fill="#475569">~200ns (credit/rate/limit)</text>
+
+  <!-- NIC out -->
+  <rect x="50" y="510" width="900" height="35" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1"/>
+  <text x="70" y="533" font-size="11" font-weight="bold" fill="#166534">9. NIC Out (Kernel Bypass)</text>
+  <text x="850" y="533" text-anchor="end" font-size="10" fill="#475569">~500ns</text>
+
+  <!-- Switch -->
+  <rect x="50" y="560" width="900" height="35" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="70" y="583" font-size="11" font-weight="bold" fill="#B45309">10. ToR Switch (Outbound)</text>
+  <text x="850" y="583" text-anchor="end" font-size="10" fill="#475569">~500ns (cut-through)</text>
+
+  <!-- Exchange matching -->
+  <rect x="50" y="610" width="900" height="35" rx="4" fill="#DBEAFE" stroke="#FF1744" stroke-width="1"/>
+  <text x="70" y="633" font-size="11" font-weight="bold" fill="#1E40AF">11. Exchange Matching Engine</text>
+  <text x="850" y="633" text-anchor="end" font-size="10" fill="#475569">~5µs (including wire)</text>
+
+  <!-- Accumulated latency -->
+  <rect x="50" y="660" width="900" height="40" rx="6" fill="#1E293B"/>
+  <text x="70" y="685" font-size="11" font-weight="bold" fill="#22C55E">Total: 250ns + 250ns + 500ns + 1µs + 500ns + 1µs + 200ns + 200ns + 500ns + 500ns + 5µs = ~15µs</text>
+
+  <!-- Cumulative bar on the right -->
+  <rect x="940" y="115" width="20" height="530" rx="3" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="950" y="380" text-anchor="middle" font-size="8" fill="#7E22CE" transform="rotate(-90,950,380)">Cumulative Latency (ns) →</text>
+
+  <!-- Detail boxes at bottom (overlay) -->
+  <rect x="30" y="70" width="0" height="0" fill="none"/>
+</svg>

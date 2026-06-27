@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>hft bytes — HFT Documentation & Study Notes</title>
+  <meta name="description" content="Comprehensive HFT documentation with runnable code examples covering CPU architecture, kernel bypass, lock-free data structures, SIMD, FPGA, market microstructure, and trading strategies." />
+  <meta name="keywords" content="HFT, high-frequency trading, low-latency, C++, kernel bypass, lock-free, SIMD, FPGA, market data, order book" />
+  <meta name="author" content="Kallol Chakraborty" />
+  <meta name="theme-color" content="#FF1744" />
+  <meta property="og:title" content="hft bytes — HFT Documentation & Study Notes" />
+  <meta property="og:description" content="Comprehensive HFT documentation with runnable code examples covering CPU architecture, kernel bypass, lock-free data structures, SIMD, FPGA, market microstructure, and trading strategies." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kallolchakraborty.github.io/hft-bytes/docs.html" />
+  <meta property="og:image" content="https://kallolchakraborty.github.io/hft-bytes/assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="hft bytes — HFT Documentation & Study Notes" />
+  <meta name="twitter:description" content="Comprehensive HFT documentation with runnable code examples covering CPU architecture, kernel bypass, lock-free data structures, SIMD, FPGA, market microstructure, and trading strategies." />
+  <link rel="canonical" href="https://kallolchakraborty.github.io/hft-bytes/docs.html" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF1744'%3E%3Cpath d='M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 8.1 11 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 13.55 12 21 11 21z'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/tailwind.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="js/theme.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "name": "hft bytes — HFT Documentation & Study Notes",
+    "headline": "HFT Documentation & Study Notes",
+    "description": "Comprehensive HFT documentation with runnable code examples covering CPU architecture, kernel bypass, lock-free data structures, SIMD, FPGA, market microstructure, and trading strategies.",
+    "url": "https://kallolchakraborty.github.io/hft-bytes/docs.html"
+  }
+  </script>
+</head>
+<body class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans min-h-screen flex flex-col transition-colors duration-200 overflow-y-auto">
+
+  <a href="#docs-dynamic-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white dark:focus:bg-slate-900 focus:text-[#FF1744] focus:border focus:border-[#FF1744] focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-[#FF1744]">Skip to main content</a>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="glass-nav sticky top-0 z-40 transition-colors duration-200">
+    <div class="max-w-8xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <button id="sidebar-toggle" class="lg:hidden text-slate-400 hover:text-brand-500 transition-all flex items-center justify-center" aria-label="Toggle navigation menu">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <a href="index.html" class="text-slate-700 dark:text-slate-200 hover:text-brand-500 transition-all flex items-center gap-2">
+          <span class="material-symbols-outlined text-brand-500 text-[20px]">bolt</span>
+          <span class="text-base font-semibold">hft bytes</span>
+        </a>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2">
+          <button id="themeToggle" class="text-slate-400 hover:text-brand-500 transition-all" aria-label="Toggle theme">
+            <span class="material-symbols-outlined text-[16px]">light_mode</span>
+          </button>
+          <button class="open-share-btn text-slate-400 hover:text-brand-500 transition-all" aria-label="Share this page">
+            <span class="material-symbols-outlined text-[16px]">share</span>
+          </button>
+          <button class="open-search-btn flex items-center gap-1.5 h-7 px-2.5 bg-slate-50 dark:bg-slate-800/40 rounded-lg text-slate-400 hover:text-brand-500 font-medium text-xs transition-all">
+            <span class="material-symbols-outlined text-[16px]">search</span>
+            <kbd class="hidden sm:inline-block font-mono bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-1 rounded text-[9px] leading-none">Ctrl+K</kbd>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== THREE-COLUMN LAYOUT ==================== -->
+  <div class="max-w-8xl mx-auto px-6 w-full flex-grow flex flex-col lg:flex-row gap-8 py-8 relative">
+
+    <!-- Mobile sidebar backdrop -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden" aria-hidden="true"></div>
+
+    <!-- LEFT SIDEBAR -->
+    <aside id="left-sidebar" class="lg:w-56 lg:sticky lg:top-24 lg:h-[calc(100vh-120px)] overflow-y-auto shrink-0 border-b lg:border-b-0 border-slate-200 dark:border-slate-800 pb-4 lg:pb-0 pr-0 lg:pr-5 fixed inset-y-0 left-0 z-40 w-64 transform -translate-x-full transition-transform duration-200 lg:translate-x-0 lg:static lg:inset-auto lg:z-auto lg:w-56 lg:border-b-0 bg-white dark:bg-slate-900">
+      <nav aria-label="Documentation navigation" class="sidebar-sections" id="sidebarNav">
+
+        <!-- Study Plan -->
+        <div class="px-2 py-3">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Study Plan</div>
+        </div>
+        <div class="sidebar-section">
+          <a href="#study-plan" class="sidebar-link study-plan-link">17-Week Roadmap</a>
+        </div>
+
+        <!-- TRACK 1: CORE ENGINEERING -->
+        <div class="px-2 py-3 border-t border-slate-200 dark:border-slate-700 mt-2">
+          <div class="text-[11px] font-bold text-brand-500 uppercase tracking-[0.12em]">TRACK 1: CORE ENGINEERING</div>
+        </div>
+
+        <!-- Phase 1: Foundations -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 1: Foundations</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Getting Started</h4>
+          <a href="#cpu-architecture" class="sidebar-link">CPU Architecture &amp; Memory Hierarchy</a>
+          <a href="#cache-lines" class="sidebar-link">Cache Lines, NUMA &amp; False Sharing</a>
+          <a href="#compiler-flags" class="sidebar-link">GCC/Clang Optimization Flags</a>
+          <a href="#hw-selection" class="sidebar-link">Hardware Selection Guide</a>
+          <a href="#linux-tuning" class="sidebar-link">Linux Kernel Tuning</a>
+          <a href="#huge-pages" class="sidebar-link">Huge Pages &amp; Memory Allocation</a>
+          <a href="#colo-setup" class="sidebar-link">Colo Server Setup &amp; Toolchain</a>
+          <a href="#colo-deep-dive" class="sidebar-link">Co-Location Deep Dive</a>
+          <a href="#hw-latency-ref" class="sidebar-link">Hardware Latency Reference</a>
+          <a href="#bios-tuning" class="sidebar-link">BIOS &amp; Firmware Tuning</a>
+          <a href="#server-selection" class="sidebar-link">Server Selection Guide</a>
+          <a href="#system-architecture" class="sidebar-link">System Architecture Blueprint</a>
+          <a href="#capacity-planning" class="sidebar-link">Capacity Planning</a>
+          <a href="#latency-budgeting" class="sidebar-link">Latency Budgeting</a>
+        </div>
+
+        <!-- Phase 2: Mathematics & Statistics -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 2: Mathematics &amp; Statistics</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Time Series &amp; Stochastic</h4>
+          <a href="#time-series" class="sidebar-link">Time Series Analysis</a>
+          <a href="#stochastic-calc" class="sidebar-link">Stochastic Calculus</a>
+          <a href="#kalman-filter" class="sidebar-link">Kalman Filters</a>
+          <a href="#signal-proc" class="sidebar-link">Signal Processing</a>
+          <a href="#monte-carlo" class="sidebar-link">Monte Carlo Methods</a>
+          <a href="#optimization" class="sidebar-link">Optimization Theory</a>
+          <a href="#martingale" class="sidebar-link">Martingale Theory</a>
+          <a href="#probability-distributions" class="sidebar-link">Probability Distributions</a>
+          <a href="#machine-learning-basics" class="sidebar-link">Machine Learning Basics</a>
+        </div>
+
+        <!-- Phase 3: C++ Low-Latency Patterns -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 3: C++ Low-Latency Patterns</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Memory &amp; Concurrency</h4>
+          <a href="#custom-allocators" class="sidebar-link">Custom Allocators</a>
+          <a href="#lock-free-queue" class="sidebar-link">Lock-Free Queues</a>
+          <a href="#cache-friendly" class="sidebar-link">Cache-Friendly Design</a>
+          <a href="#simd-intrinsics" class="sidebar-link">SIMD &amp; AVX-512</a>
+          <a href="#placement-new" class="sidebar-link">Placement New &amp; Pooling</a>
+          <a href="#atomics-memory-order" class="sidebar-link">Atomics &amp; Memory Ordering</a>
+          <a href="#mmap-files" class="sidebar-link">Memory-Mapped Files</a>
+          <a href="#compile-time" class="sidebar-link">Compile-Time Computation</a>
+          <a href="#wait-free-hazard-pointers" class="sidebar-link">Wait-Free Hazard Pointers</a>
+          <a href="#perf-optimization-advanced" class="sidebar-link">Advanced Perf Optimization (PGO/LTO/BOLT)</a>
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 4: System Programming &amp; IPC</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">IPC &amp; Serialization</h4>
+          <a href="#shared-memory" class="sidebar-link">Shared Memory</a>
+          <a href="#sbe" class="sidebar-link">SBE Serialization</a>
+          <a href="#flatbuffers" class="sidebar-link">FlatBuffers / Cap'n Proto</a>
+          <a href="#binary-logging" class="sidebar-link">High-Performance Logging</a>
+          <a href="#build-systems" class="sidebar-link">Build Systems</a>
+          <a href="#cross-compile" class="sidebar-link">Cross-Compilation &amp; Dispatch</a>
+          <a href="#binary-size" class="sidebar-link">Binary Size Optimization</a>
+          <a href="#rdma-roce" class="sidebar-link">RDMA / RoCE v2</a>
+        </div>
+
+        <!-- TRACK 2: NETWORK & MARKET ACCESS -->
+        <div class="px-2 py-3 border-t border-slate-200 dark:border-slate-700 mt-2">
+          <div class="text-[11px] font-bold text-brand-500 uppercase tracking-[0.12em]">TRACK 2: NETWORK &amp; MARKET ACCESS</div>
+        </div>
+
+        <!-- Phase 5: Kernel Bypass & Protocols -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 5: Kernel Bypass &amp; Protocols</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Kernel Bypass</h4>
+          <a href="#kernel-bypass" class="sidebar-link">Kernel Bypass Comparison</a>
+          <a href="#tcp-tuning" class="sidebar-link">TCP Stack Tuning</a>
+          <a href="#udp-multicast" class="sidebar-link">UDP Multicast</a>
+          <a href="#ebpf-xdp" class="sidebar-link">eBPF/XDP for HFT</a>
+          <a href="#solarflare-efvi" class="sidebar-link">Solarflare ef_vi &amp; Onload</a>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Protocols</h4>
+          <a href="#fix-protocol" class="sidebar-link">FIX/FAST Protocol</a>
+          <a href="#itch-ouch" class="sidebar-link">OUCH/ITCH Protocol</a>
+          <a href="#simd-parser" class="sidebar-link">SIMD Protocol Parsing</a>
+          <a href="#feed-protocols-deep" class="sidebar-link">Exchange Feed Protocol Internals</a>
+          <a href="#multicast-deep" class="sidebar-link">Multicast Deep Dive</a>
+        </div>
+
+        <!-- Phase 6: Network Hardware -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 6: Network Hardware</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Hardware &amp; Topology</h4>
+          <a href="#switch-topology" class="sidebar-link">Switch Topology &amp; Fabric</a>
+          <a href="#cabling-physics" class="sidebar-link">Cabling &amp; Physics</a>
+          <a href="#nic-tuning" class="sidebar-link">NIC Deep Tuning</a>
+          <a href="#packet-capture" class="sidebar-link">Packet Capture</a>
+          <a href="#cross-dc" class="sidebar-link">Cross-Datacenter Connectivity</a>
+          <a href="#ipmi-oob" class="sidebar-link">IPMI &amp; Out-of-Band Mgmt</a>
+          <a href="#switch-configuration" class="sidebar-link">Network Switch Config</a>
+          <a href="#ptp-clock-sync" class="sidebar-link">PTP Clock Synchronization</a>
+          <a href="#p4-switches" class="sidebar-link">P4 Programmable Switches</a>
+          <a href="#dc-networking" class="sidebar-link">Data Center Networking for HFT</a>
+
+        <!-- Phase 7: Order Entry & Execution -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 7: Order Entry &amp; Execution</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Order Management</h4>
+          <a href="#fix-engine" class="sidebar-link">FIX Engine Architecture</a>
+          <a href="#oms" class="sidebar-link">Order Management System</a>
+          <a href="#sor" class="sidebar-link">Smart Order Router</a>
+          <a href="#exchange-connect" class="sidebar-link">Exchange Connectivity</a>
+          <a href="#risk-checks" class="sidebar-link">Pre-Trade Risk Checks</a>
+          <a href="#order-types" class="sidebar-link">Order Types</a>
+          <a href="#fix-deep-dive" class="sidebar-link">FIX Protocol Deep Dive</a>
+          <a href="#risk-framework" class="sidebar-link">Risk Management Framework</a>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Execution</h4>
+          <a href="#latency-measure" class="sidebar-link">Hardware Timestamps &amp; Latency</a>
+          <a href="#configuration-management" class="sidebar-link">Configuration Management</a>
+          <a href="#auction-handling" class="sidebar-link">Auction Handling</a>
+          <a href="#order-reconstruction" class="sidebar-link">Order State Reconciliation</a>
+          <a href="#desk-tools" class="sidebar-link">Trading Desk Tools &amp; GUIs</a>
+        </div>
+
+        <!-- Phase 8: Exchange Architecture -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 8: Exchange Architecture</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Exchange Systems</h4>
+          <a href="#exchange-compare" class="sidebar-link">Exchange Architecture Comparison</a>
+          <a href="#market-model-comparison" class="sidebar-link">Exchange Market Model Comparison</a>
+          <a href="#matching-engine" class="sidebar-link">Matching Engine Fundamentals</a>
+          <a href="#microstructure-quirks" class="sidebar-link">Exchange Microstructure Quirks</a>
+          <a href="#session-recovery" class="sidebar-link">Session Recovery Behaviors</a>
+          <a href="#fee-structures" class="sidebar-link">Exchange Fee Structures</a>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Protocol Deep Dives</h4>
+          <a href="#cme-ilink3" class="sidebar-link">CME iLink 3 Protocol</a>
+          <a href="#eurex-t7" class="sidebar-link">Eurex T7 Protocol</a>
+          <a href="#ice-binary" class="sidebar-link">ICE Binary Protocol</a>
+          <a href="#lse-millennium" class="sidebar-link">LSE Millennium Protocol</a>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Operations</h4>
+          <a href="#exchange-cert" class="sidebar-link">Exchange Certification</a>
+          <a href="#mm-programs" class="sidebar-link">Market Maker Programs</a>
+          <a href="#exchange-outages" class="sidebar-link">Exchange Outage Handling</a>
+          <a href="#exchange-onboarding" class="sidebar-link">Exchange Onboarding</a>
+        </div>
+
+        <!-- TRACK 3: TRADING & ANALYTICS -->
+        <div class="px-2 py-3 border-t border-slate-200 dark:border-slate-700 mt-2">
+          <div class="text-[11px] font-bold text-brand-500 uppercase tracking-[0.12em]">TRACK 3: TRADING &amp; ANALYTICS</div>
+        </div>
+
+        <!-- Phase 9: Order Book & Microstructure -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 9: Order Book &amp; Microstructure</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Order Book</h4>
+          <a href="#lob" class="sidebar-link">Limit Order Book Reconstruction</a>
+          <a href="#feed-handler" class="sidebar-link">Feed Handler Design</a>
+          <a href="#book-imbalance" class="sidebar-link">Order Book Imbalance &amp; Signals</a>
+          <a href="#gap-recovery" class="sidebar-link">Market Data Gap Recovery</a>
+          <a href="#top-of-book" class="sidebar-link">Top-of-Book vs Full Book</a>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Microstructure</h4>
+          <a href="#fee-dynamics" class="sidebar-link">Fee-Driven Order Book Dynamics</a>
+          <a href="#mkt-data-vendors" class="sidebar-link">Market Data Vendor Ecosystem</a>
+          <a href="#market-data-vendor-strategy" class="sidebar-link">Market Data Vendor Strategy</a>
+          <a href="#tape-reading" class="sidebar-link">Tape Reading &amp; Level 2 Data</a>
+          <a href="#dark-pools" class="sidebar-link">Dark Pools &amp; Alternative Liquidity</a>
+          <a href="#microstructure-edge" class="sidebar-link">Market Microstructure Edge Cases</a>
+          <a href="#anomaly-detection" class="sidebar-link">Order Book Anomaly Detection</a>
+        </div>
+
+        <!-- Phase 10: Trading Strategies -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 10: Trading Strategies</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Strategy Types</h4>
+          <a href="#market-making" class="sidebar-link">Two-Sided Market Making</a>
+          <a href="#options-hft" class="sidebar-link">Options &amp; Derivatives HFT</a>
+          <a href="#multi-leg-execution" class="sidebar-link">Multi-Leg Order Execution</a>
+          <a href="#arbitrage" class="sidebar-link">Latency &amp; Statistical Arbitrage</a>
+          <a href="#latency-arb" class="sidebar-link">Cross-Exchange Latency Arbitrage</a>
+          <a href="#momentum" class="sidebar-link">Momentum &amp; Mean Reversion</a>
+          <a href="#pairs-trading" class="sidebar-link">Pairs Trading &amp; Cointegration</a>
+          <a href="#optimal-execution" class="sidebar-link">Optimal Execution</a>
+          <a href="#execution-algos" class="sidebar-link">Execution Algorithms</a>
+          <a href="#tca" class="sidebar-link">Transaction Cost Analysis (TCA)</a>
+          <a href="#position-management" class="sidebar-link">Position &amp; Inventory Mgmt</a>
+          <a href="#strategy-matrix" class="sidebar-link">Strategy Decision Matrix</a>
+        </div>
+
+        <!-- Phase 11: Backtesting & Simulation -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 11: Backtesting &amp; Simulation</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Simulation Engine</h4>
+          <a href="#backtest-engine" class="sidebar-link">Event-Driven Backtesting Engine</a>
+          <a href="#mkt-replay" class="sidebar-link">Market Data Replay Engine</a>
+          <a href="#latency-sim" class="sidebar-link">Latency Simulation Models</a>
+          <a href="#performance-attribution" class="sidebar-link">Performance Attribution</a>
+          <a href="#overfitting" class="sidebar-link">Overfitting Prevention</a>
+          <a href="#case-sim" class="sidebar-link">Case Study Integration</a>
+          <a href="#cross-asset-bt" class="sidebar-link">Cross-Asset Backtesting</a>
+        </div>
+
+        <!-- Phase 12: Data Engineering -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 12: Data Engineering</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Storage &amp; Pipelines</h4>
+          <a href="#kdb" class="sidebar-link">kdb+/q for Time-Series</a>
+          <a href="#modern-databases" class="sidebar-link">Modern Alternatives (ClickHouse etc.)</a>
+          <a href="#compression" class="sidebar-link">Time-Series Compression</a>
+          <a href="#market-data-compression" class="sidebar-link">Market Data Compression</a>
+          <a href="#ref-data" class="sidebar-link">Reference Data &amp; Corporate Actions</a>
+          <a href="#backfill" class="sidebar-link">Data Backfill &amp; Reconciliation</a>
+          <a href="#realtime-pipeline" class="sidebar-link">Real-Time Data Pipelines</a>
+          <a href="#alt-data" class="sidebar-link">Alternative Data Processing</a>
+          <a href="#historical-data" class="sidebar-link">Historical Data Architecture</a>
+          <a href="#historical-vendors" class="sidebar-link">Historical Data Vendors &amp; Quality</a>
+        </div>
+
+        <!-- TRACK 4: OPERATIONS & CAREER -->
+        <div class="px-2 py-3 border-t border-slate-200 dark:border-slate-700 mt-2">
+          <div class="text-[11px] font-bold text-brand-500 uppercase tracking-[0.12em]">TRACK 4: OPERATIONS &amp; CAREER</div>
+        </div>
+
+        <!-- Phase 13: FPGA & Hardware Acceleration -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 13: FPGA &amp; Hardware Acceleration</div>
+        </div>
+        <div class="sidebar-section">
+          <a href="#fpga-intro" class="sidebar-link">FPGA Basics for HFT</a>
+          <a href="#fpga-parser" class="sidebar-link">Market Data Parsing on FPGA</a>
+          <a href="#fpga-order-gen" class="sidebar-link">Order Generation on FPGA</a>
+          <a href="#fpga-vs-cpu" class="sidebar-link">FPGA vs CPU Tradeoff Matrix</a>
+          <a href="#fpga-vendors" class="sidebar-link">FPGA Vendor Guide</a>
+        </div>
+
+        <!-- Phase 14: Monitoring & Security -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 14: Monitoring &amp; Security</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Monitoring</h4>
+          <a href="#latency-histogram" class="sidebar-link">Latency Histograms &amp; Percentiles</a>
+          <a href="#order-tracking" class="sidebar-link">Order Lifecycle Tracking</a>
+          <a href="#mkt-data-quality" class="sidebar-link">Market Data Quality Monitoring</a>
+          <a href="#structured-logging" class="sidebar-link">Structured Logging</a>
+          <a href="#grafana" class="sidebar-link">Prometheus/Grafana Dashboards</a>
+          <a href="#sli-slo" class="sidebar-link">SLI/SLO/SLA Framework</a>
+          <a href="#production-profiling" class="sidebar-link">Production Profiling</a>
+          <a href="#hardware-telemetry" class="sidebar-link">Hardware Telemetry &amp; RAS</a>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Security</h4>
+          <a href="#secrets-management" class="sidebar-link">Secrets &amp; Key Management</a>
+          <a href="#supply-chain-sec" class="sidebar-link">Supply Chain Security</a>
+          <a href="#security-architecture" class="sidebar-link">Security Architecture for Trading</a>
+
+        <!-- Phase 15: Testing & Production -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 15: Testing &amp; Production</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Testing</h4>
+          <a href="#deterministic-test" class="sidebar-link">Deterministic Testing</a>
+          <a href="#replay-test" class="sidebar-link">HFT Replay Testing</a>
+          <a href="#chaos-eng" class="sidebar-link">Chaos Engineering</a>
+          <a href="#compliance-test" class="sidebar-link">Regulatory Compliance Testing</a>
+          <a href="#perf-regression-testing" class="sidebar-link">Performance Regression Testing</a>
+          <a href="#cicd-hft" class="sidebar-link">CI/CD for HFT</a>
+          <a href="#compliance-surveillance" class="sidebar-link">Compliance &amp; Surveillance Technology</a>
+          <a href="#prod-debugging" class="sidebar-link">Production Debugging Tooling</a>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Production</h4>
+          <a href="#colocation" class="sidebar-link">Colocation Strategy</a>
+          <a href="#dr-failover" class="sidebar-link">Disaster Recovery &amp; Failover</a>
+          <a href="#canary-release" class="sidebar-link">Canary/Blue-Green Release</a>
+          <a href="#incident-cases" class="sidebar-link">Incident Case Studies</a>
+          <a href="#operations" class="sidebar-link">Operations &amp; Runbooks</a>
+          <a href="#daily-ops" class="sidebar-link">Continuous Optimization &amp; Daily Ops</a>
+          <a href="#post-trade" class="sidebar-link">Post-Trade &amp; Settlement</a>
+          <a href="#disaster-scenarios" class="sidebar-link">Disaster Scenarios</a>
+          <a href="#practical-sysadmin" class="sidebar-link">Practical SysAdmin</a>
+          <a href="#container-hft" class="sidebar-link">Containerization vs Bare Metal</a>
+          <a href="#cloud-hft" class="sidebar-link">Cloud &amp; Hybrid Infrastructure for HFT</a>
+        </div>
+
+        <!-- Phase 16: HFT Economics & Career -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 16: HFT Economics &amp; Career</div>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Economics</h4>
+          <a href="#latency-cost" class="sidebar-link">Cost of Latency</a>
+          <a href="#colo-budget" class="sidebar-link">Colo &amp; Infrastructure Budgeting</a>
+          <a href="#vendor-eval" class="sidebar-link">Vendor Evaluation Framework</a>
+          <a href="#llm-hft" class="sidebar-link">LLM/AI in HFT Engineering</a>
+        </div>
+        <div class="sidebar-section">
+          <h4 class="sidebar-label">Career</h4>
+          <a href="#comparison-org" class="sidebar-link">Compensation &amp; Organization</a>
+          <a href="#legal-compliance" class="sidebar-link">Legal &amp; Compliance for Developers</a>
+          <a href="#staff-plus" class="sidebar-link">Staff+ Engineering &amp; Career</a>
+        </div>
+
+        <!-- Phase 17: Production Failure Modes & Recovery -->
+        <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+          <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 17: Production Failure Modes &amp; Recovery</div>
+        </div>
+        <div class="sidebar-section">
+          <a href="#split-brain" class="sidebar-link">Split-Brain Scenarios</a>
+          <a href="#clock-anomalies" class="sidebar-link">Clock Anomalies</a>
+          <a href="#seq-resets" class="sidebar-link">Exchange Sequence Resets</a>
+          <a href="#phantom-orders" class="sidebar-link">Phantom Orders</a>
+          <a href="#order-dup" class="sidebar-link">Order Duplication &amp; Idempotency</a>
+          <a href="#mass-cancel" class="sidebar-link">Mass Cancel Failure Modes</a>
+          <a href="#stale-state" class="sidebar-link">Stale State After Reconnection</a>
+          <a href="#partial-fill" class="sidebar-link">Partial Fill Ambiguity</a>
+          <a href="#incident-response" class="sidebar-link">Incident Response &amp; War Room</a>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- MIDDLE COLUMN (Docs Content) -->
+    <main id="docs-dynamic-content" class="flex-grow max-w-5xl flex flex-col gap-12 min-w-0 overflow-y-auto" aria-live="polite">
+      <!-- Loaded dynamically via js/loader.js -->
+    </main>
+
+    <!-- RIGHT SIDEBAR (On this page) -->
+    <aside class="hidden xl:block w-48 sticky top-24 h-[calc(100vh-120px)] overflow-y-auto shrink-0 border-l border-slate-200 dark:border-slate-800 pl-6">
+      <h4 class="sidebar-label !text-[10px] !pt-0 !pb-0 mb-3">On this page</h4>
+      <nav id="docs-right-outline" class="space-y-3 text-xs text-slate-500 dark:text-slate-400" aria-label="Page sections">
+        <!-- Loaded dynamically via js/loader.js -->
+      </nav>
+    </aside>
+
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 py-8 bg-slate-100 dark:bg-slate-900/60">
+    <div class="max-w-7xl mx-auto px-6 flex justify-center items-center text-sm text-slate-500 dark:text-slate-400">
+      <span>Made with ❤️ by <a href="https://www.linkedin.com/in/kallol-chakraborty-9728a699/" target="_blank" rel="noopener noreferrer" class="text-brand-500 hover:text-brand-600 transition-colors font-semibold">Kallol Chakraborty</a></span>
+    </div>
+  </footer>
+
+  <!-- ==================== SEARCH MODAL ==================== -->
+  <div id="search-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-label="Search">
+    <div id="search-modal-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+    <div class="absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-lg mx-4">
+      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="search-header-container flex items-center gap-3 px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+          <span class="material-symbols-outlined text-slate-400 text-[20px]">search</span>
+          <input id="modal-search-input" type="text" class="flex-1 bg-transparent border-none outline-none focus:ring-0 text-sm placeholder:text-slate-400 text-slate-800 dark:text-slate-200" placeholder="Search HFT artifacts..." autocomplete="off">
+          <button id="close-search-modal" class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-medium px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">ESC</button>
+        </div>
+        <div id="modal-search-results" class="max-h-[80vh] overflow-y-auto">
+          <div class="p-6 text-center text-slate-400 text-sm">Type to search HFT artifacts...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SHARE MODAL ==================== -->
+  <div id="share-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-label="Share">
+    <div id="share-modal-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-4">
+      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold">Share</h3>
+          <button id="close-share-modal" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-slate-400">close</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="share-url-input" type="text" class="flex-1 px-3 py-2 text-sm bg-slate-100 dark:bg-slate-800 rounded-lg border-none focus:ring-2 focus:ring-brand-500 outline-none text-slate-700 dark:text-slate-300" readonly>
+          <button id="copy-link-btn" class="shrink-0 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-lg transition-colors">Copy Link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/generated.js"></script>
+  <script src="js/modals.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="js/loader.js"></script>
+  <script>
+    (function() {
+      var sidebar = document.getElementById('left-sidebar');
+      var backdrop = document.getElementById('sidebar-backdrop');
+      var toggle = document.getElementById('sidebar-toggle');
+      if (!sidebar || !backdrop || !toggle) return;
+
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      toggle.addEventListener('click', function() {
+        if (sidebar.classList.contains('-translate-x-full')) {
+          openSidebar();
+        } else {
+          closeSidebar();
+        }
+      });
+
+      backdrop.addEventListener('click', closeSidebar);
+
+      sidebar.querySelectorAll('.sidebar-link').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (window.innerWidth < 1024) {
+            closeSidebar();
+          }
+        });
+      });
+
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          backdrop.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

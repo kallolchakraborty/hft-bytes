@@ -1,0 +1,30 @@
+{
+  "id": "options-hft",
+  "title": "Options & Derivatives HFT",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "cpp",
+  "description": "Options market making, implied volatility surface, delta hedging, gamma scalping, futures vs options microstructure, multi-listed option arbitration, and risk Greeks computation.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Options market-making: provide two-sided quotes on option series (calls/puts across strikes and expiries); manage inventory risk via delta hedging with the underlying futures/stock</li>\n<li>Greeks computation: delta (dPrice/dSpot), gamma (dDelta/dSpot), vega (dPrice/dVol), theta (dPrice/dTime); computed via analytic Black-Scholes or finite-difference for American-style options</li>\n<li>Vol surface: implied vol varies by strike (vol smile/skew) and tenor (term structure); MM must continuously update vol surface from traded prices and model arbitrage-free surface</li>\n<li>Delta hedging: hedge delta to near-zero after each fill; delta-neutral book isolates gamma/vega risk; hedge ratio changes with spot (gamma effect)</li>\n<li>Gamma scalping: profitable when realized vol > implied vol at entry; MM earns bid-ask on the option roll while gamma scalping the underlying</li>\n<li>Multi-listed options: single-name options trade on multiple exchanges (e.g., AMEX, CBOE, NASDAQ PHLX, NYSE Arca); arb opportunity if same series quoted at different prices</li>\n<li>Options auction mechanics: opening rotation, complex order auctions (COA), electronic vs floor trading; each exchange has different matching rules</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Delta computation (Black-Scholes for European options)\nstruct OptionGreeks {\n    double delta;   // [-1, 1] for calls: [0,1], puts: [-1,0]\n    double gamma;   // always positive\n    double vega;    // sensitivity to 1% vol change\n    double theta;   // time decay (typically negative)\n\n    static OptionGreeks computeBS(double S, double K, double T,\n                                  double r, double sigma, bool isCall) {\n        double d1 = (std::log(S / K) + (r + sigma * sigma * 0.5) * T)\n                    / (sigma * std::sqrt(T));\n        double d2 = d1 - sigma * std::sqrt(T);\n        auto cdf = [](double x) { return 0.5 * std::erfc(-x * M_SQRT1_2); };\n        OptionGreeks g{};\n        g.delta = isCall ? cdf(d1) : cdf(d1) - 1.0;\n        g.gamma = std::exp(-d1 * d1 * 0.5) / (S * sigma * std::sqrt(2 * M_PI * T));\n        // vega, theta omitted for brevity\n        return g;\n    }\n};\n\n// Options MM inventory risk\nstruct OptionsPosition {\n    // Underlying hedge\n    double underlying_delta_hedge_;  // shares/futures to neutralize delta\n    // Greeks by vol surface node\n    struct RiskNode {\n        double strike_, expiry_;\n        double gamma_, vega_, theta_;\n        double net_pos_;  // signed contracts\n    };\n    std::vector&lt;RiskNode&gt; risk_book_;\n    double total_gamma_;   // aggregate gamma exposure\n    double total_vega_;    // aggregate vega exposure\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Options symbol parsing (OPRA format)\n// &quot;AAPL  240621C00150000&quot; -&gt; AAPL, Jun 21 2024, Call, $150.00\nstruct OptionKey {\n    std::string underlying;\n    uint32_t expiry_yyyymmdd;\n    bool is_call;\n    uint64_t strike;  // scaled by 1000 for integer math\n\n    static OptionKey fromOpra(const char* symbol);\n    uint64_t toHash() const;  // for order-book key\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "trading"
+  ],
+  "type": "reference",
+  "toc": false
+}

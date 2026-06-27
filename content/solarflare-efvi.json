@@ -1,0 +1,30 @@
+{
+  "id": "solarflare-efvi",
+  "title": "Solarflare ef_vi & Onload",
+  "phase": 5,
+  "phaseName": "Kernel Bypass & Protocols",
+  "category": "Kernel Bypass",
+  "subcategory": "kernel-bypass",
+  "language": "cpp",
+  "description": "ef_vi API for zero-copy packet IO, vi_resource allocation, ef_event completion model, tc-to-tc bypass, Onload TCP acceleration stack, OpenOnload multicast, filter programming, and Solarflare vs Mellan",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>ef_vi (efabless Virtual Interface): direct userspace access to Solarflare NIC hardware without syscalls; each <code>vi_resource</code> maps to a NIC hardware RX/TX queue; pinned to one core</li>\n<li>Packet IO: <code>ef_vi_receive()</code> polls RX descriptor ring in userspace-mapped memory; <code>ef_vi_transmit()</code> posts TX descriptors directly; all without kernel involvement</li>\n<li>ef_event: event-driven completion model; <code>ef_eventq_get</code> returns batched completion events; alternatives: polling (lower latency, higher CPU) vs event-driven (balanced)</li>\n<li>tc-to-tc bypass: Solarflare's \"transfer from tc\" feature copies receive data directly into a transmit descriptor ring buffer; eliminates userspace packet copy for low-latency order forwarding</li>\n<li>Filter programming: <code>ioctl(SIOCSFFLAG)</code> or <code>ef_vi_filter_add()</code> to steer specific flows (UDP port, IP, VLAN) to a given VI; hardware RSS independent per VI</li>\n<li>Onload TCP acceleration: user-space TCP stack that intercepts <code>send/recv</code> via <code>LD_PRELOAD</code>; bypasses kernel TCP entirely; full socket API compatibility</li>\n<li>OpenOnload for multicast: Onload's multicast acceleration eliminates kernel <code>recvmsg</code> for market data over UDP multicast; reduces latency from ~5-10 us to ~1-2 us per packet</li>\n<li>Limitations: Solarflare ef_vi is proprietary (requires Solarflare NICs); Mellanox VMA (Messaging Accelerator) is the competing solution for ConnectX adapters; VMA uses <code>libvma</code> for similar acceleration</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// ef_vi receive path (zero-copy polling)\nstruct EFVIReceiver {\n    ef_vi vi_;\n    ef_driver_handle driver_;\n    int n_rx_ = 0;\n    ef_addr rx_dma_buf_;   // DMA buffer for receive\n    void* rx_buf_;          // userspace mapping\n\n    void setup(const char* ifname, int queue) {\n        ef_vi_set_name(ifname, &amp;vi_);\n        // Allocate VI resource\n        ef_vi_alloc_from_rxq(&amp;vi_, driver_, &amp;vi_, -1, queue, rx_dma_buf_);\n        // Map DMA buffers\n        ef_vi_receive_init(&amp;vi_, rx_dma_buf_, rx_buf_, buf_size, n_rx_);\n    }\n\n    int recv_pkts() {\n        // Poll RX descriptor\n        int idx = ef_vi_receive(&amp;vi_, &amp;rx_dma_buf_);\n        if (idx &lt; 0) return 0;\n        // Packet data is at rx_buf_ + ef_vi_receive_copy(&amp;vi_, idx)\n        return 1;\n    }\n};\n\n// tc-to-tc forward: receive then transmit without copy\nvoid forward_pkt(ef_vi* rx_vi, ef_vi* tx_vi, void* buf, int len) {\n    // Use ef_vi_transfer_to_tc to move RX buf to TX queue\n    // No memcpy needed — hardware scatter-gather\n    ef_vi_transmit_copy(tx_vi, buf, len);\n}</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Onload usage: LD_PRELOAD for TCP acceleration\n// LD_PRELOAD=libonload.so ./trading_gateway --session cme\n// OpenOnload for multicast market data:\n// LD_PRELOAD=libonload.so EF_TCP_MULTICAST_PROXY=1 ./feed_handler\n\n// ef_vi filter: steer CME MDP traffic to dedicated VI\n// struct ef_filter_spec spec;\n// ef_filter_spec_init(&amp;spec, EF_FILTER_FLAGS_NONE);\n// spec.ether_type = 0x0800;     // IPv4\n// spec.udp.dst_port = 5100;     // CME MDP port range\n// spec.vlan_id = 0x123;         // optional VLAN filter\n// ef_vi_filter_add(&amp;vi, &amp;spec, rx_dma_buf_);\n\n// Solarflare ef_vi latency: ~0.5-1us per packet (vs ~3-5us via kernel)</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

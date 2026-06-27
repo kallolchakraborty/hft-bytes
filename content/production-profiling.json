@@ -1,0 +1,30 @@
+{
+  "id": "production-profiling",
+  "title": "Production Profiling",
+  "phase": 14,
+  "phaseName": "Monitoring & Security",
+  "category": "Monitoring & Security",
+  "subcategory": "monitoring",
+  "language": "cpp",
+  "description": "perf stat/record/report, flamegraphs, bpftrace one-liners for latency, USDT probes in trading applications, CPI analysis for front-end stalls.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>perf stat identifies top-level bottlenecks: cycles, instructions, cache misses, branch mispredictions, stalled cycles</li>\n<li>perf record / report call-graph profiles identify hot functions; use --call-graph dwarf for full stack traces</li>\n<li>Flamegraphs visualise CPU time per call path; svg output enables drill-down on hot frames</li>\n<li>bpftrace provides low-overhead one-liners: trace syscall latency, scheduler wakeups, context switches</li>\n<li>USDT probes embedded in your trading app enable dtrace/bpftrace instrumentation without recompilation</li>\n<li>CPI (cycles-per-instruction) analysis: > 2.0 indicates front-end stalls; > 3.0 indicates cache miss-bound</li>\n<li>Cache miss rate per function via perf c2c (false sharing detection)</li>\n<li>Profiling in production: sampling rate of 99 Hz (perf) is safe; avoid frame-pointers on modern GCC</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// USDT probe for bpftrace\n#include &lt;sys/sdt.h&gt;\n\nvoid handlePacket(const char* data, size_t len) {\n    DTRACE_PROBE2(hft_app, packet_received, data, len);\n    // ... processing ...\n    DTRACE_PROBE1(hft_app, packet_done, getpid());\n}</code></pre>\n<pre><code class=\"language-bash\"># bpftrace: trace syscall latency in the trading PID\nbpftrace -e 'tracepoint:syscalls:sys_enter_* /pid == 12345/ {\n    @start[tid] = nsecs;\n}\ntracepoint:syscalls:sys_exit_* /@start[tid]/ {\n    @us[tid] = hist((nsecs - @start[tid]) / 1000);\n    delete(@start[tid]);\n}'\n\n# perf: CPU profile at 99 Hz, generate flamegraph\nperf record -F 99 -p $(pgrep trading_app) -g -- sleep 60\nperf script | stackcollapse-perf.pl | flamegraph.pl &gt; flame.svg\n\n# perf stat: quick hardware counters\nperf stat -e cycles,instructions,cache-misses,branch-misses \\\n         -p $(pgrep trading_app) sleep 10</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// RDTSC-based in-process profiling\nstatic inline uint64_t rdtscp() {\n    uint32_t lo, hi;\n    asm volatile(&quot;rdtscp&quot; : &quot;=a&quot;(lo), &quot;=d&quot;(hi) :: &quot;ecx&quot;);\n    return ((uint64_t)hi &lt;&lt; 32) | lo;\n}\n\nstruct ScopeTimer {\n    const char* name;\n    uint64_t start = rdtscp();\n    ~ScopeTimer() {\n        uint64_t elapsed = rdtscp() - start;\n        static thread_local FILE* log = fopen(&quot;profile.csv&quot;, &quot;a&quot;);\n        fprintf(log, &quot;%s,%lu\\n&quot;, name, elapsed);\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

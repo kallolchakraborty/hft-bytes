@@ -1,0 +1,30 @@
+{
+  "id": "backfill",
+  "title": "Backfill",
+  "phase": 12,
+  "phaseName": "Data Engineering",
+  "category": "Phase 12 - Data Engineering",
+  "subcategory": "data-engineering",
+  "language": "cpp",
+  "description": "Gap detection: scan sequence numbers for missing intervals. Multi-source reconciliation: compare timestamps + prices across vendors",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Gap detection: scan sequence numbers for missing intervals</li>\n<li>Multi-source reconciliation: compare timestamps + prices across vendors</li>\n<li>Out-of-order handling: buffer, sort, or drop late arrivals</li>\n<li>Data integrity: checksums on blocks, cross-source comparison</li>\n<li>Repair strategies: interpolation, vendor re-request, fill from alternative</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>BackfillOrchestrator bf(data_store, vendor_api);\nbf.detectGaps(\"2024-06-01\", \"2024-06-30\");\nauto gaps = bf.gaps();\nfor (auto& g : gaps) bf.fill(g);</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;vector&gt;\n#include &lt;cstdint&gt;\n#include &lt;unordered_map&gt;\n#include &lt;algorithm&gt;\n\n// --------------------------------------------------------------------\n// Gap Detection\n\nclass GapDetector {\n    std::vector&lt;uint64_t&gt; seq_numbers_;\n\npublic:\n    void addSeq(uint64_t seq) {\n        seq_numbers_.push_back(seq);\n    }\n\n    // Detect gaps — assumes sorted input\n    std::vector&lt;std::pair&lt;uint64_t, uint64_t&gt;&gt; detect() {\n        std::vector&lt;std::pair&lt;uint64_t, uint64_t&gt;&gt; gaps;\n        std::sort(seq_numbers_.begin(), seq_numbers_.end());\n        for (size_t i = 1; i &lt; seq_numbers_.size(); ++i) {\n            uint64_t diff = seq_numbers_[i] - seq_numbers_[i-1];\n            if (diff &gt; 1) {\n                // tradeoff: small gaps (&lt;5) can be interpolated, large need refetch\n                gaps.emplace_back(seq_numbers_[i-1] + 1, seq_numbers_[i] - 1);\n            }\n        }\n        return gaps;\n    }\n};\n\n// --------------------------------------------------------------------\n// Multi-Source Reconciliation\n\nstruct TickRecord {\n    uint64_t ts_ns;\n    double bid, ask, last;\n    uint32_t bsz, asz, lsz;\n};\n\nclass ReconciliationEngine {\n    std::vector&lt;TickRecord&gt; source_a_;\n    std::vector&lt;TickRecord&gt; source_b_;\n    double tolerance_bps_{1.0};  // 1bp tolerance for price mismatch\n\npublic:\n    struct Mismatch {\n        uint64_t ts_ns;\n        double bid_a, bid_b;\n        double diff_bps;\n        enum { PRICE_MISMATCH, MISSING_IN_A, MISSING_IN_B } type;\n    };\n\n    // Merge and diff two sources by timestamp\n    std::vector&lt;Mismatch&gt; reconcile() {\n        std::vector&lt;Mismatch&gt; issues;\n        size_t i = 0, j = 0;\n        while (i &lt; source_a_.size() &amp;&amp; j &lt; source_b_.size()) {\n            if (std::abs(static_cast&lt;int64_t&gt;(source_a_[i].ts_ns\n                         - source_b_[j].ts_ns)) &lt; 1000000) {  // 1ms window\n                // Same tick — compare prices\n                double diff = std::abs(source_a_[i].bid - source_b_[j].bid)\n                            / source_a_[i].bid * 10000;\n                if (diff &gt; tolerance_bps_) {\n                    issues.push_back({source_a_[i].ts_ns,\n                        source_a_[i].bid, source_b_[j].bid,\n                        diff, Mismatch::PRICE_MISMATCH});\n                }\n                ++i; ++j;\n            } else if (source_a_[i].ts_ns &lt; source_b_[j].ts_ns) {\n                issues.push_back({source_a_[i].ts_ns, 0, 0, 0,\n                                  Mismatch::MISSING_IN_B});\n                ++i;\n            } else {\n                issues.push_back({source_b_[j].ts_ns, 0, 0, 0,\n                                  Mismatch::MISSING_IN_A});\n                ++j;\n            }\n        }\n        return issues;\n    }\n\n    // Data integrity: block-level checksums\n    static uint64_t blockChecksum(const std::vector&lt;uint8_t&gt;&amp; block) {\n        // tradeoff: CRC32 (fast, HW-accel) vs SHA256 (crypto-grade)\n        // HFT: CRC32C is sufficient and SIMD-accelerated\n        uint64_t hash = 0xFFFFFFFF;\n        for (size_t i = 0; i &lt; block.size(); ++i) {\n            hash ^= block[i];\n            for (int b = 0; b &lt; 8; ++b)\n                hash = (hash &gt;&gt; 1) ^ (0xEDB88320 &amp; -(hash &amp; 1));\n        }\n        return hash ^ 0xFFFFFFFF;\n    }\n\n    // Out-of-order handling\n    std::vector&lt;TickRecord&gt; sortOutOfOrder(std::vector&lt;TickRecord&gt;&amp; ticks) {\n        // tradeoff: sort all vs sliding window (incremental sort)\n        std::stable_sort(ticks.begin(), ticks.end(),\n              [](auto&amp; a, auto&amp; b) { return a.ts_ns &lt; b.ts_ns; });\n        return ticks;\n    }\n\n    // Repair: linear interpolation for small gaps\n    // tradeoff: linear vs cubic spline vs copy-last\n    TickRecord interpolate(const TickRecord&amp; prev, const TickRecord&amp; next,\n                           uint64_t target_ts) {\n        double t = static_cast&lt;double&gt;(target_ts - prev.ts_ns)\n                 / (next.ts_ns - prev.ts_ns);\n        return {target_ts,\n                prev.bid + t * (next.bid - prev.bid),\n                prev.ask + t * (next.ask - prev.ask),\n                prev.last + t * (next.last - prev.last),\n                0, 0, 0};\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "phase-12"
+  ],
+  "type": "reference",
+  "toc": false
+}

@@ -1,0 +1,30 @@
+{
+  "id": "prod-debugging",
+  "title": "Production Debugging Tooling for HFT",
+  "phase": 15,
+  "phaseName": "Testing & Production",
+  "category": "Testing",
+  "subcategory": "testing",
+  "language": "bash",
+  "description": "GDB attached to live trading processes, core dump analysis for HFT crashes, rr record/replay for deterministic debugging of order book events, strace/ltrace for syscall latency profiling, crash teleme",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>GDB on live HFT processes: <code>gdb -p <pid></code> attaches in read-only mode; can inspect current order book state, position aggregates, sequence numbers, but cannot modify execution state; use <code>p</code> to print strategy variables, <code>info threads</code> to list all threads, <code>bt</code> for backtrace of stuck thread</li>\n<li>Core dump analysis: configure kernel to capture cores on crash (<code>ulimit -c unlimited</code>; <code>sysctl kernel.core_pattern</code>); enable minidumps (Google breakpad) for production with sensitive data stripping; analyze with <code>gdb /path/to/binary core</code> + <code>bt full</code> + <code>frame N</code> → identify exact line of crash</li>\n<li>rr (record/replay): <code>rr record /opt/hft/strategy --config prod</code> → deterministic replay of the exact execution; reproduce heisenbugs that disappear under debugger; <code>rr replay</code> jumps forward/backward with <code>reverse-continue</code> / <code>reverse-next</code></li>\n<li>strace/ltrace: <code>strace -e network -p <pid></code> shows all syscalls with timestamps; filter for <code>recvmsg</code>, <code>sendto</code>, <code>writev</code> to measure kernel-bypass fallback paths; <code>strace -T -p <pid></code> adds syscall duration; <code>ltrace -e malloc+free</code> for heap profiling</li>\n<li>GDB scripting for automated crash triage: <code>set pagination off</code> + <code>bt full</code> + <code>info registers</code> → pipe to analysis script that classifies crash type (null ptr, segfault, assertion, corrupted book)</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-bash\"># Attach to live strategy (read-only)\ngdb -p $(pgrep -x strategy)\n\n# In GDB shell:\n(gdb) p order_book-&gt;total_buy_qty\n(gdb) info threads\n(gdb) thread apply all bt\n\n# Capture core dump with breakpad\n# Set in /etc/sysctl.d/99-core.conf:\n# kernel.core_pattern = /var/crash/core.%e.%p.%h.%t\n# fs.suid_dumpable = 2\n# ulimit -c unlimited in init script\n\n# rr record session\nrr record /opt/hft/bin/strategy --config prod\n# rr replay\nrr replay\n\n# strace syscall latency profiling\nstrace -e trace=network -T -p $(pgrep market-data) -o /tmp/md_syscalls.log\n# Lines show: sendto(3, ..., 64) = 64 &lt;0.000042&gt;  ← 42µs syscall</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-gdb\"># GDB triage script: dump crash context to file\ndefine dump-crash\n    set pagination off\n    set logging file /var/crash/triage_$arg0.txt\n    set logging on\n    bt full\n    info registers\n    info threads\n    x/20gx $rsp\n    set logging off\nend\n\n# Usage: gdb -batch -x triage.gdb -p $(pgrep strategy)\n# Or on core dump: gdb -batch -x triage.gdb /opt/hft/bin/strategy core.12345\n\n# Breakpad signal handler: catches SIGSEGV/SIGABRT, writes minidump\n# /var/crash/minidumps/*.dmp → analyzed with minidump_stackwalk</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "testing"
+  ],
+  "type": "reference",
+  "toc": false
+}

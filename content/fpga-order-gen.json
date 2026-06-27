@@ -1,0 +1,31 @@
+{
+  "id": "fpga-order-gen",
+  "title": "FPGA Order Gen",
+  "phase": 13,
+  "phaseName": "FPGA & Hardware",
+  "category": "Phase 13 - FPGA & Hardware",
+  "subcategory": "fpga",
+  "language": "cpp",
+  "description": "FIX/OUCH encoding: binary vs ASCII (OUCH is binary → faster). Sequence number management: incrementing per-session counter",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>FIX/OUCH encoding: binary vs ASCII (OUCH is binary → faster)</li>\n<li>Sequence number management: incrementing per-session counter</li>\n<li>CRC computation: CRC-16 for FIX, CRC-32C for Ethernet</li>\n<li>Heartbeat timer: periodic keepalive when no orders</li>\n<li>Order state machine: New→Acked→Filled|Canceled|Rejected</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>// Verilog FIX encoder + order state machine</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// --------------------------------------------------------------------\n// Verilog FIX Encoder (simplified — NASDAQ OUCH 4.1 is binary)\n\n/*\n *\n * OUCH message types:\n *   0x01 = Add Order (12 bytes payload)\n *   0x02 = Cancel (2 bytes payload)\n *   0x03 = Replace (10 bytes payload)\n *\n * FIX over FPGA:\n *   Most HFT firms use OUCH (NASDAQ) or binary FIX (CME MDP 3.0)\n *   ASCII FIX has variable-length overhead → hard in hardware\n *   tradeoff: ASCII FIX (market standard) vs binary OUCH (lower latency)\n */\n\nmodule ouch_encoder (\n    input wire clk, rst_n,\n    // Order interface\n    input wire [7:0]  msg_type,     // 0x01=add, 0x02=cancel, 0x03=replace\n    input wire [63:0] order_ref,\n    input wire [31:0] quantity,\n    input wire [63:0] price,\n    input wire        side,         // 0=buy, 1=sell\n    input wire        order_valid,\n    // Encoded output to MAC\n    output reg [511:0] tx_data,\n    output reg         tx_valid\n);\n\n    // Sequence number (per session)\n    reg [31:0] seqno;\n    reg [31:0] next_seqno;\n\n    always @(posedge clk or negedge rst_n) begin\n        if (!rst_n) begin\n            seqno &lt;= 32'd0;\n            tx_valid &lt;= 1'b0;\n        end else if (order_valid) begin\n            seqno &lt;= next_seqno;\n            // Build OUCH packet:\n            // [msg_type(1) | seqno(4) | order_ref(8) | qty(4) | price(8) | side(1)]\n            tx_data[7:0]   &lt;= msg_type;\n            tx_data[39:8]  &lt;= seqno;       // 32-bit seqno\n            tx_data[103:40] &lt;= order_ref;  // 64-bit order ref\n            tx_data[135:104] &lt;= quantity;\n            tx_data[199:136] &lt;= price;     // 64-bit price\n            tx_data[200]    &lt;= side;\n            tx_valid &lt;= 1'b1;\n        end else begin\n            tx_valid &lt;= 1'b0;\n            // Heartbeat timer (not shown)\n        end\n    end\n\n    // CRC-16 for FIX (polynomial 0x8005)\n    // tradeoff: parallel CRC (1 cycle) vs LFSR (N cycles)\n    // Parallel CRC: pre-computed XOR tree, 4-5 LUT levels\n    function [15:0] crc16(input [511:0] data);\n        // synthesized XOR tree for CRC-16/XMODEM\n        // tradeoff: DSP slices vs LUTs for CRC\n        crc16 = 16'h0000;\n    endfunction\n\n    // Order state machine\n    localparam IDLE       = 3'd0;\n    localparam SENT       = 3'd1;\n    localparam ACK_PEND   = 3'd2;\n    localparam ACKED      = 3'd3;\n    localparam FILL_PART  = 3'd4;\n    localparam FILL_FULL  = 3'd5;\n    localparam CANCEL_SENT = 3'd6;\n\n    reg [2:0] order_state;\n    // State machine transitions on incoming ACK/REJ/FILL from exchange\n    // tradeoff: full state machine vs simple (missing edge cases = bugs)\nendmodule</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "fpga",
+    "order-types"
+  ],
+  "type": "reference",
+  "toc": false
+}

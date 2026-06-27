@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FF1744"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">CPU Cache Hierarchy — NUMA Topology</text>
+
+  <!-- Socket 0 -->
+  <rect x="30" y="70" width="460" height="320" rx="8" fill="#FFEBEE" stroke="#FF1744" stroke-width="1.5"/>
+  <text x="260" y="92" text-anchor="middle" font-size="13" font-weight="bold" fill="#FF1744">Socket 0 (NUMA Node 0)</text>
+
+  <!-- Core 0-3 -->
+  <rect x="45" y="105" width="210" height="135" rx="6" fill="#FFF" stroke="#94A3B8" stroke-width="1"/>
+  <text x="150" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Core 0</text>
+  <rect x="55" y="130" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="100" y="150" text-anchor="middle" font-size="9" fill="#1E40AF">L1d 32KB</text>
+  <text x="100" y="163" text-anchor="middle" font-size="8" fill="#64748B">~1ns</text>
+  <rect x="155" y="130" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="200" y="150" text-anchor="middle" font-size="9" fill="#1E40AF">L1i 32KB</text>
+  <text x="200" y="163" text-anchor="middle" font-size="8" fill="#64748B">~1ns</text>
+  <rect x="55" y="180" width="190" height="45" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="150" y="200" text-anchor="middle" font-size="9" fill="#166534">L2 256KB (private)</text>
+  <text x="150" y="213" text-anchor="middle" font-size="8" fill="#64748B">~4ns</text>
+
+  <!-- Core 1 -->
+  <rect x="265" y="105" width="210" height="135" rx="6" fill="#FFF" stroke="#94A3B8" stroke-width="1"/>
+  <text x="370" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Core 1</text>
+  <rect x="275" y="130" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="320" y="150" text-anchor="middle" font-size="9" fill="#1E40AF">L1d 32KB</text>
+  <text x="320" y="163" text-anchor="middle" font-size="8" fill="#64748B">~1ns</text>
+  <rect x="375" y="130" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="420" y="150" text-anchor="middle" font-size="9" fill="#1E40AF">L1i 32KB</text>
+  <text x="420" y="163" text-anchor="middle" font-size="8" fill="#64748B">~1ns</text>
+  <rect x="275" y="180" width="190" height="45" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="370" y="200" text-anchor="middle" font-size="9" fill="#166534">L2 256KB (private)</text>
+  <text x="370" y="213" text-anchor="middle" font-size="8" fill="#64748B">~4ns</text>
+
+  <!-- Core 2 -->
+  <rect x="45" y="250" width="210" height="135" rx="6" fill="#FFF" stroke="#94A3B8" stroke-width="1"/>
+  <text x="150" y="267" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Core 2</text>
+  <rect x="55" y="275" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="100" y="295" text-anchor="middle" font-size="9" fill="#1E40AF">L1d 32KB</text>
+  <rect x="155" y="275" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="200" y="295" text-anchor="middle" font-size="9" fill="#1E40AF">L1i 32KB</text>
+  <rect x="55" y="325" width="190" height="45" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="150" y="345" text-anchor="middle" font-size="9" fill="#166534">L2 256KB (private)</text>
+
+  <!-- Core 3 -->
+  <rect x="265" y="250" width="210" height="135" rx="6" fill="#FFF" stroke="#94A3B8" stroke-width="1"/>
+  <text x="370" y="267" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Core 3</text>
+  <rect x="275" y="275" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="320" y="295" text-anchor="middle" font-size="9" fill="#1E40AF">L1d 32KB</text>
+  <rect x="375" y="275" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="420" y="295" text-anchor="middle" font-size="9" fill="#1E40AF">L1i 32KB</text>
+  <rect x="275" y="325" width="190" height="45" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="370" y="345" text-anchor="middle" font-size="9" fill="#166534">L2 256KB (private)</text>
+
+  <!-- L3 Socket 0 -->
+  <rect x="45" y="400" width="430" height="55" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="260" y="422" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309">L3 Cache — 20MB Shared (per socket)</text>
+  <text x="260" y="440" text-anchor="middle" font-size="9" fill="#64748B">~15ns — Inclusive, snooping protocol</text>
+
+  <!-- L3 --> QPI/UPI Link between sockets -->
+  <rect x="45" y="398" width="0" height="0" rx="0" fill="none"/>
+
+  <!-- Socket 1 -->
+  <rect x="510" y="70" width="460" height="320" rx="8" fill="#FFEBEE" stroke="#FF1744" stroke-width="1.5"/>
+  <text x="740" y="92" text-anchor="middle" font-size="13" font-weight="bold" fill="#FF1744">Socket 1 (NUMA Node 1)</text>
+
+  <!-- Core 4 -->
+  <rect x="525" y="105" width="210" height="135" rx="6" fill="#FFF" stroke="#94A3B8" stroke-width="1"/>
+  <text x="630" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Core 4</text>
+  <rect x="535" y="130" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="580" y="150" text-anchor="middle" font-size="9" fill="#1E40AF">L1d 32KB</text>
+  <text x="580" y="163" text-anchor="middle" font-size="8" fill="#64748B">~1ns</text>
+  <rect x="635" y="130" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="680" y="150" text-anchor="middle" font-size="9" fill="#1E40AF">L1i 32KB</text>
+  <text x="680" y="163" text-anchor="middle" font-size="8" fill="#64748B">~1ns</text>
+  <rect x="535" y="180" width="190" height="45" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="630" y="200" text-anchor="middle" font-size="9" fill="#166534">L2 256KB (private)</text>
+  <text x="630" y="213" text-anchor="middle" font-size="8" fill="#64748B">~4ns</text>
+
+  <!-- Core 5 -->
+  <rect x="745" y="105" width="210" height="135" rx="6" fill="#FFF" stroke="#94A3B8" stroke-width="1"/>
+  <text x="850" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Core 5</text>
+  <rect x="755" y="130" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="800" y="150" text-anchor="middle" font-size="9" fill="#1E40AF">L1d 32KB</text>
+  <text x="800" y="163" text-anchor="middle" font-size="8" fill="#64748B">~1ns</text>
+  <rect x="855" y="130" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="900" y="150" text-anchor="middle" font-size="9" fill="#1E40AF">L1i 32KB</text>
+  <text x="900" y="163" text-anchor="middle" font-size="8" fill="#64748B">~1ns</text>
+  <rect x="755" y="180" width="190" height="45" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="850" y="200" text-anchor="middle" font-size="9" fill="#166534">L2 256KB (private)</text>
+  <text x="850" y="213" text-anchor="middle" font-size="8" fill="#64748B">~4ns</text>
+
+  <!-- Core 6 -->
+  <rect x="525" y="250" width="210" height="135" rx="6" fill="#FFF" stroke="#94A3B8" stroke-width="1"/>
+  <text x="630" y="267" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Core 6</text>
+  <rect x="535" y="275" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="580" y="295" text-anchor="middle" font-size="9" fill="#1E40AF">L1d 32KB</text>
+  <rect x="635" y="275" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="680" y="295" text-anchor="middle" font-size="9" fill="#1E40AF">L1i 32KB</text>
+  <rect x="535" y="325" width="190" height="45" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="630" y="345" text-anchor="middle" font-size="9" fill="#166534">L2 256KB (private)</text>
+
+  <!-- Core 7 -->
+  <rect x="745" y="250" width="210" height="135" rx="6" fill="#FFF" stroke="#94A3B8" stroke-width="1"/>
+  <text x="850" y="267" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">Core 7</text>
+  <rect x="755" y="275" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="800" y="295" text-anchor="middle" font-size="9" fill="#1E40AF">L1d 32KB</text>
+  <rect x="855" y="275" width="90" height="40" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="900" y="295" text-anchor="middle" font-size="9" fill="#1E40AF">L1i 32KB</text>
+  <rect x="755" y="325" width="190" height="45" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="850" y="345" text-anchor="middle" font-size="9" fill="#166534">L2 256KB (private)</text>
+
+  <!-- L3 Socket 1 -->
+  <rect x="525" y="400" width="430" height="55" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="740" y="422" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309">L3 Cache — 20MB Shared (per socket)</text>
+  <text x="740" y="440" text-anchor="middle" font-size="9" fill="#64748B">~15ns — Inclusive, snooping protocol</text>
+
+  <!-- QPI/UPI Link between sockets -->
+  <rect x="490" y="200" width="20" height="110" rx="4" fill="#F3E8FF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="500" y="240" text-anchor="middle" font-size="8" font-weight="bold" fill="#9333EA" transform="rotate(-90,500,240)">UPI</text>
+  <text x="500" y="260" text-anchor="middle" font-size="7" fill="#64748B" transform="rotate(-90,500,260)">20GT/s</text>
+
+  <!-- RAM -->
+  <rect x="30" y="480" width="940" height="60" rx="8" fill="#1E293B"/>
+  <text x="500" y="506" text-anchor="middle" font-size="13" font-weight="bold" fill="#94A3B8">DDR5 System Memory — 128GB (64GB per NUMA node)</text>
+  <text x="500" y="525" text-anchor="middle" font-size="10" fill="#64748B">~100ns local access | ~160ns remote (cross-socket) access | 2-channel per socket @ 4800MT/s</text>
+
+  <!-- Latency Legend -->
+  <rect x="30" y="560" width="940" height="170" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="50" y="582" font-size="12" font-weight="bold" fill="#FF1744">Latency Reference (Access Times)</text>
+  <line x1="50" y1="588" x2="950" y2="588" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <rect x="50" y="600" width="200" height="30" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="150" y="620" text-anchor="middle" font-size="10" fill="#1E40AF">L1 Cache: ~1ns (3-4 cycles)</text>
+
+  <rect x="270" y="600" width="200" height="30" rx="4" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+  <text x="370" y="620" text-anchor="middle" font-size="10" fill="#166534">L2 Cache: ~4ns (12 cycles)</text>
+
+  <rect x="490" y="600" width="200" height="30" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="590" y="620" text-anchor="middle" font-size="10" fill="#B45309">L3 Cache: ~15ns (45 cycles)</text>
+
+  <rect x="710" y="600" width="200" height="30" rx="4" fill="#F3E8FF" stroke="#A855F7" stroke-width="1"/>
+  <text x="810" y="620" text-anchor="middle" font-size="10" fill="#7E22CE">RAM: ~100ns (300 cycles)</text>
+
+  <text x="50" y="665" font-size="10" fill="#475569">Key points:</text>
+  <text x="50" y="683" font-size="9" fill="#64748B">• L1/L2 are private per-core — no contention between threads on different cores</text>
+  <text x="50" y="699" font-size="9" fill="#64748B">• L3 is shared within a socket — last level cache before going to RAM</text>
+  <text x="50" y="715" font-size="9" fill="#64748B">• NUMA: accessing remote socket RAM costs ~60% more latency (∼160ns vs ∼100ns)</text>
+  <text x="50" y="731" font-size="9" fill="#64748B">• cache line size = 64 bytes; alignas(64) prevents false sharing between threads</text>
+</svg>

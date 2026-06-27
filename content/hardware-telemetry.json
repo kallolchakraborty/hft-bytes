@@ -1,0 +1,31 @@
+{
+  "id": "hardware-telemetry",
+  "title": "Hardware Telemetry & RAS",
+  "phase": 14,
+  "phaseName": "Monitoring & Security",
+  "category": "Monitoring",
+  "subcategory": "monitoring",
+  "language": "cpp",
+  "description": "Performance counter pipeline (cycles, instructions, cache misses), Intel RDT (CMT/MBM) for cache occupancy and memory bandwidth monitoring, RAPL power capping, MCE (Machine Check Exception) handling, ",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Perf counter pipeline: collect <code>cycles</code>, <code>instructions</code>, <code>L1-dcache-load-misses</code>, <code>LLC-load-misses</code>, <code>branch-misses</code> per core every 1 second; feed into time-series DB (Prometheus/InfluxDB); alert on IPC < 2.0 or LLC miss rate > 1%</li>\n<li>Intel RDT (Resource Director Technology): CMT (Cache Monitoring Technology) tracks L3 cache occupancy per core/thread/cgroup; MBM (Memory Bandwidth Monitoring) tracks local/remote memory bandwidth; useful for detecting NUMA violations</li>\n<li>RAPL (Running Average Power Limit): limits package/DRAM power; domains: <code>package-0</code>, <code>dram</code>, <code>core</code>, <code>uncore</code>; read/write via MSR (<code>/dev/cpu/*/msr</code>); critical for controlling turbo frequency behavior in co-located HFT racks</li>\n<li>MCE handling: Machine Check Exceptions signal hardware errors (ECC corrected/uncorrected, bus errors, cache parity); <code>mcelog</code> daemon logs and thresholds; uncorrected MCEs trigger immediate failover</li>\n<li>ECC error tracking: corrected ECC errors indicate degrading DIMMs; alert on rate > 1 per hour per DIMM; schedule replacement before uncorrected error causes crash</li>\n<li>Temperature telemetry: <code>lm-sensors</code> for CPU/board temps, <code>ipmitool sdr</code> for chassis inlet/outlet temps; throttle frequency via RAPL if inlet > 35°C; alert on > 40°C</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Perf counter collection (C++ via perf_event_open)\nstruct PerfCounters {\n    uint64_t cycles_, instructions_;\n    uint64_t l1_misses_, llc_misses_;\n    double ipc() const { return instructions_ / (double)cycles_; }\n    double llc_miss_rate() const { return llc_misses_ / (double)cycles_; }\n\n    void collect(int core) {\n        // perf_event_open for PERF_COUNT_HW_CPU_CYCLES etc.\n        // mmap the ring buffer, read counter values\n        // Close event fd after read\n    }\n};\n\n// RAPL power control\nstruct RAPL {\n    enum Domain { PACKAGE, DRAM, CORE, UNCORE };\n    void setLimit(Domain d, double watts) {\n        int fd = open(&quot;/dev/cpu/0/msr&quot;, O_RDWR);\n        uint64_t msr = msrAddress(d);\n        uint64_t val = wattsToMSR(watts);\n        pwrite(fd, &amp;val, 8, msr);\n        close(fd);\n    }\n};\n\n// MCE monitoring thresholds\n// corrected_errors/h: 0-1 = normal, 1-5 = monitor, &gt;5 = replace DIMM\n// uncorrected_errors: ANY = immediate failover + replace</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-bash\"># lm-sensors telemetry\n# sensors -u | grep -E &quot;(temp[0-9]_input|power[0-9]_average)&quot;\n\n# RAPL power reading (watts)\n# for socket in /sys/class/powercap/intel-rapl/intel-rapl:*; do\n#   echo &quot;$(cat $socket/name): $(cat $socket/energy_uj) uJ&quot;\n# done\n\n# ipmitool chassis temperature\n# ipmitool sdr | grep -i temp\n# ipmitool sensor get &quot;CPU Temp&quot; | grep &quot;Sensor Reading&quot;\n\n# perf counter pipeline (one-liner per core)\n# for core in $(seq 0 15); do\n#   perf stat -C $core -e cycles,instructions,L1-dcache-load-misses,\\\n#     LLC-load-misses -a --sleep 1 --no-merge 2&gt;&amp;1\n# done</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "operations",
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

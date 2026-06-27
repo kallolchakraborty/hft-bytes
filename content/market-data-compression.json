@@ -1,0 +1,32 @@
+{
+  "id": "market-data-compression",
+  "title": "Market Data Compression",
+  "phase": 12,
+  "phaseName": "Data Engineering",
+  "category": "Data Engineering",
+  "subcategory": "data-engineering",
+  "language": "cpp",
+  "description": "Delta-of-delta timestamp compression, XOR-based float compression (Gorilla), dictionary encoding for repeating symbols, schema-based compression (SBE), real-time decompression latency budgets, and col",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Delta-of-delta timestamps: store first timestamp absolute, subsequent timestamps as delta from previous; second-order delta (delta-of-delta) further reduces bits; most timestamps in a burst require only 1-2 bytes vs 8 bytes raw</li>\n<li>XOR float compression (Gorilla/Facebook): store first value raw; subsequent values store XOR with previous; leading/trailing zeros are variable-length encoded; typical compression 4x-8x for price/volume series</li>\n<li>Dictionary encoding: repeated symbol strings (e.g., \"ESM7\", \"NQH7\") map to 2-byte integer IDs; shared dictionary per session; eliminates 10-50x overhead of ASCII symbol strings</li>\n<li>Schema-based compression: SBE (Simple Binary Encoding) defines fixed-width fields with protocol-level compression; FastPacket (CME) uses template ID to define field presence; no decompression overhead at the protocol level</li>\n<li>Decompression latency budget: for real-time feed handlers, decompression must complete in < 100 ns per message (pipelined with SIMD); Gorilla decompression ~50-80 ns per float on AVX-512</li>\n<li>Columnar storage for replay: Arrow/Parquet columnar format enables vectorized reads for backtesting; filter pushdown skips irrelevant columns (e.g., read price+size without timestamp); compression ratio 3-5x better than row-oriented</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Delta-of-delta timestamp encoding\nstruct TimestampEncoder {\n    uint64_t prev_ts_ = 0;\n    uint64_t prev_delta_ = 0;\n\n    uint64_t encode(uint64_t ts) {\n        uint64_t delta = ts - prev_ts_;\n        uint64_t d2 = delta - prev_delta_;  // delta-of-delta\n        prev_ts_ = ts;\n        prev_delta_ = delta;\n        return d2;  // varint-encoded before writing\n    }\n};\n\n// XOR float compression (Gorilla-style)\nstruct FloatEncoder {\n    uint64_t prev_bits_ = 0;\n\n    uint64_t encode(double value) {\n        uint64_t bits = std::bit_cast&lt;uint64_t&gt;(value);\n        uint64_t xor_result = bits ^ prev_bits_;\n        prev_bits_ = bits;\n        // Leading/trailing zero count encoded in 2 bits + payload\n        // if xor_result == 0: store 1-bit '0' (no change)\n        // else: store 1-bit '1' + leading zeros (5 bits) + block length (6 bits) + payload\n        return xor_result;\n    }\n};\n\n// Compression ratios (real market data, 1 day CME MDP):\n// ┌──────────────────────┬──────────┬───────────┐\n// │ Method               │ Ratio    │ Decomp ns │\n// ├──────────────────────┼──────────┼───────────┤\n// │ Raw (uncompressed)   │ 1:1      │ 0         │\n// │ Gzip (level 1)       │ 3.5:1    │ ~200      │\n// │ LZ4                  │ 2.8:1    │ ~50       │\n// │ Gorilla (price+ts)   │ 6.2:1    │ ~60       │\n// │ SBE (schema)         │ 1.8:1    │ 0         │\n// └──────────────────────┴──────────┴───────────┘</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Dictionary encoding for symbol strings\nclass SymbolDictionary {\n    std::unordered_map&lt;uint64_t, std::string&gt; id_to_symbol_;\n    std::unordered_map&lt;std::string, uint16_t&gt; symbol_to_id_;\n    uint16_t next_id_ = 1;  // 0 = invalid\n\n    uint16_t encode(const std::string&amp; sym) {\n        auto it = symbol_to_id_.find(sym);\n        if (it != symbol_to_id_.end()) return it-&gt;second;\n        uint16_t id = next_id_++;\n        symbol_to_id_[sym] = id;\n        id_to_symbol_[id] = sym;\n        return id;\n    }\n\n    const std::string&amp; decode(uint16_t id) {\n        return id_to_symbol_.at(id);\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "data-engineering",
+    "order-types",
+    "trading"
+  ],
+  "type": "reference",
+  "toc": false
+}

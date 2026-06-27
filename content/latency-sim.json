@@ -1,0 +1,30 @@
+{
+  "id": "latency-sim",
+  "title": "Latency Sim",
+  "phase": 11,
+  "phaseName": "Backtesting & Simulation",
+  "category": "Phase 11 - Backtesting & Simulation",
+  "subcategory": "backtesting",
+  "language": "cpp",
+  "description": "Network latency distribution: normal vs exponential vs empirical. Exchange processing latency: matching engine + gateway delay",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Network latency distribution: normal vs exponential vs empirical</li>\n<li>Exchange processing latency: matching engine + gateway delay</li>\n<li>Colocation distance → speed-of-light delay (~1μs per 300m fiber)</li>\n<li>Coordinated omission: when measurement skips slow events, bias is severe</li>\n<li>Pluggable distribution models for Monte Carlo simulation</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>LatencySim sim(LatencyModel::createExponential(50e-6));\nauto delay = sim.sample();  // microseconds</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;random&gt;\n#include &lt;memory&gt;\n#include &lt;cmath&gt;\n#include &lt;vector&gt;\n\n// --------------------------------------------------------------------\n// Abstract latency distribution\n\nclass LatencyDistribution {\npublic:\n    virtual double sample() = 0;\n    virtual ~LatencyDistribution() = default;\n};\n\nclass NormalLatency : public LatencyDistribution {\n    std::mt19937_64 rng_{42};  // deterministic seed for reproducibility\n    std::normal_distribution&lt;double&gt; dist_;\npublic:\n    explicit NormalLatency(double mean, double stddev)\n        : dist_(mean, stddev) {}\n    double sample() override { return std::max(0.0, dist_(rng_)); }\n};\n\nclass ExponentialLatency : public LatencyDistribution {\n    std::mt19937_64 rng_{42};\n    std::exponential_distribution&lt;double&gt; dist_;\npublic:\n    explicit ExponentialLatency(double rate_us)\n        : dist_(1.0 / rate_us) {}\n    double sample() override { return dist_(rng_); }\n};\n\nclass EmpiricalLatency : public LatencyDistribution {\n    std::mt19937_64 rng_{42};\n    std::vector&lt;double&gt; samples_;\n    std::uniform_int_distribution&lt;size_t&gt; idx_;\npublic:\n    EmpiricalLatency(const std::vector&lt;double&gt;&amp; measured)\n        : samples_(measured), idx_(0, measured.size() - 1) {}\n    double sample() override { return samples_[idx_(rng_)]; }\n};\n\n// --------------------------------------------------------------------\n// Colocation Distance Calculator\n\nclass ColoDistanceCalc {\n    // approximate great-circle distance → fiber path delay (+40% detour)\n    static constexpr double FIBER_DETOUR = 1.4;\n    static constexpr double SPEED_OF_LIGHT_NS_PER_M = 3.335;  // ns/m in vacuum\n    static constexpr double FIBER_INDEX = 1.48;  // refraction index of glass\n\npublic:\n    struct Location {\n        double lat, lon;  // degrees\n    };\n\n    // tradeoff: Haversine vs Vincenty (sub-meter vs sub-mm)\n    static double haversine(const Location&amp; a, const Location&amp; b) {\n        double dlat = (b.lat - a.lat) * M_PI / 180.0;\n        double dlon = (b.lon - a.lon) * M_PI / 180.0;\n        double alat = a.lat * M_PI / 180.0;\n        double blat = b.lat * M_PI / 180.0;\n        double h = std::sin(dlat/2)*std::sin(dlat/2)\n                 + std::cos(alat)*std::cos(blat)\n                 * std::sin(dlon/2)*std::sin(dlon/2);\n        return 2 * 6371000 * std::asin(std::sqrt(h));  // meters\n    }\n\n    static double latencyNs(const Location&amp; a, const Location&amp; b) {\n        double dist_m = haversine(a, b) * FIBER_DETOUR;\n        return dist_m * SPEED_OF_LIGHT_NS_PER_M * FIBER_INDEX;\n    }\n};\n\n// --------------------------------------------------------------------\n// Pluggable Latency Simulator\n\nclass LatencySim {\n    std::unique_ptr&lt;LatencyDistribution&gt; dist_;\n    double base_{0};  // fixed base latency\n\npublic:\n    LatencySim(std::unique_ptr&lt;LatencyDistribution&gt; dist, double base = 0)\n        : dist_(std::move(dist)), base_(base) {}\n\n    double sample() { return base_ + dist_-&gt;sample(); }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "performance"
+  ],
+  "type": "reference",
+  "toc": false
+}

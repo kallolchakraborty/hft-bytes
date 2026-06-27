@@ -1,0 +1,30 @@
+{
+  "id": "performance-attribution",
+  "title": "Performance Attribution",
+  "phase": 11,
+  "phaseName": "Backtesting & Simulation",
+  "category": "Phase 11 - Backtesting & Simulation",
+  "subcategory": "backtesting",
+  "language": "cpp",
+  "description": "Alpha decomposition: timing (entry/exit skill) vs selection (instrument choice). Transaction cost analysis: spread cost + market impact + delay/slippage",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Alpha decomposition: timing (entry/exit skill) vs selection (instrument choice)</li>\n<li>Transaction cost analysis: spread cost + market impact + delay/slippage</li>\n<li>Signal decay analysis: how alpha degrades from signal → execution</li>\n<li>Sharpe ratio decomposition: hit rate, avg win/loss, frequency</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<p>PerformanceAttribution pa;\npa.addTrade(trade, benchmark_return);\nauto r = pa.report();</p>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">#include &lt;vector&gt;\n#include &lt;numeric&gt;\n#include &lt;cmath&gt;\n\nstruct Trade {\n    double entry_price, exit_price;\n    double entry_benchmark, exit_benchmark;\n    double shares;\n    double spread_paid;\n    double market_impact_est;\n    uint64_t entry_ns, exit_ns;\n};\n\nclass TransactionCostAnalysis {\n    double total_spread_{0};\n    double total_impact_{0};\n    double total_delay_{0};  // from signal → execution price drift\n    uint64_t trade_count_{0};\n\npublic:\n    void addTrade(const Trade&amp; t) {\n        total_spread_  += t.spread_paid;\n        total_impact_  += t.market_impact_est;\n        total_delay_   += (t.entry_price - t.entry_benchmark) * t.shares;\n        trade_count_++;\n    }\n\n    struct TCAReport {\n        double spread_bps;    // per trade average in bps\n        double impact_bps;\n        double delay_bps;\n        double total_bps;\n    };\n\n    TCAReport report(double avg_trade_notional) const {\n        if (trade_count_ == 0) return {};\n        double avg = avg_trade_notional;\n        return {\n            total_spread_ / avg * 10000,\n            total_impact_ / avg * 10000,\n            total_delay_ / avg * 10000,\n            (total_spread_ + total_impact_ + total_delay_) / avg * 10000\n        };\n    }\n};\n\n// --------------------------------------------------------------------\n// Alpha Decomposition\n\nclass AlphaDecomposition {\n    double timing_return_{0};\n    double selection_return_{0};\n    double market_return_{0};\n    double total_return_{0};\n\npublic:\n    // Brinson-style attribution (simplified)\n    // tradeoff: single-period vs multi-period attribution (Carino smoothing)\n    void decompose(const std::vector&lt;Trade&gt;&amp; trades,\n                   const std::vector&lt;double&gt;&amp; benchmark_returns) {\n        for (size_t i = 0; i &lt; trades.size(); ++i) {\n            auto&amp; t = trades[i];\n            double b = benchmark_returns[i];\n            double instrument_excess = (t.exit_price - t.entry_price) / t.entry_price;\n            double timing = (t.exit_benchmark - t.entry_benchmark) / t.entry_benchmark;\n            market_return_ += t.shares * t.entry_price * b;\n            timing_return_ += t.shares * t.entry_price * (timing - b);\n            selection_return_ += t.shares * t.entry_price * (instrument_excess - timing);\n            total_return_ += t.shares * (t.exit_price - t.entry_price);\n        }\n    }\n};\n\n// --------------------------------------------------------------------\n// Sharpe Decomposition\n\nstruct SharpeDecomposition {\n    double hit_rate;      // % profitable trades\n    double avg_win_bps;\n    double avg_loss_bps;\n    double avg_hold_ns;\n    double sharpe_ratio;\n    double sharpe_annualized;\n\n    static SharpeDecomposition compute(const std::vector&lt;double&gt;&amp; returns_bps) {\n        if (returns_bps.empty()) return {};\n        int wins = 0;\n        double sum_win = 0, sum_loss = 0;\n        for (auto r : returns_bps) {\n            if (r &gt; 0) { ++wins; sum_win += r; }\n            else       { sum_loss += r; }\n        }\n        double avg = std::accumulate(returns_bps.begin(), returns_bps.end(), 0.0)\n                     / returns_bps.size();\n        double var = 0;\n        for (auto r : returns_bps) var += (r - avg) * (r - avg);\n        var /= returns_bps.size();\n        double sr = avg / (std::sqrt(var) + 1e-12);\n        return {\n            static_cast&lt;double&gt;(wins) / returns_bps.size(),\n            sum_win / std::max(wins, 1),\n            sum_loss / std::max(static_cast&lt;int&gt;(returns_bps.size()) - wins, 1),\n            0, sr, sr * std::sqrt(252 * 6.5 * 3600)  // annualized intraday\n        };\n    }\n};</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "phase-11"
+  ],
+  "type": "reference",
+  "toc": false
+}

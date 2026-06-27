@@ -1,0 +1,30 @@
+{
+  "id": "cloud-hft",
+  "title": "Cloud & Hybrid Infrastructure for HFT",
+  "phase": 15,
+  "phaseName": "Testing & Production",
+  "category": "Testing",
+  "subcategory": "testing",
+  "language": "yaml",
+  "description": "AWS Nitro for research K8s, GCP BigQuery for historical analysis, hybrid networking (Direct Connect → colo cross-connect), spot instances for burst backtesting, cloud security for exchange credentials",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>AWS Nitro for research: bare-metal EC2 instances (i3.metal, c5n.metal) used for large-scale backtesting; Nitro hypervisor adds no measurable latency overhead vs physical; K8s cluster via EKS for distributed backtest jobs; ephemeral NVMe scratch for temp data (up to 15 TB/instance)</li>\n<li>GCP BigQuery for tick data lake: serverless SQL engine on petabyte-scale tick datasets; partition by date + cluster by symbol; sub-second queries on months of tick data; cost ~$5/TB scanned; use streaming insert for real-time tick ingestion to BigQuery</li>\n<li>Hybrid networking (AWS Direct Connect → colo): Direct Connect (1/10/100 Gbps) connects AWS VPC to colo cage via cross-connect at Equinix/CoreSite; VPC subnets extended into colo via private VLAN; research data stays internal, no internet transit</li>\n<li>Spot instances for burst compute: AWS Spot (90% discount vs on-demand) for massively parallel backtests; handle interruptions with checkpointing to S3 (every 1000 simulations); Spot Fleet balanced across AZs and instance types</li>\n<li>Cloud security for exchange credentials: exchange FIX credentials (username, password, SenderCompID) encrypted with AWS KMS at rest; parameter store (AWS SSM) for per-trader API keys; Secrets Manager auto-rotates co-location switch credentials</li>\n<li>Data lake: S3 → Parquet partitioned by <code>(year, month, day, exchange)</code> → Glue/Athena for ad-hoc querying; Iceberg tables for ACID transactions on tick data; lifecycle policy: S3 Glacier after 90 days, Deep Archive after 1 year</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-yaml\"># AWS Direct Connect — VPC to colo attachment\n# Equinix Fabric → Direct Connect → Transit Gateway → VPC\n# Colo router: BGP session with NAS (Nat. AS 64512)\n# On-prem CIDR: 10.10.0.0/16 (colo network)\n# VPC CIDR: 10.0.0.0/16 (research cluster)\n\n# EKS backtesting job (spot instance)\napiVersion: batch/v1\nkind: Job\nmetadata:\n  name: backtest-20260627\nspec:\n  template:\n    spec:\n      priorityClassName: burst\n      affinity:\n        nodeAffinity:\n          preferredDuringSchedulingIgnoredDuringExecution:\n          - weight: 100\n            preference:\n              matchExpressions:\n              - key: eks.amazonaws.com/capacityType\n                operator: In\n                values: [SPOT]\n      containers:\n      - name: backtest\n        image: hft-research/backtest:latest\n        resources:\n          limits:\n            memory: 256Gi\n            cpu: 48\n        volumeMounts:\n        - name: scratch\n          mountPath: /data\n      volumes:\n      - name: scratch\n        emptyDir: {}  # NVMe ephemeral\n\n# S3 data lake partitioning\n# s3://hft-tick-lake/\n#   year=2026/month=06/day=27/exchange=CME/\n#     ESH7.parquet, NQH7.parquet, CLQ7.parquet</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-python\"># BigQuery schema for tick data lake\nSCHEMA = [\n    {&quot;name&quot;: &quot;symbol&quot;, &quot;type&quot;: &quot;STRING&quot;},\n    {&quot;name&quot;: &quot;exchange&quot;, &quot;type&quot;: &quot;STRING&quot;},\n    {&quot;name&quot;: &quot;ts_ns&quot;, &quot;type&quot;: &quot;TIMESTAMP&quot;},\n    {&quot;name&quot;: &quot;bid_px&quot;, &quot;type&quot;: &quot;FLOAT64&quot;},\n    {&quot;name&quot;: &quot;bid_sz&quot;, &quot;type&quot;: &quot;INT64&quot;},\n    {&quot;name&quot;: &quot;ask_px&quot;, &quot;type&quot;: &quot;FLOAT64&quot;},\n    {&quot;name&quot;: &quot;ask_sz&quot;, &quot;type&quot;: &quot;INT64&quot;},\n    {&quot;name&quot;: &quot;last_px&quot;, &quot;type&quot;: &quot;FLOAT64&quot;},\n    {&quot;name&quot;: &quot;last_sz&quot;, &quot;type&quot;: &quot;INT64&quot;},\n]\n\n# Partition by DATE(ts_ns), cluster by symbol\n# CREATE TABLE tick_data.cme_l2\n# PARTITION BY DATE(ts_ns)\n# CLUSTER BY symbol\n# OPTIONS(description=&quot;CME Level-2 tick data&quot;)</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "testing"
+  ],
+  "type": "reference",
+  "toc": false
+}

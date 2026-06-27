@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Ubuntu', sans-serif">
+  <rect x="0" y="0" width="1000" height="55" fill="#FF1744"/>
+  <text x="500" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF">FPGA Pipeline — Market Data Parsing in Hardware</text>
+
+  <!-- Pipeline stages -->
+  <rect x="30" y="70" width="940" height="380" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="500" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF1744">FPGA Processing Pipeline — 250MHz Clock</text>
+  <line x1="50" y1="98" x2="950" y2="98" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <!-- Stage 1: SFP+ -->
+  <rect x="40" y="115" width="170" height="70" rx="6" fill="#FFEBEE" stroke="#FF1744" stroke-width="1.5"/>
+  <text x="125" y="137" text-anchor="middle" font-size="11" font-weight="bold" fill="#FF1744">1. SFP+ / Ethernet</text>
+  <text x="125" y="155" text-anchor="middle" font-size="9" fill="#475569">10/25/100GbE</text>
+  <text x="125" y="170" text-anchor="middle" font-size="9" fill="#64748B">5 cycles at 250MHz</text>
+
+  <polygon points="218,150 228,150 228,140 238,150 228,160 228,150" fill="#FF1744"/>
+
+  <!-- Stage 2: MAC -->
+  <rect x="245" y="115" width="170" height="70" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="330" y="137" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">2. Ethernet MAC</text>
+  <text x="330" y="155" text-anchor="middle" font-size="9" fill="#475569">Frame parsing, FCS check</text>
+  <text x="330" y="170" text-anchor="middle" font-size="9" fill="#64748B">10 cycles at 250MHz</text>
+
+  <polygon points="423,150 433,150 433,140 443,150 433,160 433,150" fill="#FF1744"/>
+
+  <!-- Stage 3: UDP/IP -->
+  <rect x="450" y="115" width="170" height="70" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="535" y="137" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309">3. UDP/IP Parser</text>
+  <text x="535" y="155" text-anchor="middle" font-size="9" fill="#475569">IP + UDP header validation</text>
+  <text x="535" y="170" text-anchor="middle" font-size="9" fill="#64748B">20 cycles at 250MHz</text>
+
+  <polygon points="628,150 638,150 638,140 648,150 638,160 638,150" fill="#FF1744"/>
+
+  <!-- Stage 4: ITCH Decode -->
+  <rect x="655" y="115" width="170" height="70" rx="6" fill="#EDE9FE" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="740" y="137" text-anchor="middle" font-size="11" font-weight="bold" fill="#7E22CE">4. ITCH Message</text>
+  <text x="740" y="155" text-anchor="middle" font-size="9" fill="#475569">Field extraction, decode</text>
+  <text x="740" y="170" text-anchor="middle" font-size="9" fill="#64748B">15 cycles at 250MHz</text>
+
+  <polygon points="833,150 843,150 843,140 853,150 843,160 843,150" fill="#FF1744"/>
+
+  <!-- Stage 5: Order Book + Signal -->
+  <rect x="860" y="115" width="100" height="70" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="910" y="137" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">5. Book +</text>
+  <text x="910" y="155" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">Signal</text>
+  <text x="910" y="170" text-anchor="middle" font-size="9" fill="#64748B">10 cycles</text>
+
+  <!-- Latency calculation -->
+  <rect x="40" y="205" width="920" height="55" rx="6" fill="#1E293B"/>
+  <text x="500" y="227" text-anchor="middle" font-size="11" font-weight="bold" fill="#22C55E">Total: 5 + 10 + 20 + 15 + 10 = 60 cycles at 250MHz = 240ns from wire to signal</text>
+  <text x="500" y="246" text-anchor="middle" font-size="9" fill="#64748B">vs ~1.5µs for software DPDK solution = ~6x latency reduction</text>
+
+  <!-- Detailed pipeline breakdown -->
+  <rect x="40" y="275" width="300" height="160" rx="6" fill="#1E293B"/>
+  <text x="55" y="295" font-size="10" font-weight="bold" fill="#94A3B8">1-3: Network Stack (35 cycles)</text>
+  <text x="55" y="315" font-size="9" fill="#22C55E">// SFP+ SERDES deserialization</text>
+  <text x="55" y="335" font-size="9" fill="#94A3B8">wire  → 64-bit data bus @ 250MHz</text>
+  <text x="55" y="355" font-size="9" fill="#94A3B8">MAC  → FCS, frame alignment</text>
+  <text x="55" y="375" font-size="9" fill="#94A3B8">UDP  → IP checksum, port filter</text>
+  <text x="55" y="395" font-size="9" fill="#94A3B8">Filter on UDP destination port</text>
+  <text x="55" y="415" font-size="9" fill="#94A3B8">Drop non-market data packets</text>
+
+  <rect x="355" y="275" width="300" height="160" rx="6" fill="#1E293B"/>
+  <text x="370" y="295" font-size="10" font-weight="bold" fill="#94A3B8">4: ITCH Decode (15 cycles)</text>
+  <text x="370" y="315" font-size="9" fill="#22C55E">// Pipelined field extraction</text>
+  <text x="370" y="335" font-size="9" fill="#94A3B8">MsgType → jump table → decoder</text>
+  <text x="370" y="355" font-size="9" fill="#94A3B8">AddOrder  → stock_index, price, size</text>
+  <text x="370" y="375" font-size="9" fill="#94A3B8">Executed  → order_id, shares</text>
+  <text x="370" y="395" font-size="9" fill="#94A3B8">Reduce    → order_id, shares</text>
+  <text x="370" y="415" font-size="9" fill="#94A3B8">Replace   → new_order_id, price, size</text>
+
+  <rect x="670" y="275" width="290" height="160" rx="6" fill="#1E293B"/>
+  <text x="685" y="295" font-size="10" font-weight="bold" fill="#94A3B8">5: Book Update + Signal (10 cycles)</text>
+  <text x="685" y="315" font-size="9" fill="#22C55E">// BRAM-based order book</text>
+  <text x="685" y="335" font-size="9" fill="#94A3B8">Lookup order_id in CAM/BRAM</text>
+  <text x="685" y="355" font-size="9" fill="#94A3B8">Update price/size level</text>
+  <text x="685" y="375" font-size="9" fill="#94A3B8">Generate top-of-book tick</text>
+  <text x="685" y="395" font-size="9" fill="#94A3B8">Signal = f(micro-price, imbalance)</text>
+  <text x="685" y="415" font-size="9" fill="#94A3B8">Push to PCIe / CPU via DMA</text>
+
+  <!-- FPGA vs CPU comparison -->
+  <rect x="30" y="465" width="940" height="265" rx="8" fill="#F3E8FF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="500" y="487" text-anchor="middle" font-size="12" font-weight="bold" fill="#7E22CE">FPGA vs CPU — Tradeoffs</text>
+  <line x1="50" y1="493" x2="950" y2="493" stroke="#A855F7" stroke-width="0.5"/>
+
+  <!-- Table -->
+  <rect x="50" y="505" width="200" height="30" rx="3" fill="#FF1744"/>
+  <text x="150" y="525" text-anchor="middle" font-size="10" font-weight="bold" fill="#FFF">Dimension</text>
+  <rect x="250" y="505" width="220" height="30" rx="3" fill="#22C55E"/>
+  <text x="360" y="525" text-anchor="middle" font-size="10" font-weight="bold" fill="#FFF">FPGA</text>
+  <rect x="470" y="505" width="220" height="30" rx="3" fill="#3B82F6"/>
+  <text x="580" y="525" text-anchor="middle" font-size="10" font-weight="bold" fill="#FFF">CPU (DPDK)</text>
+  <rect x="690" y="505" width="260" height="30" rx="3" fill="#F59E0B"/>
+  <text x="820" y="525" text-anchor="middle" font-size="10" font-weight="bold" fill="#FFF">Winner</text>
+
+  <text x="60" y="558" font-size="10" fill="#475569">Latency (wire→signal)</text>
+  <text x="360" y="558" text-anchor="middle" font-size="10" fill="#166534">~240ns</text>
+  <text x="580" y="558" text-anchor="middle" font-size="10" fill="#1E40AF">~1.5µs</text>
+  <text x="820" y="558" text-anchor="middle" font-size="10" fill="#22C55E">FPGA 6x</text>
+  <line x1="50" y1="565" x2="950" y2="565" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="583" font-size="10" fill="#475569">Determinism (p99/p50)</text>
+  <text x="360" y="583" text-anchor="middle" font-size="10" fill="#166534">&lt;1.1x jitter</text>
+  <text x="580" y="583" text-anchor="middle" font-size="10" fill="#1E40AF">~2-5x jitter</text>
+  <text x="820" y="583" text-anchor="middle" font-size="10" fill="#22C55E">FPGA</text>
+  <line x1="50" y1="590" x2="950" y2="590" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="608" font-size="10" fill="#475569">Flexibility</text>
+  <text x="360" y="608" text-anchor="middle" font-size="10" fill="#166534">Low (HW reconfig)</text>
+  <text x="580" y="608" text-anchor="middle" font-size="10" fill="#1E40AF">High (software)</text>
+  <text x="820" y="608" text-anchor="middle" font-size="10" fill="#3B82F6">CPU</text>
+  <line x1="50" y1="615" x2="950" y2="615" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="633" font-size="10" fill="#475569">Iteration speed</text>
+  <text x="360" y="633" text-anchor="middle" font-size="10" fill="#166534">Hours (synthesis)</text>
+  <text x="580" y="633" text-anchor="middle" font-size="10" fill="#1E40AF">Seconds (compile)</text>
+  <text x="820" y="633" text-anchor="middle" font-size="10" fill="#3B82F6">CPU</text>
+  <line x1="50" y1="640" x2="950" y2="640" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="658" font-size="10" fill="#475569">Power efficiency</text>
+  <text x="360" y="658" text-anchor="middle" font-size="10" fill="#166534">10-30W</text>
+  <text x="580" y="658" text-anchor="middle" font-size="10" fill="#1E40AF">150-250W</text>
+  <text x="820" y="658" text-anchor="middle" font-size="10" fill="#22C55E">FPGA 10x</text>
+  <line x1="50" y1="665" x2="950" y2="665" stroke="#CBD5E1" stroke-width="0.5"/>
+
+  <text x="60" y="683" font-size="10" fill="#475569">Cost</text>
+  <text x="360" y="683" text-anchor="middle" font-size="10" fill="#166534">$5-20K/card</text>
+  <text x="580" y="683" text-anchor="middle" font-size="10" fill="#1E40AF">$2-5K/server</text>
+  <text x="820" y="683" text-anchor="middle" font-size="10" fill="#F59E0B">Depends</text>
+
+  <text x="50" y="718" font-size="9" fill="#64748B">Verdict: FPGA for ultra-low-latency parsing + book building; CPU for strategy logic, risk, and order generation (hybrid approach)</text>
+</svg>

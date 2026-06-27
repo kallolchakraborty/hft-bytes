@@ -1,0 +1,20 @@
+{
+  "name": "hft-bytes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "181 HFT artifacts across 17 phases — documentation site with study plan, search, diagrams, decision matrices, and failure mode patterns",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "python3 -m http.server 3000"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.5.2",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^3.4.19"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "compliance-surveillance",
+  "title": "Compliance & Surveillance Technology",
+  "phase": 15,
+  "phaseName": "Testing & Production",
+  "category": "Testing & Production",
+  "subcategory": "testing-production",
+  "language": "cpp",
+  "description": "CAT reporting format and submission, market manipulation detection (spoofing, layering, wash trading), trade reconstruction for regulatory exams, OATS for options, best-execution monitoring infrastruc",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>CAT (Consolidated Audit Trail): FINRA-mandated system capturing every order event (new, mod, cancel, fill, reject) with timestamps accurate to < 1ms; reports submitted in CAT format (JSON/XML via SFTP); covers all NMS stocks and OTC equities</li>\n<li>Wash-trade detection: same beneficial owner on both sides of a trade; indicator: matching buy/sell orders from same firm at same price/size with no economic purpose; real-time detection blocks orders pre-trade</li>\n<li>Spoofing/layering detection: orders placed with intent to cancel before execution (creates false impression of demand); signals: cancel-to-fill ratio > 20:1, order lifetime < 100ms consistently, price levels that move market then cancel</li>\n<li>Trade reconstruction: regulatory request requires full audit trail for a given symbol/time window; pipeline replays order events from log archive; output includes all order modifications, fills, cancels with microsecond timestamps</li>\n<li>OATS (Order Audit Trail System): for options; captures order origination, routing, modification, cancellation, and execution; reports via FIX or proprietary format</li>\n<li>Best-execution monitoring: compare fill price to NBBO at time of order; flag fills outside NBBO (exchange-awarded price improvement excluded); monthly best-execution report for compliance</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Spoofing detection\nstruct SpoofingDetector {\n    struct OrderEvent {\n        uint64_t ts_ns_;\n        uint64_t order_id_;\n        double price_;\n        uint64_t qty_;\n        bool is_cancel_;\n    };\n    std::unordered_map&lt;uint64_t, OrderEvent&gt; active_orders_;\n\n    // Signal: cancel-to-fill ratio &gt; threshold\n    bool isSuspicious(const std::string&amp; trader) {\n        auto stats = traderStats(trader);\n        double ratio = stats.cancels_ / static_cast&lt;double&gt;(stats.fills_ + 1);\n        // Cancel within 100ms of placement = spoofing indicator\n        return ratio &gt; 20.0;\n    }\n};\n\n// CAT report event (simplified)\nstruct CATReport {\n    std::string order_id_;\n    std::string firm_id_;\n    std::string symbol_;\n    char side_;               // B/S/SHORT/SSHORT\n    uint64_t order_qty_;\n    double price_;\n    uint64_t event_timestamp_; // nanosecond since epoch\n    std::string event_type_;   // NEW, MOD, CAN, FIL, REJ\n    std::string prev_order_id_; // for modifications\n};\n\n// Wash-trade check\nbool isWashTrade(const Order&amp; buy, const Order&amp; sell) {\n    return buy.account_id_ == sell.account_id_ &amp;&amp;\n           buy.symbol_ == sell.symbol_ &amp;&amp;\n           buy.price_ == sell.price_ &amp;&amp;\n           buy.qty_ == sell.qty_ &amp;&amp;\n           buy.ts_ + 100'000 &gt; sell.ts_;  // within 100us\n}</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// CAT report submission pipeline\n// Strategy → OMS → Order events logged to Kafka topic &quot;cat-events&quot;\n// CAT reporter consumes topic, builds CAT JSON records\n// Batched every 15 seconds → compressed → SFTP to FINRA CAT portal\n// Monitor: report acknowledgment (ACK/NAK) within 60 seconds\n\n// Best-execution check:\n// bool isBestExecution(const Fill&amp; f, const NBBO&amp; nbbo_at_time) {\n//     // Allow price improvement (midpoint, dark pool fill)\n//     if (f.side_ == BUY &amp;&amp; f.price_ &gt; nbbo_at_time.ask_) return false;\n//     if (f.side_ == SELL &amp;&amp; f.price_ &lt; nbbo_at_time.bid_) return false;\n//     return true;\n// }</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "compliance"
+  ],
+  "type": "reference",
+  "toc": false
+}

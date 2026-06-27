@@ -1,0 +1,30 @@
+{
+  "id": "tca",
+  "title": "Transaction Cost Analysis (TCA)",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "cpp",
+  "description": "Implementation shortfall decomposition, VWAP/TWAP benchmarks, Almgren-Chriss market impact model, timing vs liquidity cost separation, post-trade analytics pipeline, and TCA dashboard metrics.",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Implementation shortfall (IS): difference between execution price and decision price at time of trading decision; decomposed into fixed cost (commissions/fees) + market impact + timing risk + opportunity cost</li>\n<li>Almgren-Chriss model: total cost = permanent impact (information leakage) + temporary impact (liquidity demand) + timing cost (price drift); parameters calibrated per symbol from historical fills</li>\n<li>Market impact: square-root model: <code>impact ∝ σ <em> √(Q / ADV) </em> sign(Q)</code> where Q = order size, ADV = average daily volume, σ = volatility</li>\n<li>VWAP benchmark: compare fill-price to volume-weighted average price over execution window; TWAP equivalent for time-weighted slicing</li>\n<li>Timing cost: price change between decision and first fill; split into predictable (drift) and unpredictable (noise); noise component contributes to TCA variance</li>\n<li>TCA pipeline: order capture → fill enrichment (exchange fee, rebate) → benchmark computation → impact decomposition → aggregation by strategy/symbol/trader</li>\n<li>Key metrics: IS bps, VWAP slippage bps, fill rate, adverse selection rate (fills that move against after execution)</li>\n</ul>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-cpp\">// Implementation shortfall calculation\nstruct TCAReport {\n    double decision_price_;      // mid/bid/ask at order-decision time\n    double avg_execution_price_; // quantity-weighted average fill price\n    double side_;                // +1 buy, -1 sell\n    double fixed_cost_;          // commissions + exchange fees\n    double market_impact_;       // Almgren-Chriss model estimate\n    double timing_cost_;         // price drift from decision to first fill\n\n    double shortfall() const {\n        return side_ * (avg_execution_price_ - decision_price_) / decision_price_;\n    }\n\n    double shortfall_bps() const { return shortfall() * 10'000; }\n\n    void decompose() {\n        // Impact = signed price change attributable to order\n        // Timing = residual after removing impact estimate\n        // Fixed = known from fee schedule\n        double total = shortfall_bps();\n        double fixed_bps = fixed_cost_ / decision_price_ * 10'000;\n        double impact_bps = market_impact_bps();\n        double timing_bps = total - fixed_bps - impact_bps;\n        // Log: &quot;IS=2.3bps (fixed=0.3, impact=1.2, timing=0.8)&quot;\n    }\n};</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Almgren-Chriss market impact estimate\n// I(Q) = a * σ * (Q / V)^0.5 * sign(Q)\n// a = calibration constant (~0.1 for US equities)\n// σ = daily volatility\n// Q = order size (shares)\n// V = average daily volume (shares)\n\n// TCA dashboard metrics (per strategy)\n// ┌──────────────┬────────┬────────┬────────┐\n// │ Metric       │ Today  │ MTD    │ Target │\n// ├──────────────┼────────┼────────┼────────┤\n// │ IS (bps)     │ 1.8    │ 2.1    │ &lt; 3.0  │\n// │ Fill Rate    │ 94%    │ 93%    │ &gt; 90%  │\n// │ Adv. Sel.    │ 12%    │ 14%    │ &lt; 15%  │\n// └──────────────┴────────┴────────┴────────┘</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "trading"
+  ],
+  "type": "reference",
+  "toc": false
+}
