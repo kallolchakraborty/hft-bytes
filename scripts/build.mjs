@@ -3,7 +3,7 @@ import { join, dirname, basename, relative, extname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = '/Users/kallolchakraborty/hft bytes - Github Pages';
+const PROJECT_ROOT = join(__dirname, '..');
 const CONCEPTS_DIR = join(PROJECT_ROOT, 'concepts');
 const CONTENT_DIR = join(PROJECT_ROOT, 'content');
 const JS_DIR = join(PROJECT_ROOT, 'js');
