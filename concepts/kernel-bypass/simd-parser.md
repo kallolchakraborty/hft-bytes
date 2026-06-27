@@ -3,6 +3,7 @@ type: reference
 title: "SIMD Parser"
 description: "SIMD bitset for tag detection: load 32 bytes of FIX message into. SWAR (SIMD Within A Register) techniques: use 64-bit integer"
 tags: ["simd"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.416Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"

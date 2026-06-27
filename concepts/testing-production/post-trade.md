@@ -3,6 +3,7 @@ type: reference
 title: "Post Trade"
 description: "Clearing and custody: DTCC (US equities), NSCC (US), ECC (Eurex), LCH. Trade affirmation: T+0 matching of trade details between counterparties;"
 tags: ["phase-15"]
+difficulty: staff
 timestamp: "2026-06-27T03:06:09.454Z"
 phase: 15
 phaseName: "Testing & Production"

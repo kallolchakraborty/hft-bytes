@@ -3,6 +3,7 @@ type: reference
 title: "eBPF/XDP for HFT"
 description: "XDP early packet filtering, eBPF redirect to userspace, custom TCP stack bypass via AF_XDP sockets, kernel compile tuning, and bpftrace for production tracing."
 tags: ["performance"]
+difficulty: staff
 timestamp: "2026-06-27T03:20:00.000Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"

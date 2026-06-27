@@ -3,6 +3,7 @@ type: reference
 title: "Deterministic Test"
 description: "Deterministic testing uses a simulated clock (controllable time) so. A mock exchange server simulates FIX/ITCH message flows deterministically"
 tags: ["testing"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.452Z"
 phase: 15
 phaseName: "Testing & Production"

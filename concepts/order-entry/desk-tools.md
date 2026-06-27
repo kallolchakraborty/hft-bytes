@@ -3,6 +3,7 @@ type: reference
 title: "Trading Desk Tools & GUIs"
 description: "Position blotter architecture, real-time P&L screens, risk monitor dashboards, order management interfaces, FIX drop-crop processing for desk display, NBBO/ladder visualization, and WebSocket push for GUI data distribution."
 tags: ["trading"]
+difficulty: intermediate
 timestamp: "2026-06-27T04:00:00.000Z"
 phase: 7
 phaseName: "Order Entry & Execution"

@@ -3,6 +3,7 @@ type: reference
 title: "Monte Carlo"
 description: "Monte Carlo simulation values complex derivatives by averaging. Variance reduction techniques (antithetic variates, control"
 tags: ["simulation"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.401Z"
 phase: 2
 phaseName: "Mathematics & Statistics"

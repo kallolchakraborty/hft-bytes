@@ -3,6 +3,7 @@ type: reference
 title: "Historical Data"
 description: "Hot/Warm/Cold tiering: hot = RAM/SSD (latest 30d), warm = SSD (1yr),. Retention policies: SEC Rule 17a-4 (3yr for broker-dealers), MiFID II (5yr)"
 tags: ["backtesting", "data-engineering"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.443Z"
 phase: 12
 phaseName: "Data Engineering"

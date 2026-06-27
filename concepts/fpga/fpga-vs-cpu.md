@@ -3,6 +3,7 @@ type: decision-matrix
 title: "FPGA Vs CPU"
 description: "FPGA: ~100ns tick-to-order vs CPU: ~1-10μs (10-100x advantage). CPU: flexible, easy to program; FPGA: 3-6 month dev cycle"
 tags: ["fpga"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.446Z"
 phase: 13
 phaseName: "FPGA & Hardware"

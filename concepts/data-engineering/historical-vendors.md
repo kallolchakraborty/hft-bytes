@@ -3,6 +3,7 @@ type: reference
 title: "Historical Data Vendors & Quality"
 description: "TickData, OneTick, Dukascopy, Polygon, QuantHouse historical, Kibot — data quality differences, normalization, survivorship bias, corporate action adjustments, tick vs OHLCV tradeoffs for reliable HFT backtesting research."
 tags: ["data-engineering"]
+difficulty: staff
 timestamp: "2026-06-27T04:00:00.000Z"
 phase: 12
 phaseName: "Data Engineering"

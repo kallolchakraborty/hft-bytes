@@ -3,6 +3,7 @@ type: reference
 title: "BIOS Tuning"
 description: "Hyper-Threading (SMT): often disabled for trading workloads.. Turbo Boost: disable for consistent latency.  Turbo transitions"
 tags: ["phase-1"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.387Z"
 phase: 1
 phaseName: "Foundations"

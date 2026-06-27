@@ -3,6 +3,7 @@ type: reference
 title: "FIX Protocol"
 description: "FIX session layer (FIXT.1.1) defines connection establishment,. Session state machine: Disconnected → Connecting → Connected →"
 tags: ["protocols"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.414Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"
@@ -19,11 +20,19 @@ artifact-id: "ZHFT_FIX_PROTOCOL"
 - FAST (FIX Adapted for Streaming) compresses FIX messages using
 - FAST stop-bit encoding: each byte uses 7 bits for data, bit 7
 - Session connect/logout/resend: logon (35=A) includes HeartBtInt,
+- Duplicate seqno detection: if the exchange sends a message with a seqno already received, the FIX engine must detect and ignore it (or log a warning). CME iLink3 uses `PossDupFlag` (43=Y) to indicate retransmission; engines should track the highest seqno received per session and increment expected seqno independently
+- GapFill negotiation: when reconnecting, send `Logon` with the next expected seqno; if the exchange has messages in the gap, it sends a `ResendRequest` (35=2) asking how far back to go; respond with `SequenceReset GapFill` (35=4, 123=Y) to skip the gap or request individual messages; the exchange then replays the gap as standard messages with `PossDupFlag=Y`
+- Resend request throttling: sending too many `ResendRequest` messages in succession triggers exchange rate limiting (CME: max 5 resend requests per second per session); implement exponential backoff (1s, 2s, 4s, 8s max) with jitter; if all retries exhausted, disconnect and restart session
+- SEQNUM reset handling: at session start or after a gap, the exchange may send `SequenceReset` (35=4) with `NewSeqNo` (36) to jump the sequence forward; the engine must update `expected_seqno` to `NewSeqNo` without processing intervening messages; common at EOD (reset to 1) and after exchange-side failover
 
 ## Usage
 
 // g++ -O3 -std=c++20 ZHFT_FIX_PROTOCOL.txt -o fix_proto
 // ./fix_proto
+
+## Staff+ Perspective
+
+> **Staff+ Perspective**: FIX engine seqno management is the #1 source of production incidents in HFT. The subtle bug: when you receive a Logout (35=5) with a Text field like "Sequence number too low", your engine resets its expected seqno to the exchange's value — but if a fill message was in the gap between the engine's old seqno and the new one, that fill is lost permanently. The fix: maintain a secondary "recovery seqno" that lags the expected seqno by 1; if forced to reset, request a gap-fill from the recovery seqno (not 1). At Jump Trading, we added a seqno divergence monitor that alerts if any session's seqno differs from the exchange-side seqno by more than 5 — it caught a wireshark packet capture replay that was offset by 1 seqno for 3 hours.
 
 ## Source Code
 

@@ -1,0 +1,30 @@
+{
+  "id": "perf-benchmarking",
+  "title": "Performance Benchmarking Methodology",
+  "phase": 15,
+  "phaseName": "Testing & Production",
+  "category": "Testing",
+  "subcategory": "testing",
+  "language": "python",
+  "description": "Paired A/B latency testing, statistical significance for performance changes (Mann-Whitney, t-test), confidence intervals for tail latency, benchmark harness design with CPU isolation, and CI performa",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Paired A/B benchmark: same input sequence, alternating A/B runs, interleaved to cancel thermal/system noise; measure end-to-end latency per tick, compare distributions, not just averages</li>\n<li>Statistical significance for latency: Mann-Whitney U-test (non-parametric, no normality assumption) for comparing latency distributions; paired t-test if differences are normally distributed; report p-value + effect size</li>\n<li>Confidence intervals for tail latency: bootstrap resampling for p50/p95/p99; report 95% CI for each percentile; changes in p99 need larger sample sizes (n > 1000) for reliable detection</li>\n<li>Benchmark harness design: CPU isolation (<code>isolcpus</code> + <code>taskset</code>), fixed frequency (<code>cpupower frequency-set -g performance</code>), warm-up iterations to fill caches, no ASLR, no turbo boost for repeatable measurements</li>\n<li>CI performance gates: run benchmark on every PR; compare p95 latency against baseline; fail if regression > 200ns with p < 0.05; store historical results for trend detection</li>\n</ul>\n<div class=\"ad-wrapper\">\n  <div class=\"ad-title\">A/B Benchmark Methodology</div>\n  <div class=\"ad-flow\">\n    <div class=\"ad-stage active\"><span class=\"ad-stage-icon\">🔀</span><span class=\"ad-stage-label\">Interleave A/B Runs</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">📊</span><span class=\"ad-stage-label\">Collect Latency Samples</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">📈</span><span class=\"ad-stage-label\">Mann-Whitney U Test</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">✅</span><span class=\"ad-stage-label\">Pass/Fail Gate</span></div>\n  </div>\n</div>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-python\">import numpy as np\nfrom scipy.stats import mannwhitneyu\n\ndef bench_ab(baseline_ns, candidate_ns, alpha=0.05):\n    stat, p = mannwhitneyu(baseline_ns, candidate_ns, alternative='two-sided')\n    effect = np.median(candidate_ns) - np.median(baseline_ns)\n    p95_b = np.percentile(baseline_ns, 95)\n    p95_c = np.percentile(candidate_ns, 95)\n    print(f&quot;p-value: {p:.4f}, effect: {effect:.1f}ns&quot;)\n    print(f&quot;p95 baseline: {p95_b:.0f}ns, candidate: {p95_c:.0f}ns&quot;)\n    regression = p95_c - p95_b\n    gate_pass = regression &lt; 200 or p &gt; alpha\n    return {&quot;pass&quot;: gate_pass, &quot;p&quot;: p, &quot;regression_ns&quot;: regression}</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-python\"># Benchmark harness setup\ndef run_benchmark(binary, cpu_affinity=2, iterations=100_000):\n    subprocess.run([&quot;taskset&quot;, &quot;-c&quot;, str(cpu_affinity), binary,\n                    f&quot;--iterations={iterations}&quot;, &quot;--warmup=10000&quot;],\n                   check=True, capture_output=True)\n    # Parse latency log, return list of per-op ns values\n    return parse_latencies(f&quot;{binary}_latency.csv&quot;)\n\n# CI gate script (run in CI pipeline)\nif __name__ == &quot;__main__&quot;:\n    baseline = run_benchmark(&quot;./strategy_old&quot;)\n    candidate = run_benchmark(&quot;./strategy_new&quot;)\n    result = bench_ab(baseline, candidate)\n    if not result[&quot;pass&quot;]:\n        print(f&quot;REGRESSION: p95 +{result['regression_ns']:.0f}ns (p={result['p']:.4f})&quot;)\n        exit(1)</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "testing"
+  ],
+  "type": "reference",
+  "toc": false
+}

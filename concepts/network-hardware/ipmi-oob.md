@@ -3,6 +3,7 @@ type: reference
 title: "IPMI Oob"
 description: "IPMI (Intelligent Platform Management Interface) runs on a BMC. iDRAC (Dell Integrated Dell Remote Access Controller) and iLO"
 tags: ["phase-6"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.419Z"
 phase: 6
 phaseName: "Network Hardware"

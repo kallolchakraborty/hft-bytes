@@ -3,6 +3,7 @@ type: reference
 title: "Hardware Telemetry & RAS"
 description: "Performance counter pipeline (cycles, instructions, cache misses), Intel RDT (CMT/MBM) for cache occupancy and memory bandwidth monitoring, RAPL power capping, MCE (Machine Check Exception) handling, ECC error thresholding, and temperature telemetry via lm-sensors and ipmitool."
 tags: ["performance", "operations"]
+difficulty: staff
 timestamp: "2026-06-27T03:50:00.000Z"
 phase: 14
 phaseName: "Monitoring & Security"

@@ -3,6 +3,7 @@ type: reference
 title: "Transaction Cost Analysis (TCA)"
 description: "Implementation shortfall decomposition, VWAP/TWAP benchmarks, Almgren-Chriss market impact model, timing vs liquidity cost separation, post-trade analytics pipeline, and TCA dashboard metrics."
 tags: ["trading"]
+difficulty: staff
 timestamp: "2026-06-27T03:30:00.000Z"
 phase: 10
 phaseName: "Trading Strategies"

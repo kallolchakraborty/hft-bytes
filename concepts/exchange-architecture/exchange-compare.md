@@ -3,6 +3,7 @@ type: decision-matrix
 title: "Exchange Compare"
 description: "CME Globex: iLink 3 (SBE binary) for orders, MDP 3.0 for market. Eurex T7: EBS (Enhanced Broadcast Solution) for market data,"
 tags: ["exchange-protocols"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.430Z"
 phase: 8
 phaseName: "Exchange Architecture"

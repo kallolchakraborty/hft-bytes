@@ -3,6 +3,7 @@ type: reference
 title: "Gap Recovery"
 description: "Sequence gap detection algorithm: maintain expected_seq counter. Retransmission request timing: request immediately for single"
 tags: ["recovery"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.435Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

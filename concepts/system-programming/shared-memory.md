@@ -3,6 +3,7 @@ type: reference
 title: "Shared Memory"
 description: "POSIX shm_open + mmap provides the lowest-latency cross-process. boost::interprocess offers portable RAII wrappers (managed_shared_memory,"
 tags: ["phase-4"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.414Z"
 phase: 4
 phaseName: "System Programming & IPC"

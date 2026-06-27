@@ -3,6 +3,7 @@ type: decision-matrix
 title: "Modern Databases"
 description: "ClickHouse: columnar, MergeTree engine, materialized views for pre-aggregation. InfluxDB: time-structured merge tree (TSM), continuous queries"
 tags: ["data-engineering"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.444Z"
 phase: 12
 phaseName: "Data Engineering"

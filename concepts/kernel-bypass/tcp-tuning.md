@@ -3,6 +3,7 @@ type: reference
 title: "TCP Tuning"
 description: "Nagle's algorithm (TCP_NODELAY) must be disabled for HFT: a. tcp_slow_start_after_idle should be disabled (set to 0). When"
 tags: ["networking"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.417Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"

@@ -3,6 +3,7 @@ type: reference
 title: "Practical Sysadmin"
 description: "OS updates without latency spikes: live patching (Ksplice, KernelCare) for. Log rotation without lock contention: use copytruncate mode (logrotate) and"
 tags: ["phase-15"]
+difficulty: staff
 timestamp: "2026-06-27T03:06:09.454Z"
 phase: 15
 phaseName: "Testing & Production"

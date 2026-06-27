@@ -3,6 +3,7 @@ type: reference
 title: "Secrets Management"
 description: "API keys and certificates for exchange connectivity must never appear. Vault (HashiCorp) provides dynamic secrets + automatic rotation; KMS is"
 tags: ["regulation"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.448Z"
 phase: 14
 phaseName: "Monitoring & Security"

@@ -3,6 +3,7 @@ type: decision-matrix
 title: "Strategy Matrix"
 description: "Market regime determines optimal strategy selection. High vol → widen spreads for MM, increase pair thresholds"
 tags: ["phase-10"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.439Z"
 phase: 10
 phaseName: "Trading Strategies"

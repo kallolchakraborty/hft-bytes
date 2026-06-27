@@ -3,6 +3,7 @@ type: reference
 title: "Multi-Leg Order Execution"
 description: "Spread trading, combination orders, implied pricing (CME implied IN/OUT), calendar spreads, order-book construction for multi-leg instruments, and risk management for multi-leg positions."
 tags: ["trading"]
+difficulty: staff
 timestamp: "2026-06-27T03:20:00.000Z"
 phase: 10
 phaseName: "Trading Strategies"

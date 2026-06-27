@@ -3,6 +3,7 @@ type: reference
 title: "SOR"
 description: "Venue selection based on weighted score: latency (30%), fees (25%),. Dark pool aggregation: route to dark venues first (lower impact),"
 tags: ["phase-7"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.427Z"
 phase: 7
 phaseName: "Order Entry & Execution"

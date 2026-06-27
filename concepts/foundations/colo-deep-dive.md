@@ -3,6 +3,7 @@ type: reference
 title: "Co-Location Deep Dive"
 description: "Exchange-specific colocation halls, fiber path optimization, cross-connect pricing, cage selection vs matching engine location, microwave vs fiber, exchange colo RFP process, and multi-exchange colo strategy."
 tags: ["infrastructure"]
+difficulty: staff
 timestamp: "2026-06-27T03:20:00.000Z"
 phase: 1
 phaseName: "Foundations"

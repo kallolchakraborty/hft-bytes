@@ -3,6 +3,7 @@ type: reference
 title: "SIMD Intrinsics"
 description: "SSE (128-bit), AVX2 (256-bit), and AVX-512 (512-bit) process. SIMD-accelerated string operations (e.g., finding '=' in a FIX"
 tags: ["simd"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.410Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"

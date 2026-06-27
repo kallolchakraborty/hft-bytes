@@ -3,6 +3,7 @@ type: reference
 title: "Incident Cases"
 description: "Knight Capital 2012: broken deployment — 8 servers got old code, no. 2010 Flash Crash: stub quotes at $0.0001 triggered liquidity collapse;"
 tags: ["deployment"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.453Z"
 phase: 15
 phaseName: "Testing & Production"

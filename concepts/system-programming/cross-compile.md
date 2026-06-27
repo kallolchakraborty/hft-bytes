@@ -3,6 +3,7 @@ type: reference
 title: "Cross Compile"
 description: "x86-64 microarchitecture levels (x86-64-v1 through v4) define. -march=native is dangerous across machines: a binary built on"
 tags: ["phase-4"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.412Z"
 phase: 4
 phaseName: "System Programming & IPC"

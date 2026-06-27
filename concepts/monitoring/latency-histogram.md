@@ -3,6 +3,7 @@ type: reference
 title: "Latency Histogram"
 description: "HDR Histogram provides high dynamic range with constant relative error. Coordinated omission distorts percentiles if samples are skipped during"
 tags: ["backtesting", "performance"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.447Z"
 phase: 14
 phaseName: "Monitoring & Security"

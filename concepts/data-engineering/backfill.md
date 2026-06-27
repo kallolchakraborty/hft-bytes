@@ -3,6 +3,7 @@ type: reference
 title: "Backfill"
 description: "Gap detection: scan sequence numbers for missing intervals. Multi-source reconciliation: compare timestamps + prices across vendors"
 tags: ["phase-12"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.443Z"
 phase: 12
 phaseName: "Data Engineering"

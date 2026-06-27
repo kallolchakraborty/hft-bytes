@@ -3,6 +3,7 @@ type: reference
 title: "Cross Dc"
 description: "Dark fiber: leasing raw fiber strands between DCs gives the. DWDM (Dense Wavelength Division Multiplexing): each fiber pair"
 tags: ["phase-6"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.418Z"
 phase: 6
 phaseName: "Network Hardware"

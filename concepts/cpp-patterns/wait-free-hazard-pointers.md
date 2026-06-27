@@ -3,6 +3,7 @@ type: reference
 title: "Wait-Free Hazard Pointers"
 description: "Hazard pointers protect objects being read by one thread while another thread reclaims them. Wait-free publication via atomic exchange. Epoch-based reclamation and RCU are alternatives."
 tags: ["lock-free"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.408Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"

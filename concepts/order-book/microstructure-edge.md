@@ -3,6 +3,7 @@ type: reference
 title: "Microstructure Edge"
 description: "Odd lots vs round lots: odd lots (< 100 shares on NYSE) trade. Tick-constrained instruments: when minimum price increment"
 tags: ["phase-9"]
+difficulty: staff
 timestamp: "2026-06-27T03:06:09.435Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

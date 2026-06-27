@@ -3,6 +3,7 @@ type: reference
 title: "Ice Binary"
 description: "ICE binary message format: fixed-length header (16 bytes) with. Message types: Login (0x01), LoginAccepted (0x02), NewOrder (0x10),"
 tags: ["protocols"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.431Z"
 phase: 8
 phaseName: "Exchange Architecture"

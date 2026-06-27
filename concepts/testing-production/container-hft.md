@@ -3,6 +3,7 @@ type: reference
 title: "Container Hft"
 description: "Docker/Podman tradeoffs: cgroup isolation adds minimal overhead (~1-3%). Network overhead: bridge networking adds ~2-5µs per packet; host"
 tags: ["phase-15"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.452Z"
 phase: 15
 phaseName: "Testing & Production"

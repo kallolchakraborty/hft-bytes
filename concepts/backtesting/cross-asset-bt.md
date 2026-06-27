@@ -3,6 +3,7 @@ type: reference
 title: "Cross Asset Bt"
 description: "Equity modeling: dividends, stock splits, corporate actions. Futures modeling: carry/roll yield, term structure, expiry"
 tags: ["simd"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.440Z"
 phase: 11
 phaseName: "Backtesting & Simulation"

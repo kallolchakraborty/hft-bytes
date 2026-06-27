@@ -3,6 +3,7 @@ type: reference
 title: "Operations"
 description: "Start-of-day (SOD): exchange login → market data verification → position. End-of-day (EOD): position dump → P&L report → trade log archive → risk"
 tags: ["phase-15"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.454Z"
 phase: 15
 phaseName: "Testing & Production"

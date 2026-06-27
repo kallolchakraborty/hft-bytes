@@ -3,6 +3,7 @@ type: reference
 title: "P4 & Programmable Switches"
 description: "P4_16 language for programming packet-processing pipelines in hardware. Tofino-based switches enable line-rate custom logic: market-data fan-out, latency measurement, order routing based on packet content."
 tags: ["programmable-networking"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.415Z"
 phase: 6
 phaseName: "Network Hardware"

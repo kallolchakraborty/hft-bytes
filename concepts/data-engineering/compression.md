@@ -3,6 +3,7 @@ type: reference
 title: "Compression"
 description: "Delta-of-delta encoding for timestamps (Gorilla paper, Facebook). XOR compression for float64 values (leading/trailing zeros)"
 tags: ["phase-12"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.443Z"
 phase: 12
 phaseName: "Data Engineering"

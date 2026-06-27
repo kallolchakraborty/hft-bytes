@@ -3,6 +3,7 @@ type: reference
 title: "OMS"
 description: "Order state machine: New → PendingNew → Accepted → Filled /. Parent-child order relationships (iceberg: parent=displayed,"
 tags: ["phase-7"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.426Z"
 phase: 7
 phaseName: "Order Entry & Execution"
@@ -18,6 +19,10 @@ artifact-id: "ZHFT_OMS"
 - Memory-mapped file (mmap) persistence for crash recovery — no
 - Order database keyed by ClOrdID (client) and OrderID (exchange);
 - Persistence writes go to a redo log, then async checkpoint to
+- Fill reconciliation on reconnect: after a disconnect, request all fills since last known seqno from the exchange; match each fill against the OMS order database; unmatched fills require manual intervention (trade break or booking); reconciliation must complete before resuming trading
+- Partial fill ambiguity: a single order may receive multiple partial fills; each fill has a distinct `ExecID` and `LastQty`; the OMS must track `cum_qty` and `leaves_qty` per order; on reconnect, replay fills from the redo log to reconstruct `leaves_qty`; if a fill arrives for a cancelled order (timing race), the OMS must accept it and update the order status
+- Cancel-replace race conditions: sending a `CancelReplaceRequest` while a fill is in-flight can result in ambiguous order state — the original order fills partially, then the replacement is applied to the remaining quantity; the exchange returns both `ExecutionReport` (fill on original) and `OrderCancelReplaceRequest` confirmation; the OMS must correlate these atomically using `ClOrdID` / `OrigClOrdID`
+- Order state explosion at scale: a market-making firm may have 500,000+ open orders at peak; the OMS state machine must be lock-free per-symbol; use a striped lock (one lock per 1000 symbols) to avoid contention; persistence throughput target: 1M order events/s to disk
 
 ## Usage
 
@@ -25,6 +30,10 @@ artifact-id: "ZHFT_OMS"
 // auto id = om.newOrder("AAPL", Side::BUY, 100, 150.25);
 // om.onFill(id, 50, 150.30, "EXEC1");
 // om.onCancel(id);
+
+## Staff+ Perspective
+
+> **Staff+ Perspective**: The OMS is the single point of truth for PnL — if it's wrong, every downstream system (risk, strategy, compliance) is wrong. At Citadel Securities, we kept all OMS state in a replicated state machine (RAFT) with a leader colocated with the exchange gateway. Cancel-replace races are the hardest: the exchange can execute a fill against the original order after it has been replaced, resulting in a "collision" where the fill shows ExecID with the original ClOrdID but the replacement is already active. The OMS must generate a synthetic "cancel" for the replaced order and credit the fill to the original — this is called "fill re-parenting" and requires storing the full order ancestry chain (3+ generations).
 
 ## Source Code
 

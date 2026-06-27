@@ -3,6 +3,7 @@ type: reference
 title: "Capacity Planning"
 description: "Sizing cores, memory, and network bandwidth for HFT systems. Throughput math: packets/sec per feed, orders/sec peak, NUMA-aware allocation. Core budgeting, NIC queue distribution, and headroom targets."
 tags: ["performance"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.405Z"
 phase: 1
 phaseName: "Foundations"

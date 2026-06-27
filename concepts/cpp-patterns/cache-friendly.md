@@ -3,6 +3,7 @@ type: reference
 title: "Cache Friendly"
 description: "AoS (Array of Structs) iterates poorly when only some fields are. Hot/cold splitting separates frequently-accessed fields (price,"
 tags: ["cache-coherency"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.405Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"

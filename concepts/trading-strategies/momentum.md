@@ -3,6 +3,7 @@ type: reference
 title: "Momentum"
 description: "Time-series momentum: long if return over lookback > 0. Cross-sectional momentum: rank assets by return, long top, short bottom"
 tags: ["phase-10"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.437Z"
 phase: 10
 phaseName: "Trading Strategies"

@@ -3,6 +3,7 @@ type: reference
 title: "Colo Budget"
 description: "Rack pricing varies by data centre: $1,500–$5,000/month for a full cabinet;. Power is the dominant cost: $150–$400/kW/month; a 30kW rack costs"
 tags: ["phase-16"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.455Z"
 phase: 16
 phaseName: "HFT Economics & Career"

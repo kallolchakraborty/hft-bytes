@@ -3,6 +3,7 @@ type: reference
 title: "Disaster Scenarios"
 description: "Colo power outage: UPS provides 5-15 min window; generator must auto-start. Exchange mid-day outage: freeze all positions, stop trading, wait for"
 tags: ["phase-15"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.452Z"
 phase: 15
 phaseName: "Testing & Production"

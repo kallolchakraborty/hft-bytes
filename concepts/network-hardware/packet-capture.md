@@ -3,6 +3,7 @@ type: reference
 title: "Packet Capture"
 description: "PF_RING DNA/FT (by ntop) provides zero-copy packet capture via. PACKET_MMAP (Linux kernel built-in, TPACKET_V3): uses mmap'd"
 tags: ["phase-6"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.420Z"
 phase: 6
 phaseName: "Network Hardware"

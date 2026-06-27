@@ -3,6 +3,7 @@ type: reference
 title: "Overfitting"
 description: "Purged walk-forward: gap between train/test to avoid leakage. Parameter stability: performance vs parameter surface (flat is good)"
 tags: ["simulation"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.441Z"
 phase: 11
 phaseName: "Backtesting & Simulation"

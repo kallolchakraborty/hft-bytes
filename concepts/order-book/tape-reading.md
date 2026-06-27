@@ -3,6 +3,7 @@ type: reference
 title: "Tape Reading & Level 2 Data"
 description: "Reading the tape (time & sales), print vs quote analysis, large-order iceberg detection, spoofing/layering signal patterns, Level 2 ladder visualization, order flow imbalance in practice, and actionable signals from market microstructure."
 tags: ["market-data"]
+difficulty: staff
 timestamp: "2026-06-27T03:30:00.000Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

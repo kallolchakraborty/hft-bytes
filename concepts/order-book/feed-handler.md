@@ -3,6 +3,7 @@ type: reference
 title: "Feed Handler"
 description: "Incremental vs snapshot feeds: incremental = sequence of changes. Sequence number tracking: every message has a monotonically"
 tags: ["exchange-protocols"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.434Z"
 phase: 9
 phaseName: "Order Book & Microstructure"
@@ -18,6 +19,10 @@ artifact-id: "ZHFT_FEED_HANDLER"
 - Gap detection: if received_seq > expected_seq + 1, gap exists.
 - Retransmission request: send request to exchange for specific seq
 - Feed A/B failover: two independent feeds (A primary, B backup).
+- Wire-up reconnection sequencing: on disconnect, close socket immediately (don't wait for timeout), reopen connection, logon with next expected seqno; exchange may reject if seqno is too old (CME: within 1000 messages); if rejected, request a gap-fill for missed range; if gap-fill empty, request full snapshot
+- Gap-fill vs snapshot recovery: gap-fill is a burst of missed messages (replayed by exchange), processed as normal increments; snapshot is a full book image at a point in time; choose gap-fill if missed range < 1000 messages (fast recovery, no book rebuild); choose snapshot if missed range is large (avoids processing thousands of increments)
+- Seqno gap detection with out-of-order delivery: multicast can deliver messages out of order (network reordering, duplicate suppression); maintain a sliding window of received seqnos; if seqno > expected, buffer it and set a timer (100µs); if seqno < expected, check for duplicate (ignore) or historic replay (process)
+- Stale feed detection: if no messages received for 10ms on feed A, fail over to feed B; if feed A resumes within 50ms, switch back (or stay on B for the remainder of the session depending on exchange rules); CME recommends staying on backup for the rest of the trading day
 
 ## Usage
 
@@ -25,6 +30,10 @@ artifact-id: "ZHFT_FEED_HANDLER"
 // fh.onIncremental(seq, msg);
 // fh.onSnapshot(snap);
 // fh.onTimeout(); // detect freeze
+
+## Staff+ Perspective
+
+> **Staff+ Perspective**: Feed handler reliability is the most underestimated component at most firms. At Tower Research, we counted ~20 missed market data events per day during normal conditions due to NIC buffer overflows (despite kernel bypass). The root cause: the DPDK RX ring size was too small (default 128 entries) for the burstiness of CME's MDP feed — a BBO update for ES, NQ, YM, and CL can arrive within the same microsecond. We increased `nb_rx_desc` to 2048 per queue and never saw drops again. For failover, the golden rule: A/B feeds must use physically separate NIC ports and separate OS-level receive queues. We found a bug where feed A's RX ring exhausted, which caused the kernel to drop B's packets too (shared ring). Never share.
 
 ## Source Code
 

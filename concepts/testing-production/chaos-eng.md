@@ -3,6 +3,7 @@ type: reference
 title: "Chaos Eng"
 description: "Network latency injection (tc netem) simulates WAN jitter and congestion. Process kill testing verifies the watchdog/restart loop works"
 tags: ["testing"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.451Z"
 phase: 15
 phaseName: "Testing & Production"

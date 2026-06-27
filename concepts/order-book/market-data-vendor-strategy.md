@@ -3,6 +3,7 @@ type: reference
 title: "Market Data Vendor Strategy"
 description: "Direct-feed vs SIP comparison, feed redundancy and failover, gap detection and recovery, nanosecond timestamp provenance, vendor selection (Exegy, MayStreet, Redline, SFTI, QuantHouse), and co-located feed topology."
 tags: ["market-data"]
+difficulty: staff
 timestamp: "2026-06-27T03:20:00.000Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

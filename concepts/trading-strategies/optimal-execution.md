@@ -3,6 +3,7 @@ type: reference
 title: "Optimal Execution"
 description: "Almgren-Chriss model: trade-off between market impact and timing risk. VWAP: slice orders proportionally to historical volume profile"
 tags: ["execution-algorithms"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.438Z"
 phase: 10
 phaseName: "Trading Strategies"

@@ -3,6 +3,7 @@ type: reference
 title: "Exchange Connect"
 description: "CME iLink 3: TCP session establishment, encrypted (RSA) vs. Eurex T7: TCP with SBE binary encoding, EntitlementCheckResponse"
 tags: ["exchange-protocols"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.425Z"
 phase: 7
 phaseName: "Order Entry & Execution"

@@ -3,6 +3,7 @@ type: reference
 title: "Placement New"
 description: "Placement new constructs an object in pre-allocated memory,. Object pooling reuses fixed-size slots to eliminate malloc/free"
 tags: ["phase-3"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.409Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"

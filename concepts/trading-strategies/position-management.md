@@ -3,6 +3,7 @@ type: reference
 title: "Position Management"
 description: "Max position limits per instrument and total portfolio VaR. Aging force: time-based unwind of stale positions"
 tags: ["queue-dynamics"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.438Z"
 phase: 10
 phaseName: "Trading Strategies"

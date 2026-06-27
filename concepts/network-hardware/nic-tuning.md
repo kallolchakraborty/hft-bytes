@@ -3,6 +3,7 @@ type: reference
 title: "NIC Tuning"
 description: "Interrupt coalescing (adaptive or fixed): for HFT, interrupt. RSS (Receive Side Scaling) distributes incoming packets across"
 tags: ["phase-6"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.419Z"
 phase: 6
 phaseName: "Network Hardware"

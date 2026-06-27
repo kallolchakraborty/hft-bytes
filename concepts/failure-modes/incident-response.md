@@ -3,6 +3,7 @@ type: reference
 title: "Incident Response & War Room"
 description: "Severity classification (SEV1-4), war room roles (scribe, comms lead, engineering SME, incident commander), timeline reconstruction, blameless post-mortem template, action-item tracking, and escalation matrix for HFT production incidents."
 tags: ["operations"]
+difficulty: staff
 timestamp: "2026-06-27T03:30:00.000Z"
 phase: 17
 phaseName: "Production Failure Modes & Recovery"

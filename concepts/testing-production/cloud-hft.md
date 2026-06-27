@@ -3,6 +3,7 @@ type: reference
 title: "Cloud & Hybrid Infrastructure for HFT"
 description: "AWS Nitro for research K8s, GCP BigQuery for historical analysis, hybrid networking (Direct Connect → colo cross-connect), spot instances for burst backtesting, cloud security for exchange credentials, multi-region research clusters."
 tags: ["testing"]
+difficulty: staff
 timestamp: "2026-06-27T04:00:00.000Z"
 phase: 15
 phaseName: "Testing & Production"

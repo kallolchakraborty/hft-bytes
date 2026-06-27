@@ -1,0 +1,30 @@
+{
+  "id": "regulatory-reporting",
+  "title": "Regulatory Reporting Engineering",
+  "phase": 16,
+  "phaseName": "HFT Economics & Career",
+  "category": "Career",
+  "subcategory": "economics-career",
+  "language": "python",
+  "description": "CAT (US Consolidated Audit Trail), MiFID II transaction reporting (EU), EMIR trade reporting — file format specs, submission deadlines, error handling/corrections, reconciliation processes, and the en",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>CAT (Consolidated Audit Trail, US): FINRA requires order-event reporting (New, Route, Fill, Cancel, Modify) in daily files per OATS-like spec; fields include OrderID, CustomerID, RouteID, Timestamps (nanosecond), Side, Symbol, Qty, Price; files submitted via CAT Reporter Gateway; correction files must be sent within T+3</li>\n<li>MiFID II transaction reporting (EU): report within T+1 to National Competent Authority via Approved Reporting Mechanism (ARM) or directly; fields: LEI, ISIN, trading capacity (DEAL/MTCH), price, quantity, venue, country of venue, date/time, counterparty; complex instruments require delta-equivalent reporting</li>\n<li>EMIR trade reporting (derivatives): report to Trade Repository (DTCC, REGIS-TR, UnaVista) within T+1 for all derivatives (exchange-traded and OTC); includes valuation, collateral, counterparty LEI; lifetime updates required until termination</li>\n<li>Error handling: validation failures (schema, field format, reference data) → correct and resubmit within cutoff; late submissions incur fines (MiFID II: up to €5M or 10% of turnover); reconciliation between reporting system and exchange confirms is critical</li>\n<li>Engineering architecture: trade capture → enrichment (LEI lookup, ISIN validation) → batch generation (hourly/daily) → submission via SFTP/API → reconciliation with exchange drop-copy → correction pipeline</li>\n</ul>\n<div class=\"ad-wrapper\">\n  <div class=\"ad-title\">Regulatory Reporting Pipeline</div>\n  <div class=\"ad-flow\">\n    <div class=\"ad-stage active\"><span class=\"ad-stage-icon\">📥</span><span class=\"ad-stage-label\">Trade Capture</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">🏷️</span><span class=\"ad-stage-label\">Enrichment</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">📄</span><span class=\"ad-stage-label\">File Generation</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">📤</span><span class=\"ad-stage-label\">Submission</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">✅</span><span class=\"ad-stage-label\">Reconciliation</span></div>\n  </div>\n</div>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-python\"># CAT event file row format (CSV)\n# Header: OrderID|CustomerID|RouteID|EventType|Timestamp|Side|Symbol|Qty|Price\n# Sample: ORD001|CUST001|ROUTE01|NEW|20260627-10:01:32.123456789|B|AAPL|100|189.23\n\n# MiFID II transaction report fields (ISO 20022 XML)\n# &lt;TxRpt&gt;\n#   &lt;Rpt&gt;\n#     &lt;FinInstrmId&gt;&lt;ISIN&gt;US0378331005&lt;/ISIN&gt;&lt;/FinInstrmId&gt;\n#     &lt;TradgCpcty&gt;DEAL&lt;/TradgCpcty&gt;\n#     &lt;Pric&gt;189.23&lt;/Pric&gt;\n#     &lt;Qty&gt;100&lt;/Qty&gt;\n#     &lt;ExctnDtTm&gt;2026-06-27T10:01:32.123Z&lt;/ExctnDtTm&gt;\n#     &lt;Venue&gt;XNAS&lt;/Venue&gt;\n#   &lt;/Rpt&gt;\n# &lt;/TxRpt&gt;</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-python\">import csv, hashlib\nfrom datetime import datetime, timedelta\n\ndef build_cat_events(order_log: list, output_path: str):\n    &quot;&quot;&quot;Generate CAT-compliant event file from OMS order log.&quot;&quot;&quot;\n    with open(output_path, 'w', newline='') as f:\n        w = csv.writer(f, delimiter='|')\n        w.writerow([&quot;OrderID&quot;, &quot;CustomerID&quot;, &quot;EventType&quot;, &quot;Timestamp&quot;, &quot;Side&quot;, &quot;Symbol&quot;, &quot;Qty&quot;, &quot;Price&quot;])\n        for o in order_log:\n            ts = o[&quot;timestamp&quot;].strftime(&quot;%Y%m%d-%H:%M:%S.%f&quot;)\n            w.writerow([o[&quot;id&quot;], o.get(&quot;customer&quot;, &quot;CUST001&quot;),\n                        o[&quot;event&quot;], ts, o[&quot;side&quot;], o[&quot;symbol&quot;],\n                        o[&quot;qty&quot;], f&quot;{o['price']:.2f}&quot;])\n\ndef reconcile_reports(report_file: str, clearing_file: str):\n    &quot;&quot;&quot;Flag mismatches between generated report and clearing records.&quot;&quot;&quot;\n    # Returns list of unmatched entries\n    pass</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "economics-career"
+  ],
+  "type": "reference",
+  "toc": false
+}

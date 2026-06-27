@@ -3,6 +3,7 @@ type: reference
 title: "Configuration Management"
 description: "Symbol master: instrument definition (symbol, exchange, tick size,. Venue routing config: per-venue IP/port, protocol, credentials,"
 tags: ["phase-7"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.425Z"
 phase: 7
 phaseName: "Order Entry & Execution"

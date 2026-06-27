@@ -3,6 +3,7 @@ type: reference
 title: "Latency Measure"
 description: "SO_TIMESTAMPING: Linux NIC hardware timestamps at the PHY level.. PTP (IEEE 1588) clock synchronization: grandmaster clock via GPS,"
 tags: ["performance"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.426Z"
 phase: 7
 phaseName: "Order Entry & Execution"

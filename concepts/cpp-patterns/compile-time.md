@@ -3,6 +3,7 @@ type: reference
 title: "Compile Time"
 description: "constexpr/consteval enables computation at compile time:. Template metaprogramming (TMP) performs type-level computation;"
 tags: ["time-series"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.406Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"

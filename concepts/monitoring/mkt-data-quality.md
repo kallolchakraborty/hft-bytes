@@ -3,6 +3,7 @@ type: reference
 title: "Mkt Data Quality"
 description: "Sequence gaps are the #1 indicator of lost packets; detect within 1ms. Latency spikes >100µs from exchange to application need immediate alerts"
 tags: ["dark-pools", "data-engineering"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.448Z"
 phase: 14
 phaseName: "Monitoring & Security"

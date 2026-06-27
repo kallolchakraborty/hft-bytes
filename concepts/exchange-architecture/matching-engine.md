@@ -3,6 +3,7 @@ type: reference
 title: "Matching Engine"
 description: "Price-time priority: orders sorted by price (best first), then. Pro-rata allocation: at the same price level, each order gets"
 tags: ["exchange-protocols"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.432Z"
 phase: 8
 phaseName: "Exchange Architecture"
@@ -18,6 +19,9 @@ artifact-id: "ZHFT_MATCHING_ENGINE"
 - Continuous trading: orders match immediately when crossing.
 - Odd lot handling: odd lots (< round lot) may have lower priority
 - Workup / negotiation: some exchanges (e.g., NYSE) allow
+- Price-time vs pro-rata allocation deep dive: price-time gives predictable latency incentive (fastest at best price gets all); pro-rata splits volume proportionally among orders at the same price level, reducing the speed advantage but creating gaming via order-size inflation. CME uses pro-rata with top-order priority (first order at each price level gets minimum fill guarantee). Eurex uses pure price-time. LSE uses hybrid: price-time for displayed, pro-rata for hidden
+- Trade cancellation / trade break rules: exchanges can nullify trades under specific conditions (erroneous print, system malfunction, market-wide circuit breaker). CME: trades within 5 seconds of a clearly erroneous trade can be busted; Eurex: trades within 3 seconds; LSE: no automatic bust for on-exchange trades. Firms must handle trade break notifications (TradingAction / TradeBust messages) and reverse position/PnL accordingly
+- Implied pricing edge cases: CME implied pricing for calendar spreads can create infinite loops (A implies B, B implies A) — the exchange uses a maximum implication depth (typically 3 levels); cross-product implieds (e.g., ES + NQ → YM) must be calculated across matching engines; complex butterflies (3+ legs) may imply into 5+ outright books simultaneously; a partial fill on one butterfly leg can orphan implied orders on other legs
 
 ## Usage
 
@@ -25,6 +29,10 @@ artifact-id: "ZHFT_MATCHING_ENGINE"
 // me.addOrder({1, Side::BUY, 100, 150.25, OrderType::LIMIT});
 // me.addOrder({2, Side::SELL, 50, 150.25, OrderType::LIMIT});
 // auto trades = me.match(); // process matching
+
+## Staff+ Perspective
+
+> **Staff+ Perspective**: The choice between price-time and pro-rata affects strategy more than most realize. In pure pro-rata allocation (CME), the optimal strategy is to send the maximum order size at the best price level to capture a proportion of each match — a "book burner" strategy. In price-time (Eurex), the optimal strategy is to be the fastest to the best price. Many firms run separate microstrategies tuned to each venue's matching rule. For implied pricing, the infinite-loop protection must be understood deeply: CME's maximum implication depth of 3 means a 3-leg butterfly can imply into 8 outright books. If the butterfly's spread's change is slow (e.g., expiration-based), recalc can be lazy (every N milliseconds); if it's fast (e.g., active calendar spread), recalc must be event-driven on each outright change.
 
 ## Source Code
 

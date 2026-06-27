@@ -3,6 +3,7 @@ type: reference
 title: "KDB"
 description: "q language: tables as columnar lists, k-syntax for vectors. As-of join (aj): real-time best bid/ask at event time (key insight)"
 tags: ["phase-12"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.444Z"
 phase: 12
 phaseName: "Data Engineering"

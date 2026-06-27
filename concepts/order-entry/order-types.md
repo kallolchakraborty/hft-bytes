@@ -3,6 +3,7 @@ type: reference
 title: "Order Types"
 description: "Limit, market, IOC, FOK, pegged, iceberg, and hidden orders. Exchange-specific semantics: CME iceberg vs Eurex iceberg, NASDAQ pegged vs displayed. Queue position implications for fill probability."
 tags: ["order-types"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.425Z"
 phase: 7
 phaseName: "Order Entry & Execution"

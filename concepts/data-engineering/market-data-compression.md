@@ -3,6 +3,7 @@ type: reference
 title: "Market Data Compression"
 description: "Delta-of-delta timestamp compression, XOR-based float compression (Gorilla), dictionary encoding for repeating symbols, schema-based compression (SBE), real-time decompression latency budgets, and columnar storage for market data replay."
 tags: ["data-engineering"]
+difficulty: staff
 timestamp: "2026-06-27T03:50:00.000Z"
 phase: 12
 phaseName: "Data Engineering"

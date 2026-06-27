@@ -3,6 +3,7 @@ type: reference
 title: "Probability Distributions"
 description: "Log-normal and normal distributions model asset returns; Poisson models discrete event arrivals (orders, trades). GEV captures tail risk. Sampling from custom distributions with C++."
 tags: ["mathematics"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.400Z"
 phase: 2
 phaseName: "Mathematics & Statistics"

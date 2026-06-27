@@ -3,6 +3,7 @@ type: reference
 title: "FIX Protocol Deep Dive"
 description: "FIX session FSM, sequence number management, gap-fill and resend-request logic, message validation rules, FIX-over-SBE binary encoding, checksum calculation, and session-level recovery procedures."
 tags: ["exchange-protocols"]
+difficulty: staff
 timestamp: "2026-06-27T03:20:00.000Z"
 phase: 7
 phaseName: "Order Entry & Execution"
@@ -33,6 +34,23 @@ stateDiagram-v2
     LoggedIn --> NotLoggedIn: Logout(35=5) received
     LoggedIn --> Disconnected: Heartbeat timeout\nTestRequest failed
     Silent --> Disconnected: Heartbeat timeout\nTestRequest failed
+```
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">FIX Session State Machine</div>
+  <div class="ad-fsm">
+    <span class="ad-state dim">Disconnected</span>
+    <span class="ad-transition-arrow material-symbols-outlined">arrow_right_alt</span>
+    <span class="ad-state active">Connected</span>
+    <span class="ad-transition-arrow material-symbols-outlined">arrow_right_alt</span>
+    <span class="ad-state">Logged On</span>
+    <span class="ad-transition-arrow material-symbols-outlined">arrow_right_alt</span>
+    <span class="ad-state">Session Up</span>
+    <span class="ad-transition" style="margin:0 0.25rem">⇄</span>
+    <span class="ad-state" style="border-color:#f59e0b">Recovery</span>
+  </div>
+</div>
 ```
 
 ## Usage

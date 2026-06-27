@@ -3,6 +3,7 @@ type: reference
 title: "Mm Programs"
 description: "DMM (Designated Market Maker): NYSE/NASDAQ program with. SLP (Supplemental Liquidity Provider): lower obligations than"
 tags: ["trading"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.432Z"
 phase: 8
 phaseName: "Exchange Architecture"

@@ -3,6 +3,7 @@ type: reference
 title: "SBE"
 description: "SBE uses an XML schema to define message layouts; the codec. The flyweight pattern overlays a struct on a byte buffer with"
 tags: ["phase-4"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.413Z"
 phase: 4
 phaseName: "System Programming & IPC"

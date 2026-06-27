@@ -3,6 +3,7 @@ type: reference
 title: "Compiler Flags"
 description: "-O2  : safe optimisations; no precision loss.  Default for most. -O3  : enables -O2 + inlining heuristics, vectorisation, LCM,"
 tags: ["phase-1"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.395Z"
 phase: 1
 phaseName: "Foundations"

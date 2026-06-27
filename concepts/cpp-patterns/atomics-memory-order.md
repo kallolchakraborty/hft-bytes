@@ -3,6 +3,7 @@ type: reference
 title: "Atomics Memory Order"
 description: "memory_order_relaxed: no ordering constraints; fastest (~1ns).. memory_order_acquire/release: establish happens-before between"
 tags: ["order-types"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.404Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"

@@ -3,6 +3,7 @@ type: reference
 title: "Exchange Feed Protocol Internals"
 description: "MoldUDP64 packet framing and recovery, SoupBinTCP session login and message framing, SLIP (CME) protocol, Linear Binary (ICE) format, retransmission request/reply, and sequence number management per protocol."
 tags: ["exchange-protocols"]
+difficulty: staff
 timestamp: "2026-06-27T03:40:00.000Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"

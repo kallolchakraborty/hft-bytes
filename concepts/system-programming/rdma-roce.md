@@ -3,6 +3,7 @@ type: reference
 title: "RDMA & RoCE"
 description: "Remote Direct Memory Access bypasses the kernel for ultra-low-latency data transfer. RoCE v2 encapsulates InfiniBand verbs over Ethernet. ibverbs API for one-sided reads/writes."
 tags: ["rdma"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.420Z"
 phase: 4
 phaseName: "System Programming & IPC"

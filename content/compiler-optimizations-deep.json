@@ -1,0 +1,30 @@
+{
+  "id": "compiler-optimizations-deep",
+  "title": "Advanced Compiler Optimizations for HFT",
+  "phase": 3,
+  "phaseName": "C++ Low-Latency Patterns",
+  "category": "C++ Low-Latency Patterns",
+  "subcategory": "cpp-patterns",
+  "language": "cpp",
+  "description": "PGO with trading hot-path examples, ThinLTO vs full LTO tradeoffs, BOLT binary layout for icache locality, -march=native decision matrix, and compiler barriers vs memory barriers for latency-critical ",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>PGO (Profile-Guided Optimization): build with <code>-fprofile-generate</code>, run on production trace, rebuild with <code>-fprofile-use</code>; reorders basic blocks for hot/cold splitting, inlines at hot call sites, optimizes switch statements for common paths</li>\n<li>ThinLTO vs full LTO: ThinLTO partitions IR per translation unit with a thin global index — 80-90% of full LTO benefit at fraction of link time; full LTO can be 5-10x slower to link, impractical for large trading codebases</li>\n<li>BOLT (Binary Optimization and Layout Tool): post-link binary rewriter that profiles and relayouts <code>.text</code> section for icache locality; typical 5-15% latency reduction on trading hot paths; requires <code>–pgo</code> profile or perf-lbr sampling</li>\n<li><code>-march</code> decision matrix: <code>-march=native</code> gives max perf but ties binary to specific CPU stepping; <code>-march=skylake-avx512</code> + <code>-mtune=cascadelake</code> balances portability and perf; for colo deployments, <code>-march=native</code> is safe since hardware is homogeneous</li>\n<li>Compiler barrier vs memory barrier: <code>asm volatile(\"\" ::: \"memory\")</code> prevents compiler reordering across the barrier (zero cost at runtime); <code>std::atomic_signal_fence(memory_order_seq_cst)</code> same effect in C++11; does NOT prevent CPU reordering — use <code>mfence</code> or <code>lock</code> prefix for that</li>\n</ul>\n<div class=\"ad-wrapper\">\n  <div class=\"ad-title\">PGO Compilation Flow</div>\n  <div class=\"ad-flow\">\n    <div class=\"ad-stage active\"><span class=\"ad-stage-icon\">⚙️</span><span class=\"ad-stage-label\">Build -fprofile-gen</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">▶️</span><span class=\"ad-stage-label\">Run Prod Trace</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">📊</span><span class=\"ad-stage-label\">Profile Data</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">⚡</span><span class=\"ad-stage-label\">Rebuild -fprofile-use</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">🚀</span><span class=\"ad-stage-label\">Optimized Binary</span></div>\n  </div>\n</div>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-bash\"># Step 1: Build with instrumentation\ng++ -O3 -march=native -flto=thin -fprofile-generate \\\n  -o trading_strategy_pgo strategy.cpp order_book.cpp risk_checks.cpp\n\n# Step 2: Run on production-like workload\n./trading_strategy_pgo --mode replay --input /data/trace.itch\n\n# Step 3: Rebuild with profiles (profraw -&gt; profdata)\nllvm-profdata merge -output=default.profdata *.profraw\ng++ -O3 -march=native -flto=thin -fprofile-use \\\n  -o trading_strategy strategy.cpp order_book.cpp risk_checks.cpp\n\n# BOLT post-link optimization\nllvm-bolt trading_strategy -o trading_strategy.bolt \\\n  -pdata=perf.data -reorder-blocks=ext-tsp -split-functions=3</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-cpp\">// Compiler barrier — prevents reordering, zero runtime cost\n#define COMPILER_BARRIER() asm volatile(&quot;&quot; ::: &quot;memory&quot;)\n\n// Trading hot path example that benefits from PGO\nvoid on_market_tick(const MarketDataEntry&amp; entry) {\n    COMPILER_BARRIER();\n    auto price = entry.price();\n    auto signal = compute_signal(entry);  // hot — PGO inlines this\n    COMPILER_BARRIER();\n    if (signal &gt; threshold_) {\n        send_order(entry.symbol(), price, signal);\n    }\n}</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "cpp-patterns"
+  ],
+  "type": "reference",
+  "toc": false
+}

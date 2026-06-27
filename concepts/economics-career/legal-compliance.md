@@ -3,6 +3,7 @@ type: reference
 title: "Legal Compliance"
 description: "Market manipulation red flags: spoofing — entering orders with intent to. Wash trading: simultaneous buy/sell orders for the same asset at the same"
 tags: ["phase-16"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.456Z"
 phase: 16
 phaseName: "HFT Economics & Career"

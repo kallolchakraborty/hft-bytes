@@ -3,6 +3,7 @@ type: reference
 title: "Backtest Engine"
 description: "Event loop architecture: tick/bar/order event queue. Market data cursor: deterministic iteration over historical data"
 tags: ["backtesting", "testing"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.439Z"
 phase: 11
 phaseName: "Backtesting & Simulation"

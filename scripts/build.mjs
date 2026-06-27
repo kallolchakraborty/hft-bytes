@@ -83,6 +83,14 @@ function renderMarkdown(md, language = 'cpp') {
         parts.push(`<div class="mermaid-wrapper"><pre class="mermaid">${escapeHtml(code)}</pre></div>`);
         continue;
       }
+      if (lang === 'html') {
+        const htmlLines = [];
+        i++;
+        while (i < lines.length && !/^```/.test(lines[i])) { htmlLines.push(lines[i]); i++; }
+        i++;
+        parts.push(htmlLines.join('\n'));
+        continue;
+      }
       const codeLines = [];
       i++;
       while (i < lines.length && !/^```/.test(lines[i])) { codeLines.push(lines[i]); i++; }
@@ -91,16 +99,14 @@ function renderMarkdown(md, language = 'cpp') {
       parts.push(`<pre><code class="language-${escapeHtml(lang)}">${escapeHtml(code)}</code></pre>`);
       continue;
     }
-    if (/^##\s/.test(line)) {
-      const text = line.replace(/^##\s+/, '').trim();
+    if (/^#+\s/.test(line)) {
+      const level = line.match(/^#+/)[0].length;
+      const text = line.replace(/^#+\s+/, '').trim();
       const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-      parts.push(`<h2 id="section-${id}">${renderInline(text)}</h2>`);
-      i++; continue;
-    }
-    if (/^###\s/.test(line)) {
-      const text = line.replace(/^###\s+/, '').trim();
-      const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-      parts.push(`<h3 id="section-${id}">${renderInline(text)}</h3>`);
+      if (level === 2) parts.push(`<h2 id="section-${id}">${renderInline(text)}</h2>`);
+      else if (level === 3) parts.push(`<h3 id="section-${id}">${renderInline(text)}</h3>`);
+      else if (level === 4) parts.push(`<h4 id="section-${id}">${renderInline(text)}</h4>`);
+      else parts.push(`<h${level} id="section-${id}">${renderInline(text)}</h${level}>`);
       i++; continue;
     }
     if (/^>\s/.test(line)) {
@@ -113,7 +119,7 @@ function renderMarkdown(md, language = 'cpp') {
     const paraLines = [];
     while (i < lines.length) {
       const l = lines[i];
-      if (/^\s*$/.test(l) || /^```/.test(l) || /^##/.test(l) || /^###/.test(l) || /^>/.test(l)) break;
+      if (/^\s*$/.test(l) || /^```/.test(l) || /^#+\s/.test(l) || /^>/.test(l)) break;
       paraLines.push(l);
       i++;
     }
@@ -276,6 +282,8 @@ const conceptEntries = scanConcepts();
 console.error(`Found ${conceptEntries.length} concept files`);
 
 if (conceptEntries.length === 0) process.exit(0);
+
+console.error('Starting processing...');
 
 const routeMap = {};
 const routeList = [];

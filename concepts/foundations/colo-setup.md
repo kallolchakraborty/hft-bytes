@@ -3,6 +3,7 @@ type: reference
 title: "Colo Setup"
 description: "Server rackmount: 1U or 2U depending on PCIe card count.  Leave. OS installation: minimal CentOS Stream / Ubuntu Server LTS."
 tags: ["phase-1"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.395Z"
 phase: 1
 phaseName: "Foundations"
@@ -22,6 +23,21 @@ artifact-id: "ZHFT_COLO_SETUP"
 - SWAP: disable or set to a tiny partition on a slow disk.  HFT
 - NTP: use PTP (IEEE 1588) with hardware timestamping for
 - Monitoring: install node_exporter + netdata or collectd with
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">Colo Network Topology — Rack to Exchange</div>
+  <div class="ad-topo">
+    <div class="ad-node"><span class="ad-node-icon">🗄️</span><span>Firm Rack</span><span class="ad-node-label">Colo Cage</span></div>
+    <div class="ad-link"><span class="ad-link-line"></span><span class="ad-link-dot"></span></div>
+    <div class="ad-node"><span class="ad-node-icon">🔀</span><span>Top-of-Rack Switch</span><span class="ad-node-label">Leaf</span></div>
+    <div class="ad-link"><span class="ad-link-line"></span><span class="ad-link-dot"></span></div>
+    <div class="ad-node"><span class="ad-node-icon">🌐</span><span>DC Core Switch</span><span class="ad-node-label">Spine</span></div>
+    <div class="ad-link"><span class="ad-link-line"></span><span class="ad-link-dot"></span></div>
+    <div class="ad-node"><span class="ad-node-icon">🏛️</span><span>Exchange ME</span><span class="ad-node-label">Matching Engine</span></div>
+  </div>
+</div>
+```
 
 ## Usage
 

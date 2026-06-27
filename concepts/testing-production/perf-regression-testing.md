@@ -3,6 +3,7 @@ type: reference
 title: "Performance Regression Testing"
 description: "Automated latency gates in CI/CD, A/B latency tests with statistical significance, micro-regression detection, production canary analysis, hardware-counter profiling in test pipelines, and golden-latency baselines."
 tags: ["testing"]
+difficulty: advanced
 timestamp: "2026-06-27T03:20:00.000Z"
 phase: 15
 phaseName: "Testing & Production"

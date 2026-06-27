@@ -3,6 +3,7 @@ type: playbook
 title: "Mass Cancel"
 description: "Mass cancel request sent but response lost: you don't know if the. Exchange mass cancel succeeds but timeout returns error: the cancel"
 tags: ["phase-17"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.459Z"
 phase: 17
 phaseName: "Production Failure Modes"

@@ -3,6 +3,7 @@ type: playbook
 title: "Stale State"
 description: "Feed handler reconnects after dropout: the exchange may replay messages. If replay starts from a stale sequence point, the book may appear correct"
 tags: ["mathematics"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.461Z"
 phase: 17
 phaseName: "Production Failure Modes"

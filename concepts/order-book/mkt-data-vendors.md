@@ -3,6 +3,7 @@ type: decision-matrix
 title: "Mkt Data Vendors"
 description: "Exchange direct feeds: lowest latency, highest cost. CME MDP. 0, Eurex EBS, ICE MD, LSE Millennium MD. Require exchange"
 tags: ["data-engineering"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.436Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

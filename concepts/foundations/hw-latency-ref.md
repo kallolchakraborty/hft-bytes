@@ -3,6 +3,7 @@ type: reference
 title: "Hw Latency Ref"
 description: "L1 cache hit:       ~1 ns  (4 cycles @ 4 GHz). L2 cache hit:       ~4 ns  (14 cycles)"
 tags: ["performance"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.397Z"
 phase: 1
 phaseName: "Foundations"

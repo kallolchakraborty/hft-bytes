@@ -3,6 +3,7 @@ type: reference
 title: "FPGA Parser"
 description: "Ethernet MAC → UDP → ITCH message → order book pipeline in hardware. Latency measured in clock cycles (not microseconds)"
 tags: ["fpga"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.446Z"
 phase: 13
 phaseName: "FPGA & Hardware"

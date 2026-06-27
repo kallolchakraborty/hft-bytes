@@ -3,6 +3,7 @@ type: reference
 title: "Cme Ilink3"
 description: "SBE (Simple Binary Encoding) schema: message templates defined. Packet structure: SBE header (8 bytes: BlockLength, TemplateID,"
 tags: ["phase-8"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.429Z"
 phase: 8
 phaseName: "Exchange Architecture"

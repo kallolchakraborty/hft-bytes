@@ -3,6 +3,7 @@ type: reference
 title: "LLM Hft"
 description: "Code generation for protocol parsers: LLMs can translate exchange spec. Incident analysis automation: feed logs and metrics to LLM for postmortem"
 tags: ["phase-16"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.456Z"
 phase: 16
 phaseName: "HFT Economics & Career"

@@ -3,6 +3,7 @@ type: reference
 title: "Fee Structures"
 description: "Maker/taker model: liquidity provider (maker) receives rebate;. Rebate tiers: higher volume = better maker rebate. CME has 5+ tiers"
 tags: ["phase-8"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.431Z"
 phase: 8
 phaseName: "Exchange Architecture"

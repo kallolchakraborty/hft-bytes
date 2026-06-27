@@ -3,6 +3,7 @@ type: reference
 title: "MMAP Files"
 description: "mmap maps a file directly into virtual address space, avoiding. MAP_SHARED: writes go back to file (shared across processes)."
 tags: ["ipc", "trading"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.409Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"

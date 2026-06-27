@@ -3,6 +3,7 @@ type: reference
 title: "FPGA Order Gen"
 description: "FIX/OUCH encoding: binary vs ASCII (OUCH is binary → faster). Sequence number management: incrementing per-session counter"
 tags: ["fpga", "order-types"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.445Z"
 phase: 13
 phaseName: "FPGA & Hardware"

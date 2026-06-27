@@ -3,6 +3,7 @@ type: reference
 title: "Replay Test"
 description: "Record real market data + order flow in production; replay through. Sequence matching: replay events must produce the same internal state"
 tags: ["backtesting", "testing"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.454Z"
 phase: 15
 phaseName: "Testing & Production"

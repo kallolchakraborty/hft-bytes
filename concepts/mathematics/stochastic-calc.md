@@ -3,6 +3,7 @@ type: reference
 title: "Stochastic Calc"
 description: "Wiener processes (Brownian motion) are the foundational building. Ito's lemma relates the differential of a function of a stochastic"
 tags: ["phase-2"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.403Z"
 phase: 2
 phaseName: "Mathematics & Statistics"

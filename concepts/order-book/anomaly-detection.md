@@ -3,6 +3,7 @@ type: reference
 title: "Anomaly Detection"
 description: "Spoofing pattern detection: layering — placing large orders at. Quote stuffing: rapid fire of order add/cancel on same symbol"
 tags: ["phase-9"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.433Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

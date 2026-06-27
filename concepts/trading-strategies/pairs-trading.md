@@ -3,6 +3,7 @@ type: reference
 title: "Pairs Trading"
 description: "Engle-Granger test: regress Y on X, test residuals for stationarity (ADF). Johansen test: eigenvalue-based cointegration for multiple series"
 tags: ["phase-10"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.438Z"
 phase: 10
 phaseName: "Trading Strategies"

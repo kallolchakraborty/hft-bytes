@@ -3,6 +3,7 @@ type: reference
 title: "Latency Sim"
 description: "Network latency distribution: normal vs exponential vs empirical. Exchange processing latency: matching engine + gateway delay"
 tags: ["performance"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.441Z"
 phase: 11
 phaseName: "Backtesting & Simulation"

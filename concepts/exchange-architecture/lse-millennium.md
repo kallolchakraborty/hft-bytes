@@ -3,6 +3,7 @@ type: reference
 title: "Lse Millennium"
 description: "Millennium Gateway protocol: LSE's binary order entry protocol.. Instrument identification: MIC (Market Identifier Code, e.g., XLON)"
 tags: ["phase-8"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.431Z"
 phase: 8
 phaseName: "Exchange Architecture"

@@ -3,6 +3,7 @@ type: reference
 title: "System Architecture Blueprint"
 description: "End-to-end HFT system architecture: market data ingestion, feed processing, order-book reconstruction, strategy execution, order management, and exchange gateway. Thread-per-stage pipeline model."
 tags: ["performance"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.405Z"
 phase: 1
 phaseName: "Foundations"
@@ -23,6 +24,10 @@ artifact-id: "ZHFT_SYSTEM_ARCHITECTURE"
 - Gateway stage: implements exchange-specific session logic; handles sequence numbers, resend requests, heartbeats
 - Thread isolation: no shared mutable state between pipeline stages; data flows through SPSC queues
 - Heartbeat/watchdog: each stage sends periodic liveness signals; monitoring alerts on missed heartbeats
+- Cross-socket (NUMA) costs: when pipeline stages span two CPU sockets (e.g., NIC on socket 0, strategy on socket 1), SPSC queue access becomes cross-socket (40-60% higher latency). Mitigate by: pinning entire pipeline to single socket if core count permits; using `mbind()` for memory affinity; placing shared queues in socket-local memory; splitting the pipeline into two NUMA zones with a bridge stage that batches cross-socket transfers
+- Pipeline backpressure: if the strategy stage is slower than the market-data stage, order book events queue up. Mitigation: bounded SPSC queues with overflow detection; circuit-breaker that pauses market-data subscription when queues exceed 80% capacity; differentiate between "hot" symbols (priority events, larger per-symbol queue) and "cold" symbols
+- Redundancy and failover: two identical pipeline instances (A/B) running simultaneously on separate servers; each consumes the same multicast market data and generates the same orders; the gateway stage sends cancel-replace-then-new on failover to avoid duplicate fill; monitoring compares state between A and B for divergence detection
+- Deployment topology in colo: rack layout must minimize cable length between servers and exchange switch; typical 1U server per strategy group; NIC connected directly to exchange access switch (no intermediate TOR switch for latency-critical paths); fan-out from strategy server to multiple exchange gateways via a single 100GbE link or dedicated 10GbE per venue
 
 ```mermaid
 graph LR
@@ -72,8 +77,10 @@ struct PipelineStage {
 // Example: five-stage pipeline
 // NIC -> Parser -> OrderBook -> Strategy -> OMS -> Gateway -> Exchange
 // Each arrow is a lock-free SPSC queue
-// Core assignment: 0=Parser, 1=OrderBook, 2=Strategy, 3=OMS, 4=Gateway
-```
+
+## Staff+ Perspective
+
+> **Staff+ Perspective**: The pipeline decomposition is the foundation of HFT system design, but real production systems have feedback loops that the simple diagram misses. The strategy stage needs to know the OMS fill status to adjust quotes — which requires a feedback queue from OMS back to strategy. This creates a potential for deadlock if the feedback queue fills while the forward queue is also full (circular wait). The standard mitigation: a dedicated "cancel" credit system where the OMS pre-allocates cancellation slots so the strategy can always send a cancel, even if the forward queue is full. For the colo deployment, the single biggest mistake is sharing a switch between the trading server and the exchange gateway. Use a direct fiber pair: NIC → exchange switch, no intermediate hops. The exchange switch's cut-through latency is ~500ns; an additional TOR switch adds ~1µs. At peak, 1µs per round-trip is the difference between winning and losing.
 
 ## Source Code
 

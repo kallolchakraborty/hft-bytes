@@ -3,6 +3,7 @@ type: reference
 title: "Mkt Replay"
 description: "Binary recording format: fixed-size records for deterministic replay. Replay at original speed vs accelerated (Nx)"
 tags: ["backtesting"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.441Z"
 phase: 11
 phaseName: "Backtesting & Simulation"

@@ -3,6 +3,7 @@ type: reference
 title: "Multicast Deep"
 description: "IGMPv3 adds Source-Specific Multicast (SSM) — receivers can. PIM-SM (Sparse Mode) uses a Rendezvous Point (RP) as a meeting"
 tags: ["phase-5"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.416Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"

@@ -3,6 +3,7 @@ type: reference
 title: "Performance Attribution"
 description: "Alpha decomposition: timing (entry/exit skill) vs selection (instrument choice). Transaction cost analysis: spread cost + market impact + delay/slippage"
 tags: ["phase-11"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.442Z"
 phase: 11
 phaseName: "Backtesting & Simulation"

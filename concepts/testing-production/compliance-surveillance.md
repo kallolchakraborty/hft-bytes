@@ -3,6 +3,7 @@ type: reference
 title: "Compliance & Surveillance Technology"
 description: "CAT reporting format and submission, market manipulation detection (spoofing, layering, wash trading), trade reconstruction for regulatory exams, OATS for options, best-execution monitoring infrastructure, audit trail system architecture."
 tags: ["compliance"]
+difficulty: advanced
 timestamp: "2026-06-27T03:50:00.000Z"
 phase: 15
 phaseName: "Testing & Production"

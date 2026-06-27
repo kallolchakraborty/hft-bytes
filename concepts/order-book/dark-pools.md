@@ -3,6 +3,7 @@ type: reference
 title: "Dark Pools & Alternative Liquidity"
 description: "Dark pool matching preferences (size-only, time-at-size, conditional, continuous), dark-to-lit sweep logic, midpoint peg orders, ATS/ECN comparison, dark liquidity detection indicators, and SOR integration for dark venues."
 tags: ["market-data", "trading"]
+difficulty: staff
 timestamp: "2026-06-27T03:40:00.000Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

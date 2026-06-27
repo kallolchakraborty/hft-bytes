@@ -3,6 +3,7 @@ type: reference
 title: "Server Selection"
 description: "AMD EPYC: higher core count (96-128), 12-channel DDR5, 128 PCIe 5. Intel Xeon: higher turbo frequency (4.5+ GHz), 8-channel DDR5,"
 tags: ["phase-1"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.399Z"
 phase: 1
 phaseName: "Foundations"

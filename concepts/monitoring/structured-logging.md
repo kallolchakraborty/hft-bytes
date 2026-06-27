@@ -3,6 +3,7 @@ type: reference
 title: "Structured Logging"
 description: "Binary logging with fixed schema enables zero-allocation, sub-100ns logging. JSON logging is for human consumers (auditors, regulators) — transform offline"
 tags: ["phase-14"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.449Z"
 phase: 14
 phaseName: "Monitoring & Security"

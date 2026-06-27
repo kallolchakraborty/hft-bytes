@@ -3,6 +3,7 @@ type: playbook
 title: "Seq Resets"
 description: "Some exchanges may reset sequence numbers mid-session — after a. False gap detection: a sequence going from, say, 1,000,000 to 1 does"
 tags: ["phase-17"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.461Z"
 phase: 17
 phaseName: "Production Failure Modes"

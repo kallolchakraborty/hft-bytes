@@ -3,6 +3,7 @@ type: reference
 title: "FPGA Intro"
 description: "Logic cells = LUT (lookup table) + flip-flop → any combinatorial + register. DSP slices: hardened multiply-accumulate (MAC) — 18x27 multiplier"
 tags: ["fpga"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.445Z"
 phase: 13
 phaseName: "FPGA & Hardware"

@@ -3,6 +3,7 @@ type: playbook
 title: "Clock Anomalies"
 description: "PTP grandmaster failure: without GM, clocks free-run with drift;. Time jumps (forward/backward): CLOCK_REALTIME can jump when NTP adjusts;"
 tags: ["clock-synchronization"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.459Z"
 phase: 17
 phaseName: "Production Failure Modes"

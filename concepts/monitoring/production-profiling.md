@@ -3,6 +3,7 @@ type: reference
 title: "Production Profiling"
 description: "perf stat/record/report, flamegraphs, bpftrace one-liners for latency, USDT probes in trading applications, CPI analysis for front-end stalls."
 tags: ["performance"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.440Z"
 phase: 14
 phaseName: "Monitoring & Security"

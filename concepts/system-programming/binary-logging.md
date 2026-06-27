@@ -3,6 +3,7 @@ type: reference
 title: "Binary Logging"
 description: "mmap-based ring buffer logging: pre-allocate a large mmap'd file,. Binary format design: fixed-size headers (timestamp, seqno,"
 tags: ["protocols"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.411Z"
 phase: 4
 phaseName: "System Programming & IPC"

@@ -3,6 +3,7 @@ type: reference
 title: "Grafana"
 description: "Prometheus metrics exposition must be lock-free to avoid interfering. Latency SLIs (p99 entry→ack, p99 tick→book update) are the primary"
 tags: ["monitoring"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.447Z"
 phase: 14
 phaseName: "Monitoring & Security"

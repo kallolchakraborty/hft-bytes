@@ -3,6 +3,7 @@ type: reference
 title: "FPGA Vendors"
 description: "Xilinx Alveo: U200 (522K LUT), U250 (1.7M LUT), U280 (HBM2). Intel PAC D5005: Stratix 10, 933K LUTs, 2x DDR4, PCIe Gen3x16"
 tags: ["fpga"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.446Z"
 phase: 13
 phaseName: "FPGA & Hardware"

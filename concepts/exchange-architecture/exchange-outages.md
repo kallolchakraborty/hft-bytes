@@ -3,6 +3,7 @@ type: reference
 title: "Exchange Outages"
 description: "CME Globex outages: known patterns — EOS (Enhanced Order. Eurex T7 maintenance windows: scheduled Sunday maintenance"
 tags: ["exchange-protocols"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.430Z"
 phase: 8
 phaseName: "Exchange Architecture"

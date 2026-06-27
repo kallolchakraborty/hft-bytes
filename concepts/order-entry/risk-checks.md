@@ -3,6 +3,7 @@ type: reference
 title: "Risk Checks"
 description: "Credit limits: notional caps per symbol, strategy, and firm. Max order size: absolute (e.g., 10,000 lots) and percentage of"
 tags: ["risk-metrics"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.427Z"
 phase: 7
 phaseName: "Order Entry & Execution"
@@ -20,12 +21,36 @@ artifact-id: "ZHFT_RISK_CHECKS"
 - Self-trade prevention: cross-order detection across child strategies.
 - Fat-finger limits: price vs NBBO threshold (e.g., 2% away) and
 - Circuit breaker integration: if market-wide CB triggered, block
+- Kill-switch architecture: a hardware or software mechanism to cancel all open orders immediately. Hardware kill-switch: physical button in colo that cuts power to network switch or sets a hardware-level cancel flag. Software kill-switch: a separate admin process that sends mass-cancel to all exchange gateways on a dedicated network path (bypasses the trading server). Both must be tested weekly
+- Symbol-level vs strategy-level vs firm-level limits: symbol limits protect single product exposure (e.g., max 10,000 ES contracts); strategy limits aggregate across all symbols in a strategy (e.g., max $500M notional); firm limits sum all strategies (e.g., max $2B total exposure). Each tier should have separate hard limits and soft limits (warn at 80%, block at 100%)
+- Self-trade prevention in multi-threaded engines: with multiple strategy threads generating orders concurrently, self-trade detection must be contention-free. Use a thread-local order cache (lock-free) that aggregates all unacked orders per symbol; a cross-thread barrier (seqno fence) flushes caches before each new order. The exchange's STP flag (43=Y) is the last line of defense, not the primary mechanism
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">Pre-Trade Risk Check Pipeline</div>
+  <div class="ad-flow">
+    <div class="ad-stage active"><span class="ad-stage-icon">📝</span><span class="ad-stage-label">New Order</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">💳</span><span class="ad-stage-label">Credit Limit</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">📊</span><span class="ad-stage-label">Max Order Rate</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🔞</span><span class="ad-stage-label">Self-Trade Check</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">✅</span><span class="ad-stage-label">Pass / Reject</span></div>
+  </div>
+</div>
+```
 
 ## Usage
 
 // RiskEngine risk;
 // risk.setCreditLimit(Symbol::ES, 50'000'000);
 // if (risk.check(order).pass) exchange.send(order);
+
+## Staff+ Perspective
+
+> **Staff+ Perspective**: Risk checks must be zero-argument operations in the hot path — meaning they must never require database queries, RPCs, or disk I/O. Pre-compute all limits at startup and store in shared memory (hugepages). For max-order-rate, the token bucket algorithm must be lock-free and per-thread (not per-process) to avoid contention on the shared bucket update. At Optiver, we had a bug where the self-trade prevention check took 500ns (reading the thread-local cache of sibling orders) — which was the fastest check in the pipeline until the cache grew to 10M orders and the hash table resized, causing a 50ms pause (exchange rejected our orders for missing heartbeats). The fix: a fixed-size open-addressing hash table (power-of-2 buckets, no resize) with a secondary Bloom filter for cold symbols.
 
 ## Source Code
 

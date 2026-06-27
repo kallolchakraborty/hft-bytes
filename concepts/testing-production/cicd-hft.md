@@ -3,6 +3,7 @@ type: reference
 title: "CI/CD for HFT"
 description: "Strategy deployment pipelines, config-as-code (git-tracked YAML), staged rollouts (paper → tiny → full), P&L canary gates, feature flags for strategies, config diff audit, and rollback procedures for trading systems."
 tags: ["testing"]
+difficulty: advanced
 timestamp: "2026-06-27T03:30:00.000Z"
 phase: 15
 phaseName: "Testing & Production"
@@ -37,6 +38,23 @@ graph TD
     style Rollback fill:#dc2626,color:#fff
     style Stage3 fill:#047857,color:#fff
     style Gate fill:#d97706,color:#fff
+```
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">CI/CD Pipeline for HFT</div>
+  <div class="ad-flow">
+    <div class="ad-stage active"><span class="ad-stage-icon">🔨</span><span class="ad-stage-label">Build</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🧪</span><span class="ad-stage-label">Unit Tests</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">⚡</span><span class="ad-stage-label">Perf Bench</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">📦</span><span class="ad-stage-label">Package</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🚀</span><span class="ad-stage-label">Deploy</span></div>
+  </div>
+</div>
 ```
 
 ## Usage

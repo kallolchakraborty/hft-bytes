@@ -3,6 +3,7 @@ type: reference
 title: "Solarflare ef_vi & Onload"
 description: "ef_vi API for zero-copy packet IO, vi_resource allocation, ef_event completion model, tc-to-tc bypass, Onload TCP acceleration stack, OpenOnload multicast, filter programming, and Solarflare vs Mellanox comparison for HFT."
 tags: ["performance"]
+difficulty: staff
 timestamp: "2026-06-27T03:40:00.000Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"

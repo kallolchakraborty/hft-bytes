@@ -3,6 +3,7 @@ type: reference
 title: "Continuous Optimization & Daily Operations"
 description: "Morning health checks, overnight batch processing, pre-market data validation, post-market P&L reconciliation, strategy tuning cadence, war room prep, and weekly optimization cycle for HFT systems."
 tags: ["operations"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:30:00.000Z"
 phase: 15
 phaseName: "Testing & Production"

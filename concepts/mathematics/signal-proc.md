@@ -3,6 +3,7 @@ type: reference
 title: "Signal Proc"
 description: "Fourier Transform detects periodicities in order flow and spread. Moving average crossover (fast/slow MA) is the simplest trend"
 tags: ["time-series"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.402Z"
 phase: 2
 phaseName: "Mathematics & Statistics"

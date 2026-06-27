@@ -3,6 +3,7 @@ type: reference
 title: "Market Making"
 description: "Spread capture by simultaneously bidding at bid and offering at ask. Dynamic spread widening based on volatility (σ * multiplier)"
 tags: ["order-types", "trading"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.437Z"
 phase: 10
 phaseName: "Trading Strategies"
@@ -18,6 +19,26 @@ artifact-id: "ZHFT_MARKET_MAKING"
 - Inventory skew: shift quotes to encourage mean-reverting flow
 - Gamma scalping in options: delta-hedge against adverse gamma
 - Adverse selection avoidance via last-trade cancellation logic
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">Market Making Decision Loop</div>
+  <div class="ad-flow">
+    <div class="ad-stage active"><span class="ad-stage-icon">📡</span><span class="ad-stage-label">Market Data</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🧮</span><span class="ad-stage-label">Pricing Model</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🛡️</span><span class="ad-stage-label">Risk Check</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">📨</span><span class="ad-stage-label">Send Order</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">✅</span><span class="ad-stage-label">Fill / Cancel</span></div>
+  </div>
+  <div class="ad-legend">
+    <span class="ad-legend-item"><span class="ad-legend-swatch packet"></span>Data packet flow</span>
+  </div>
+</div>
+```
 
 ## Usage
 

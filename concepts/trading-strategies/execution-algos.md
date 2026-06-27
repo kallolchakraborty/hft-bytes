@@ -3,6 +3,7 @@ type: reference
 title: "Execution Algorithms"
 description: "TWAP slice scheduling, VWAP historical volume distribution, POV adaptive participation, Implementation Shortfall with Urgency, SOR routing logic with venue weighting, and fill-probability models."
 tags: ["trading"]
+difficulty: staff
 timestamp: "2026-06-27T03:30:00.000Z"
 phase: 10
 phaseName: "Trading Strategies"

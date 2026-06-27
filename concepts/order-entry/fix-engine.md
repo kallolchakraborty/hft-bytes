@@ -3,6 +3,7 @@ type: reference
 title: "FIX Engine"
 description: "Session layer: connect, logon (35=A), heartbeat (35=0),. Application layer: NewOrderSingle (35=D, 54 side, 38 qty,"
 tags: ["protocols"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.425Z"
 phase: 7
 phaseName: "Order Entry & Execution"

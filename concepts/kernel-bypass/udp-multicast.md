@@ -3,6 +3,7 @@ type: reference
 title: "UDP Multicast"
 description: "IGMPv3 supports Source-Specific Multicast (SSM), where a receiver. PIM-SM (Protocol Independent Multicast — Sparse Mode) builds"
 tags: ["networking"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.417Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"

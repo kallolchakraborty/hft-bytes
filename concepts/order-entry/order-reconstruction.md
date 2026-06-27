@@ -3,6 +3,7 @@ type: reference
 title: "Order Reconstruction"
 description: "Local state vs exchange state: after reconnection, request all. Resend request handling: FIX tag 35=2 with BeginSeqNo (tag 7)"
 tags: ["order-types"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.427Z"
 phase: 7
 phaseName: "Order Entry & Execution"

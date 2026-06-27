@@ -3,6 +3,7 @@ type: reference
 title: "Order Tracking"
 description: "Every order hops through NewSent→NewAcked→FillSent→FillAcked→CancelSent. Waterfall diagrams show exactly where microseconds are lost"
 tags: ["order-types"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.448Z"
 phase: 14
 phaseName: "Monitoring & Security"
@@ -17,6 +18,25 @@ artifact-id: "ZHFT_ORDER_TRACKING"
 - Waterfall diagrams show exactly where microseconds are lost
 - Timestamps must use CLOCK_TAI (or at least CLOCK_MONOTONIC_RAW) — not
 - A per-order ring buffer prevents allocation on the hot path
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">Order Lifecycle State Machine</div>
+  <div class="ad-fsm">
+    <span class="ad-state active">New</span>
+    <span class="ad-transition-arrow material-symbols-outlined">arrow_right_alt</span>
+    <span class="ad-state">Accepted</span>
+    <span class="ad-transition-arrow material-symbols-outlined">arrow_right_alt</span>
+    <span class="ad-state">Working</span>
+    <span class="ad-transition-arrow material-symbols-outlined">arrow_right_alt</span>
+    <span class="ad-state" style="border-color:#22c55e;color:#22c55e">Filled</span>
+    <span class="ad-transition" style="margin:0 0.25rem">or</span>
+    <span class="ad-state" style="border-color:#ef4444;color:#ef4444">Cancelled</span>
+    <span class="ad-transition" style="margin:0 0.25rem">or</span>
+    <span class="ad-state" style="border-color:#ef4444;color:#ef4444">Rejected</span>
+  </div>
+</div>
+```
 
 ## Source Code
 

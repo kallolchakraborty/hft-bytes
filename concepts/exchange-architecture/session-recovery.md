@@ -3,6 +3,7 @@ type: reference
 title: "Session Recovery"
 description: "Sequence number gap detection: when MsgSeqNum (tag 34) jumps. Resend request (FIX tag 35=2): send BeginSeqNo (7) and EndSeqNo"
 tags: ["recovery"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.432Z"
 phase: 8
 phaseName: "Exchange Architecture"

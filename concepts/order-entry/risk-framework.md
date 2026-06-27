@@ -3,6 +3,7 @@ type: reference
 title: "Risk Management Framework"
 description: "Real-time risk infrastructure: position limits, notional/size limits, rate limits, credit checks, VaR pre-trade, P&L stop-loss triggers, market risk by symbol/portfolio, and cross-venue kill-switch architecture."
 tags: ["risk"]
+difficulty: staff
 timestamp: "2026-06-27T03:20:00.000Z"
 phase: 7
 phaseName: "Order Entry & Execution"

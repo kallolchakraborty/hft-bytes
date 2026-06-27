@@ -3,6 +3,7 @@ type: reference
 title: "Alt Data"
 description: "Satellite imagery: parking lot traffic → retail footfall → revenue proxy. News sentiment: NLP on headlines → TF-IDF → polarity score"
 tags: ["data-engineering"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.442Z"
 phase: 12
 phaseName: "Data Engineering"

@@ -3,6 +3,7 @@ type: reference
 title: "Hw Selection"
 description: "CPU selection: Clock speed per core matters more than core count. NIC selection: Solarflare X2X00 (open-onload, ef_vi), Mellanox"
 tags: ["phase-1"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.398Z"
 phase: 1
 phaseName: "Foundations"

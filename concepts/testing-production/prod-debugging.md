@@ -3,6 +3,7 @@ type: reference
 title: "Production Debugging Tooling for HFT"
 description: "GDB attached to live trading processes, core dump analysis for HFT crashes, rr record/replay for deterministic debugging of order book events, strace/ltrace for syscall latency profiling, crash telemetry pipelines with breakpad/crashpad."
 tags: ["testing"]
+difficulty: staff
 timestamp: "2026-06-27T04:00:00.000Z"
 phase: 15
 phaseName: "Testing & Production"

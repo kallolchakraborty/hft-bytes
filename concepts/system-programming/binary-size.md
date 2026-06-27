@@ -3,6 +3,7 @@ type: reference
 title: "Binary Size"
 description: "Linker garbage collection (-Wl,--gc-sections) drops unreferenced. LTO (Link-Time Optimization) enables cross-module inlining, dead"
 tags: ["protocols"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.411Z"
 phase: 4
 phaseName: "System Programming & IPC"

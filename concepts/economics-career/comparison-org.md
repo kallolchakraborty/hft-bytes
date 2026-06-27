@@ -3,6 +3,7 @@ type: reference
 title: "Comparison Org"
 description: "HFT firms are typically organised into: Quant (algorithm research, signal. Compensation structure: base salary (cover living costs) + annual bonus"
 tags: ["phase-16"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.455Z"
 phase: 16
 phaseName: "HFT Economics & Career"

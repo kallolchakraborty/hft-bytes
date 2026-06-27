@@ -3,6 +3,7 @@ type: decision-matrix
 title: "Top Of Book"
 description: "Bandwidth/latency tradeoff: Top-of-book (ToB) = 2 price+size. Full book parsing cost: processing 100 levels takes ~1-2 us"
 tags: ["phase-9"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.436Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

@@ -3,6 +3,7 @@ type: playbook
 title: "Split Brain"
 description: "Network partition between two redundant trading instances causes both. Detection: heartbeat timeout + witness node (observer) that can see both"
 tags: ["dark-pools"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.461Z"
 phase: 17
 phaseName: "Production Failure Modes"

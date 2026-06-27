@@ -3,6 +3,7 @@ type: playbook
 title: "Partial Fill"
 description: "Partial fill received but no further execution: was the rest of the. Iceberg orders: exchange returns a partial fill for the visible portion"
 tags: ["phase-17"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.460Z"
 phase: 17
 phaseName: "Production Failure Modes"

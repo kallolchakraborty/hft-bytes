@@ -3,6 +3,7 @@ type: reference
 title: "Supply Chain SEC"
 description: "Dependency vetting: maintain a full dependency graph (direct + transitive). Reproducible builds: same source + same toolchain = same binary hash;"
 tags: ["regulation"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.449Z"
 phase: 14
 phaseName: "Monitoring & Security"

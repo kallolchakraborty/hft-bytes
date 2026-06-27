@@ -3,6 +3,7 @@ type: reference
 title: "Canary Release"
 description: "Shadow trading: new version receives market data but does not send orders;. Dark launch: new version trades but P&L is not realised — paper trade only,"
 tags: ["deployment"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.450Z"
 phase: 15
 phaseName: "Testing & Production"

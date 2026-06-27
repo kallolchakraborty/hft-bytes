@@ -3,6 +3,7 @@ type: reference
 title: "Switch Topology"
 description: "Leaf-spine (Clos) topology: every leaf switch connects to every. Cut-through forwarding: the switch starts forwarding a frame as"
 tags: ["exchange-protocols", "programmable-networking", "protocols"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.421Z"
 phase: 6
 phaseName: "Network Hardware"

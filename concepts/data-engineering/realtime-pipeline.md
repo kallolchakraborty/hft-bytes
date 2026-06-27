@@ -3,6 +3,7 @@ type: reference
 title: "Realtime Pipeline"
 description: "Kafka vs Redpanda vs Aeron: latency/throughput/consistency tradeoffs. Exactly-once semantics: idempotent producer + transactional"
 tags: ["data-engineering", "deployment", "ipc", "time-series"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.444Z"
 phase: 12
 phaseName: "Data Engineering"

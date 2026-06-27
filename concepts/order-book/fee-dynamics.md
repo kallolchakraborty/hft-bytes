@@ -3,6 +3,7 @@ type: reference
 title: "Fee Dynamics"
 description: "Maker rebate impact on spread: higher maker rebates attract. Taker fee vs maker rebate tradeoff: aggressive strategies pay"
 tags: ["phase-9"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.434Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

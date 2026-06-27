@@ -3,6 +3,7 @@ type: reference
 title: "Latency Budgeting"
 description: "End-to-end latency decomposition: NIC ~1 us, kernel bypass ~2 us, parser ~1 us, book update ~0.5 us, strategy ~1 us, OMS ~0.5 us, FIX encode ~1 us, NIC transmit ~1 us. Hardware timestamping for measurement."
 tags: ["performance"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.405Z"
 phase: 1
 phaseName: "Foundations"
@@ -40,6 +41,25 @@ graph LR
     style OMS fill:#5b2a1f,color:#fdba74
     style TX fill:#92400e,color:#fde68a
     style Result fill:#047857,color:#fff
+```
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">Latency Budget — Tick to Trade Waterfall</div>
+  <div class="ad-flow">
+    <div class="ad-stage active"><span class="ad-stage-icon">📡</span><span class="ad-stage-label">Wire Rx</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🔄</span><span class="ad-stage-label">Kernel Bypass</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">📊</span><span class="ad-stage-label">Feed Handler</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🧠</span><span class="ad-stage-label">Strategy</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">📨</span><span class="ad-stage-label">Order Entry</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🔌</span><span class="ad-stage-label">Wire Tx</span></div>
+  </div>
+</div>
 ```
 
 ## Usage

@@ -3,6 +3,7 @@ type: reference
 title: "Auction Handling"
 description: "Opening auction: order collection (pre-open), indicative price. Closing auction: Market-On-Close (MOC) / Limit-On-Close (LOC)"
 tags: ["auctions"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.424Z"
 phase: 7
 phaseName: "Order Entry & Execution"

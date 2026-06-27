@@ -3,6 +3,7 @@ type: reference
 title: "Data Center Networking for HFT"
 description: "BGP peering with exchanges, PIM-SM multicast distribution for market data, VXLAN/EVPN for cross-facility connectivity, PFC/ECN flow control, cut-through vs store-and-forward switching, switch ASIC latency comparison (Arista, Cisco, Mellanox)."
 tags: ["infrastructure"]
+difficulty: advanced
 timestamp: "2026-06-27T03:40:00.000Z"
 phase: 6
 phaseName: "Network Hardware"

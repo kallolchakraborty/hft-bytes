@@ -3,6 +3,7 @@ type: reference
 title: "Ref Data"
 description: "Symbol master schema: ISIN, CUSIP, SEDOL, exchange, ticker. Instrument reference: currency, lot size, tick increment, market cap"
 tags: ["data-engineering"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.445Z"
 phase: 12
 phaseName: "Data Engineering"

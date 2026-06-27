@@ -3,6 +3,7 @@ type: reference
 title: "Huge Pages"
 description: "Standard 4 KB pages cause TLB misses on large working sets.. TLB coverage: 32-64 L1 TLB entries * 4 KB = only 128-256 KB."
 tags: ["phase-1"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.397Z"
 phase: 1
 phaseName: "Foundations"

@@ -3,6 +3,7 @@ type: playbook
 title: "Phantom Orders"
 description: "Fill received but no matching sent order: either the exchange alias. Ack received but order never generated: retransmission from exchange of"
 tags: ["order-types"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.460Z"
 phase: 17
 phaseName: "Production Failure Modes"

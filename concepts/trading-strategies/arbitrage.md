@@ -3,6 +3,7 @@ type: reference
 title: "Arbitrage"
 description: "Latency arb: race to slow venue when price moves on fast venue. Statistical arb: trade mean-reverting spread of cointegrated basket"
 tags: ["trading"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.437Z"
 phase: 10
 phaseName: "Trading Strategies"

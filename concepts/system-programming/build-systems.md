@@ -3,6 +3,7 @@ type: reference
 title: "Build Systems"
 description: "CMakePresets.json ("cmake --preset") standardises configure/build. Bazel handles monorepos with Hermetic builds, remote caching,"
 tags: ["phase-4"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.411Z"
 phase: 4
 phaseName: "System Programming & IPC"

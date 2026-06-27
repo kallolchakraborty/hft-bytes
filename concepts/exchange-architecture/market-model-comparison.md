@@ -3,6 +3,7 @@ type: reference
 title: "Exchange Market Model Comparison"
 description: "Price-time vs pro-rata matching, maker-taker vs taker-maker fee models, market order handling, volatility interruptions, circuit breakers, LULD mechanics, and auction formats across CME, Eurex, ICE, Nasdaq, and NYSE."
 tags: ["exchange-protocols"]
+difficulty: advanced
 timestamp: "2026-06-27T03:30:00.000Z"
 phase: 8
 phaseName: "Exchange Architecture"

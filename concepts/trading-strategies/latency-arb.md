@@ -3,6 +3,7 @@ type: reference
 title: "Cross-Exchange Latency Arbitrage"
 description: "Tick-to-trade latency measurement, exchange timestamp provenance, arb detection probability, microwave vs fiber path case studies (Chicago-NJ, London-Frankfurt), co-location distance arbitrage, and latency leaderboard maintenance."
 tags: ["trading"]
+difficulty: staff
 timestamp: "2026-06-27T03:30:00.000Z"
 phase: 10
 phaseName: "Trading Strategies"
@@ -19,6 +20,21 @@ artifact-id: "ZHFT_LATENCY_ARB"
 - Microwave vs fiber paths: Chicago-NY: fiber ~7.4ms, microwave ~4.3ms (save ~3ms); London-Frankfurt: fiber ~4.5ms, microwave ~2.1ms (save ~2.4ms); microwave still requires conversion at endpoints
 - Co-location distance arb: exchange A matching engine in same facility as B gives ~5μs cross-connect; across facilities (e.g., NY4 to NY11) adds ~50-200μs; across metros adds milliseconds
 - Latency leaderboard: firms continuously measure and compare tick-to-trade latency; target is top quartile; publish pseudonymous rankings; drives colo and hardware investment decisions
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">Cross-Exchange Latency Arbitrage — Venue Race</div>
+  <div class="ad-flow">
+    <div class="ad-stage active"><span class="ad-stage-icon">📡</span><span class="ad-stage-label">Price Divergence</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">⚡</span><span class="ad-stage-label">Fastest Path Wins</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">📨</span><span class="ad-stage-label">Send to Venue A</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">💰</span><span class="ad-stage-label">Capture Spread</span></div>
+  </div>
+</div>
+```
 
 ## Usage
 

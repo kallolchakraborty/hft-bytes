@@ -3,6 +3,7 @@ type: reference
 title: "Itch Ouch"
 description: "NASDAQ ITCH (market data) and OUCH (order entry) are binary. ITCH packet structure: a Unit Header (2 bytes msg_type, 2 bytes"
 tags: ["exchange-protocols", "protocols"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.415Z"
 phase: 5
 phaseName: "Kernel Bypass & Protocols"

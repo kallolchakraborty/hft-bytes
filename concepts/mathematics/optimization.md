@@ -3,6 +3,7 @@ type: reference
 title: "Optimization"
 description: "Convex optimization problems (quadratic programming) are the. Gradient descent and its variants (SGD, Adam) are used for"
 tags: ["compiler-optimization"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.402Z"
 phase: 2
 phaseName: "Mathematics & Statistics"

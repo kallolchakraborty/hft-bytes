@@ -3,6 +3,7 @@ type: reference
 title: "Options & Derivatives HFT"
 description: "Options market making, implied volatility surface, delta hedging, gamma scalping, futures vs options microstructure, multi-listed option arbitration, and risk Greeks computation."
 tags: ["trading"]
+difficulty: staff
 timestamp: "2026-06-27T03:20:00.000Z"
 phase: 10
 phaseName: "Trading Strategies"

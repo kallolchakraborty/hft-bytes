@@ -3,6 +3,7 @@ type: reference
 title: "Exchange Onboarding"
 description: "MOC (Model-Of-Communication) document analysis, RFP process, certification timeline (CME UAT, Eurex TES), connectivity test harness, IP whitelisting with colocation providers."
 tags: ["exchange-protocols"]
+difficulty: staff
 timestamp: "2026-06-27T03:06:09.430Z"
 phase: 8
 phaseName: "Exchange Architecture"

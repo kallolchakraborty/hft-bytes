@@ -3,6 +3,7 @@ type: reference
 title: "Staff Plus"
 description: "Scope/Leverage/Judgment rubric: Staff+ engineers at HFT firms operate. System design interview patterns in HFT: tick-to-trade pipeline, feed"
 tags: ["phase-16"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.457Z"
 phase: 16
 phaseName: "HFT Economics & Career"

@@ -3,6 +3,7 @@ type: reference
 title: "PTP & Hardware Clock Sync"
 description: "Precision Time Protocol (IEEE 1588) provides sub-microsecond clock synchronisation across trading servers. Hardware timestamping, boundary clocks, phc2sys, and ptp4l tuning for HFT."
 tags: ["clock-synchronization"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.415Z"
 phase: 6
 phaseName: "Network Hardware"

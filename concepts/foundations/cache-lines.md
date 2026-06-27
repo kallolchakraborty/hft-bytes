@@ -3,6 +3,7 @@ type: reference
 title: "Cache Lines"
 description: "Cache line is 64 bytes on x86-64; any write to a byte within. Intel uses MESIF where the "F" (Forward) core services snoops"
 tags: ["cache-coherency"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.394Z"
 phase: 1
 phaseName: "Foundations"
@@ -18,6 +19,26 @@ artifact-id: "ZHFT_CACHE_LINES"
 - False sharing: two threads update different variables that share
 - NUMA: accessing remote memory costs ~1.5-2x local latency.
 - NUMA binding: use `numactl --cpubind=0 --membind=0` or
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">CPU Cache Hierarchy — Data Request Flow</div>
+  <div class="ad-flow">
+    <div class="ad-stage active"><span class="ad-stage-icon">💻</span><span class="ad-stage-label">CPU Core</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">⚡</span><span class="ad-stage-label">L1 Cache</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">⚡</span><span class="ad-stage-label">L2 Cache</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">⚡</span><span class="ad-stage-label">L3 Cache</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🧠</span><span class="ad-stage-label">RAM</span></div>
+  </div>
+  <div class="ad-legend">
+    <span class="ad-legend-item"><span class="ad-legend-swatch packet"></span>Data request (miss → next level)</span>
+  </div>
+</div>
+```
 
 ## Usage
 

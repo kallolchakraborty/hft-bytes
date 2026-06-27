@@ -3,6 +3,7 @@ type: reference
 title: "Compliance Test"
 description: "Reg NMS best execution: trade-through rule, order protection, market data. MiFID II transaction reporting: 65+ fields per transaction, T+1 reporting,"
 tags: ["testing"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.451Z"
 phase: 15
 phaseName: "Testing & Production"

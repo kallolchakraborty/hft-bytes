@@ -3,6 +3,7 @@ type: reference
 title: "Security Architecture for Trading"
 description: "Network segmentation (DMZ, trading VLAN, admin VLAN, management VLAN), mTLS certificate rotation, SSH CA-based authentication, zero-trust principles for trading systems, secrets rotation with Vault, and audit log tamper-proofing."
 tags: ["operations"]
+difficulty: staff
 timestamp: "2026-06-27T03:50:00.000Z"
 phase: 14
 phaseName: "Monitoring & Security"

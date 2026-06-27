@@ -3,6 +3,7 @@ type: reference
 title: "Exchange Microstructure Quirks"
 description: "Exchange-specific edge cases: CME calendar spread implied pricing with butterflies, Nasdaq Nordic vs US market model differences, ICE block trade minimum sizes, Eurex T7 entry service login timing, LSE SETSqx mechanics, and other veteran-known 'gotchas.'"
 tags: ["exchange-protocols"]
+difficulty: advanced
 timestamp: "2026-06-27T04:00:00.000Z"
 phase: 8
 phaseName: "Exchange Architecture"

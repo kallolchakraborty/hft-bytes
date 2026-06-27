@@ -3,6 +3,7 @@ type: reference
 title: "Machine Learning Basics"
 description: "Feature engineering on tick data: microprice, order-flow imbalance, rolling volatility. Overfitting is the #1 risk in HFT ML. Simple models with curated features beat complex models on noisy data."
 tags: ["mathematics"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.400Z"
 phase: 2
 phaseName: "Mathematics & Statistics"

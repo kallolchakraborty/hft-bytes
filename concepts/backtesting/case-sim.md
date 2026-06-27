@@ -3,6 +3,7 @@ type: reference
 title: "Case Sim"
 description: "Knight Capital (2012): rogue order generator → 7B in 45 min. 2010 Flash Crash: liquidity drop + stub quotes → 1000pt Dow drop"
 tags: ["phase-11"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.440Z"
 phase: 11
 phaseName: "Backtesting & Simulation"

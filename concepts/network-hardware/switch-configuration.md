@@ -3,6 +3,7 @@ type: reference
 title: "Switch Configuration"
 description: "VLAN segmentation: a trading network should have at least three. ACLs (Access Control Lists) limit traffic between VLANs, protect"
 tags: ["exchange-protocols", "programmable-networking", "protocols"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.420Z"
 phase: 6
 phaseName: "Network Hardware"

@@ -3,6 +3,7 @@ type: reference
 title: "Cabling Physics"
 description: "Fiber types: OS2 (single-mode, 9/125 µm) for long-haul (>500 m),. DAC (Direct Attach Copper) vs AOC (Active Optical Cable) vs"
 tags: ["phase-6"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.418Z"
 phase: 6
 phaseName: "Network Hardware"

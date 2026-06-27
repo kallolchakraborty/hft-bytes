@@ -3,6 +3,7 @@ type: reference
 title: "Kalman Filter"
 description: "State-space representation decomposes an observed time series into. The predict-update cycle: state prediction using process model,"
 tags: ["time-series"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.400Z"
 phase: 2
 phaseName: "Mathematics & Statistics"

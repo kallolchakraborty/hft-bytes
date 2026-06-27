@@ -3,6 +3,7 @@ type: reference
 title: "Book Imbalance"
 description: "Bid/ask volume imbalance: (bid_volume - ask_volume) /. Micro-price: weighted average of bid and ask using volume"
 tags: ["liquidity"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.433Z"
 phase: 9
 phaseName: "Order Book & Microstructure"

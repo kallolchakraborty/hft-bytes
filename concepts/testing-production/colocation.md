@@ -3,6 +3,7 @@ type: reference
 title: "Colocation"
 description: "Exchange proximity: CME Aurora/NY4 (NJ), Eurex Frankfurt — each additional. Cage vs cabinet: cage gives physical security+space; cabinet is cheaper"
 tags: ["phase-15"]
+difficulty: staff
 timestamp: "2026-06-27T03:06:09.451Z"
 phase: 15
 phaseName: "Testing & Production"

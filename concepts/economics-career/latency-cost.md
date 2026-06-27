@@ -3,6 +3,7 @@ type: reference
 title: "Latency Cost"
 description: "ROI per microsecond: each µs of latency reduction improves rebate capture. Fee tier qualification: exchanges reward high-volume traders with rebates;"
 tags: ["performance"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.456Z"
 phase: 16
 phaseName: "HFT Economics & Career"

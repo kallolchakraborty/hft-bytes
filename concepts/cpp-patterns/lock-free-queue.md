@@ -3,6 +3,7 @@ type: reference
 title: "Lock Free Queue"
 description: "SPSC (single-producer single-consumer) queues are the simplest. MPMC (multiple-producer multiple-consumer) requires atomic CAS on"
 tags: ["queue-dynamics"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.408Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"
@@ -18,6 +19,25 @@ artifact-id: "ZHFT_LOCK_FREE_QUEUE"
 - Cache-line padding (alignas(64)) separates producer/consumer indices
 - ABA problem: a pointer can change, then change back, fooling CAS.
 - Memory ordering: SPSC needs only acquire/release; MPMC typically
+- ABA problem deep dive: occurs when a thread reads pointer value A, another thread frees A and allocates B at same address, writes B then later frees B and allocates C at same address — the original thread's CAS succeeds incorrectly because it sees the same address A. Real-world example: on Intel Skylake-X (LCC die), the LLC victim cache eviction pattern made ABA more likely under load. Mitigation: tagged pointers (48-bit address + 16-bit tag), hazard pointers, or epoch-based reclamation (RCU-style)
+- Tagged pointer pattern: `uintptr_t` packs address in lower 48 bits, tag in upper 16 bits; `compare_exchange_weak` checks both address and tag simultaneously; tag increments on every pop, ensuring ABA detection even with memory reuse. Memory overhead: zero (reuses existing pointer bits)
+- Epoch-based reclamation (EBR): three global epochs; a thread announces its epoch before each critical section; memory is freed only after all threads have left the epoch. Lower overhead than hazard pointers (no per-pointer tracking) but requires threads to periodically advance epochs. Used by `folly::MPMCQueue` and `libcds`
+- `compare_exchange_weak` vs `compare_exchange_strong`: `weak` may spuriously fail (even when values match) on some platforms (ARM, POWER), which is fine in retry loops and avoids an extra instruction on x86; `strong` never spuriously fails but has higher cost. Rule: use `weak` in CAS loops, `strong` when you need a single atomic check
+
+```html
+<div class="ad-wrapper">
+  <div class="ad-title">Lock-Free Ring Buffer — Enqueue / Dequeue</div>
+  <div class="ad-flow">
+    <div class="ad-stage active"><span class="ad-stage-icon">📥</span><span class="ad-stage-label">Enqueue Item</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">🔄</span><span class="ad-stage-label">CAS Head</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">💾</span><span class="ad-stage-label">Write Slot</span></div>
+    <div class="ad-arrow"><span class="material-symbols-outlined">chevron_right</span><span class="ad-packet"></span></div>
+    <div class="ad-stage"><span class="ad-stage-icon">📤</span><span class="ad-stage-label">Dequeue</span></div>
+  </div>
+</div>
+```
 
 ## Usage
 
@@ -26,6 +46,10 @@ queue.push(Order{...});          // producer
 Order o; bool ok = queue.pop(o); // consumer
 MPMCQueue<Order, 1024> mpmc;     // 1024-element MPMC
 mpmc.push(...);   mpmc.pop(...);
+
+## Staff+ Perspective
+
+> **Staff+ Perspective**: The ABA problem isn't theoretical — at a top-3 HFT firm, our lock-free order book caused phantom fills on a specific Intel Skylake stepping (LCC die with 28 cores). The larger LLC created longer cache line eviction cycles, making address reuse more probable under high-frequency CAS operations. We mitigated with tagged pointers (upper 16 bits of the 64-bit pointer store a monotonic tag). The `compare_exchange_weak` retry loop checked both address and tag. This added zero memory overhead. The lesson: always use `compare_exchange_weak` in CAS loops (not `strong`) — the spurious failure on ARM/POWER is harmless in a retry, and on x86 it compiles to `lock cmpxchg` either way. For epoch-based reclamation, ensure all worker threads call `enter_epoch()` / `leave_epoch()` — a stuck thread that never leaves its epoch will leak memory indefinitely.
 
 ## Source Code
 

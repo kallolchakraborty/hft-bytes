@@ -3,6 +3,7 @@ type: reference
 title: "DR Failover"
 description: "Active-active: both sites trade simultaneously (complex reconcile); active-. State synchronization via transaction log shipping — replicate every state"
 tags: ["recovery"]
+difficulty: staff
 timestamp: "2026-06-27T03:06:09.453Z"
 phase: 15
 phaseName: "Testing & Production"

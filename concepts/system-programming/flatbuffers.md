@@ -3,6 +3,7 @@ type: reference
 title: "Flatbuffers"
 description: "FlatBuffers provides zero-copy deserialization: the wire format. Cap'n Proto uses a similar zero-copy model but with a different"
 tags: ["phase-4"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.413Z"
 phase: 4
 phaseName: "System Programming & IPC"

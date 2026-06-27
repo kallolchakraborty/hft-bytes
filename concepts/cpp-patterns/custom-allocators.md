@@ -3,6 +3,7 @@ type: reference
 title: "Custom Allocators"
 description: "Arena (bump) allocator: single pointer bump, no per-object free,. Pool allocator: fixed-size blocks, free list recycles nodes"
 tags: ["memory-management"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.407Z"
 phase: 3
 phaseName: "C++ Low-Latency Patterns"

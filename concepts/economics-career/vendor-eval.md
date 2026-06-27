@@ -3,6 +3,7 @@ type: reference
 title: "Vendor Eval"
 description: "Market data vendor comparison: exchange direct (ITCH/Pillar direct from. Connectivity provider evaluation: compare latency SLAs, PoP locations,"
 tags: ["phase-16"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.458Z"
 phase: 16
 phaseName: "HFT Economics & Career"

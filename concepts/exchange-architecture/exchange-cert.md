@@ -3,6 +3,7 @@ type: reference
 title: "Exchange Cert"
 description: "CME certification harness: CME provides a certification test suite. Eurex T7 conformance testing: T7 Conformance Tool simulates the"
 tags: ["exchange-protocols"]
+difficulty: intermediate
 timestamp: "2026-06-27T03:06:09.429Z"
 phase: 8
 phaseName: "Exchange Architecture"

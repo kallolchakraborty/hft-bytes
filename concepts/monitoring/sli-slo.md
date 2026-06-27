@@ -3,6 +3,7 @@ type: reference
 title: "SLI SLO"
 description: "Latency SLI: p99 entry→ack < 500µs (measured every 1min window). Availability SLI: fraction of 1s windows with successful heartbeats"
 tags: ["phase-14"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.449Z"
 phase: 14
 phaseName: "Monitoring & Security"

@@ -1,0 +1,30 @@
+{
+  "id": "pnl-attribution",
+  "title": "PnL Attribution & Trade Reconciliation",
+  "phase": 10,
+  "phaseName": "Trading Strategies",
+  "category": "Trading Strategies",
+  "subcategory": "trading-strategies",
+  "language": "python",
+  "description": "Trade-level vs position-level PnL calculation, FIFO/LIFO/specific identification cost basis, mark-to-market, accruals (dividends, financing), reconciliation breaks between OMS and clearing, and break ",
+  "content": "<h2 id=\"section-key-learning-points\">Key Learning Points</h2>\n<ul>\n<li>Trade-level PnL = Σ(sell_price × qty) – Σ(buy_price × qty) for closed positions; position-level PnL = current_position × (last_price – avg_cost); distinction matters for intraday vs EOD reporting</li>\n<li>Cost basis methods: FIFO (first-in-first-out) is default for most regulators; LIFO (last-in-first-out) defers tax in rising markets; specific identification allows selecting which lots to close — requires lot-level tracking in OMS</li>\n<li>Mark-to-market: value open positions at last traded price (intraday), settlement price (EOD), or mid-market; unrealized PnL is mark-to-market − cost basis; realized PnL occurs on fill</li>\n<li>Accruals: dividends (long positions accrue dividend on ex-date), financing (short pays rebate, long pays borrow cost), carry costs for futures (basis = spot − future × e^(−rT)); these accrue daily but settle monthly</li>\n</ul>\n<div class=\"ad-wrapper\">\n  <div class=\"ad-title\">PnL Reconciliation — OMS vs Clearing</div>\n  <div class=\"ad-flow\">\n    <div class=\"ad-stage active\"><span class=\"ad-stage-icon\">📋</span><span class=\"ad-stage-label\">OMS Trade Log</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">🔄</span><span class=\"ad-stage-label\">Match &amp; Reconcile</span></div>\n    <div class=\"ad-arrow\"><span class=\"material-symbols-outlined\">chevron_right</span><span class=\"ad-packet\"></span></div>\n    <div class=\"ad-stage\"><span class=\"ad-stage-icon\">🏦</span><span class=\"ad-stage-label\">Clearing Report</span></div>\n  </div>\n  <div class=\"ad-legend\" style=\"margin-top:0.5rem\">\n    <span class=\"ad-legend-item\"><span class=\"ad-legend-swatch\" style=\"background:#22c55e\"></span>Matched</span>\n    <span class=\"ad-legend-item\"><span class=\"ad-legend-swatch\" style=\"background:#ef4444\"></span>Break</span>\n  </div>\n</div>\n<h2 id=\"section-usage\">Usage</h2>\n<pre><code class=\"language-python\">class Position:\n    def __init__(self):\n        self.lots = []  # FIFO queue of (qty, price)\n        self.total_qty = 0\n\n    def buy(self, qty, price):\n        self.lots.append((qty, price))\n        self.total_qty += qty\n\n    def sell(self, qty, price):\n        realized = 0\n        while qty &gt; 0 and self.lots:\n            lot_qty, lot_price = self.lots[0]\n            close_qty = min(qty, lot_qty)\n            realized += close_qty * (price - lot_price)\n            if close_qty == lot_qty:\n                self.lots.pop(0)\n            else:\n                self.lots[0] = (lot_qty - close_qty, lot_price)\n            qty -= close_qty\n            self.total_qty -= close_qty\n        return realized\n\n    def mtm(self, last_price):\n        unrealized = sum(q * (last_price - p) for q, p in self.lots)\n        return unrealized</code></pre>\n<h2 id=\"section-source-code\">Source Code</h2>\n<pre><code class=\"language-python\"># Reconciliation break detection\ndef reconcile_oms_vs_clearing(oms_trades, clearing_trades):\n    oms_set = {(t[&quot;id&quot;], t[&quot;qty&quot;], t[&quot;price&quot;]) for t in oms_trades}\n    clearing_set = {(t[&quot;id&quot;], t[&quot;qty&quot;], t[&quot;price&quot;]) for t in clearing_trades}\n    missing_in_clearing = oms_set - clearing_set\n    extra_in_clearing = clearing_set - oms_set\n    if missing_in_clearing or extra_in_clearing:\n        print(f&quot;BREAK: {len(missing_in_clearing)} trades missing in clearing&quot;)\n        print(f&quot;BREAK: {len(extra_in_clearing)} extra trades in clearing&quot;)\n    else:\n        print(&quot;RECONCILED OK&quot;)</code></pre>",
+  "sections": [
+    {
+      "id": "key-learning-points",
+      "title": "Key Learning Points"
+    },
+    {
+      "id": "usage",
+      "title": "Usage"
+    },
+    {
+      "id": "source-code",
+      "title": "Source Code"
+    }
+  ],
+  "tags": [
+    "trading-strategies"
+  ],
+  "type": "reference",
+  "toc": false
+}

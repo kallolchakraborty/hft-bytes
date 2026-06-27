@@ -3,6 +3,7 @@ type: reference
 title: "CPU Architecture"
 description: "x86-64 front-end fetches/decode up to 4-6 µops/cycle; bottlenecks in. Back-end has 8-12 execution ports (Skylake: 8, Ice Lake: 10); each"
 tags: ["phase-1"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.396Z"
 phase: 1
 phaseName: "Foundations"

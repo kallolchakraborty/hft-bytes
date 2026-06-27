@@ -3,6 +3,7 @@ type: reference
 title: "Time Series"
 description: "Stationarity tests (ADF) determine whether a price series is mean-reverting. Autocorrelation (ACF/PACF) reveals memory in return series; HFT strategies"
 tags: ["time-series"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.404Z"
 phase: 2
 phaseName: "Mathematics & Statistics"

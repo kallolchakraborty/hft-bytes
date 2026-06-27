@@ -3,6 +3,7 @@ type: reference
 title: "Linux Tuning"
 description: "isolcpus: reserve cores for user-space polling — the kernel. nohz_full: disable timer ticks on isolated cores, preventing"
 tags: ["phase-1"]
+difficulty: beginner
 timestamp: "2026-06-27T03:06:09.398Z"
 phase: 1
 phaseName: "Foundations"

@@ -3,6 +3,7 @@ type: reference
 title: "Martingale"
 description: "In efficient markets, discounted prices should follow a martingale. The martingale property implies that trading strategies have zero"
 tags: ["phase-2"]
+difficulty: advanced
 timestamp: "2026-06-27T03:06:09.400Z"
 phase: 2
 phaseName: "Mathematics & Statistics"
