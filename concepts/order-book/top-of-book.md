@@ -203,4 +203,3 @@ public:
 | - If <= 1 Gbps bandwidth: use ToB + occasional depth snapshot |
 | - If >= 10 Gbps: use full book (10 levels) always |
 | - Hybrid: subscribe to ToB incremental + full book snapshot every 1ms |
-

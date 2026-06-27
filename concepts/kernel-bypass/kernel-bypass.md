@@ -256,4 +256,3 @@ auto main() -> int {
 | Production stability | Very high | High | Medium | Medium (newer) |
 | Best for | New apps | TCP legacy | RDMA trading | General I/O |
 | ===================================================================== |
-

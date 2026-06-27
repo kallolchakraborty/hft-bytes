@@ -96,4 +96,3 @@ public:
 | Development Complexity | High | High | Low | Low | Medium |
 | Sharpe Potential | 2-5 | 3-8 | 0.5-1.5 | 1-3 | 2-4 |
 | MATRIX |
-

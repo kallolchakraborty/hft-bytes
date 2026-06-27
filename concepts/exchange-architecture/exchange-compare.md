@@ -145,4 +145,3 @@ public:
 | Eurex dominates European rates (FGBL, FGBM). |
 | - Reliability: All four have >99.99% uptime SLAs with known |
 | outage patterns (see ZHFT_EXCHANGE_OUTAGES). |
-

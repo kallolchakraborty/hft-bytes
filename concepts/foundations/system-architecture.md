@@ -77,6 +77,7 @@ struct PipelineStage {
 // Example: five-stage pipeline
 // NIC -> Parser -> OrderBook -> Strategy -> OMS -> Gateway -> Exchange
 // Each arrow is a lock-free SPSC queue
+```
 
 ## Staff+ Perspective
 

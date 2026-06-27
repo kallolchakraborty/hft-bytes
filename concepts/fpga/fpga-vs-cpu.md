@@ -111,4 +111,3 @@ public:
 | Risk of bugs | High (hardware idioms) | Moderate |
 | Power efficiency | 0.1-0.5 pJ/op | 1-5 pJ/op |
 | MATRIX |
-

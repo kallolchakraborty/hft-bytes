@@ -55,6 +55,7 @@ artifact-id: "ZHFT_PERF_OPTIMIZATION_ADVANCED"
 //   --peepholes=all
 
 // Verify improvement:
+```
 
 ## Staff+ Perspective
 

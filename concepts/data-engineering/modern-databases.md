@@ -138,4 +138,3 @@ public:
 | Pricing | $$$ (commercial) | free | free+cloud | free+cloud |
 | HFT Popularity | STANDARD | growing | low | niche |
 | MATRIX |
-

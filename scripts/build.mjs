@@ -111,7 +111,7 @@ function renderMarkdown(md, language = 'cpp') {
     }
     if (/^>\s/.test(line)) {
       const quoteLines = [];
-      while (i < lines.length && /^>/.test(lines[i])) { quoteLines.push(lines[i].replace(/^>\s?/, '')); i++; }
+      while (i < lines.length && /^>/.test(lines[i])) { quoteLines.push(renderInline(lines[i].replace(/^>\s?/, ''))); i++; }
       parts.push(`<blockquote>${quoteLines.join('<br>')}</blockquote>`);
       continue;
     }

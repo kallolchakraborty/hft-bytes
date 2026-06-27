@@ -186,4 +186,3 @@ public:
 | - Lowest power/rack space: FPGA appliances (Exegy, Redline) |
 | - Need normalized feed: All vendors normalize; direct feeds are |
 | exchange-native format |
-
