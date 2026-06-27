@@ -14,11 +14,11 @@ artifact-id: "ZHFT_EXCHANGE_OUTAGES"
 ---
 ## Key Learning Points
 
-- CME Globex outages: known patterns — EOS (Enhanced Order
-- Eurex T7 maintenance windows: scheduled Sunday maintenance
-- ICE unscheduled outages: less common but ICE's single
-- Outage detection: monitor heartbeat from exchange, sequence
-- Failover: route orders to other venues/same product listed
+- **CME Globex outages**: known patterns — EOS (Enhanced Order Splitting) system failures cause per-product matching engine halts (ES on one engine, NQ on another). Recent examples: January 2024 EOS failure (45 min), August 2023 partial outage (20 min). Symptoms: order entry rejected (iLink3 returns reject code 9999), market data continues flowing for unaffected products. For HFT: monitor per-product order acceptance rate — if it drops to zero while market data continues, it's an EOS-specific outage, not a full exchange failure. Route to backup venue immediately
+- **Eurex T7 maintenance windows**: scheduled Sunday maintenance (06:00-18:00 CET) for system upgrades. During maintenance, order entry is unavailable but market data may continue in read-only mode. Eurex publishes a maintenance calendar 3 months in advance. For HFT: build a maintenance-aware scheduler that automatically pauses trading 30 minutes before maintenance and resumes 15 minutes after. Never assume maintenance will be short — some upgrades extend by 2-4 hours
+- **ICE unscheduled outages**: less common but ICE's single matching engine design means an outage affects all products simultaneously. ICE's infrastructure is less redundant than CME's multi-engine design. Outage duration: typically 10-30 minutes. For HFT: ICE outages are the most dangerous because there's no product-level failover within ICE — you must route to a completely different exchange (CME, Eurex) or pause trading entirely
+- **Outage detection**: monitor heartbeat from exchange (FIX 35=0), sequence number continuity, and market data freshness. Three signals: (a) heartbeat timeout (no heartbeat in 2x negotiated interval); (b) market data freeze (no update in 100ms for liquid products); (c) sequence gap (seqno jumps by > 1 without retransmission). Detection latency target: < 1 second. For HFT: build an outage detector that runs on a dedicated core (not shared with trading logic) to ensure detection even when the trading process is overloaded
+- **Failover strategy**: route orders to other venues where the same product is listed (ES on CME and ICE, DAX on Eurex and Xetra). Pre-configure backup venue connectivity for every product. On outage detection: (a) cancel all orders on the affected venue; (b) switch order routing to backup venue; (c) adjust risk limits for the backup venue (it may have different position limits); (d) alert the trading desk. Recovery: when the primary venue recovers, gradually shift orders back (don't flood the venue with reconnection orders). For HFT: the failover decision must be automated — manual failover takes 30-60 seconds, during which you're blind to the affected venue
 
 ## Usage
 

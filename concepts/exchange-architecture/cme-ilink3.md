@@ -14,13 +14,13 @@ artifact-id: "ZHFT_CME_iLINK3"
 ---
 ## Key Learning Points
 
-- SBE (Simple Binary Encoding) schema: message templates defined
-- Packet structure: SBE header (8 bytes: BlockLength, TemplateID,
-- Session login: encrypted variant uses RSA-encrypted session key
-- Sequencing: per-session sequence numbers (tag 34 in iLink FIX),
-- Retransmission: GapFill messages (template 1102) fill seq gaps;
-- Mass quote: template 1012 (MassQuote), up to 5-10 legs per quote.
-- Tag 9726 (SecurityReqID): used in SecurityDefinitionRequest for
+- **SBE (Simple Binary Encoding) schema**: message templates defined in an XML schema provided by CME. Each template specifies field names, types, and offsets. The SBE tool generates C++ header files from the schema — fields are accessed as struct members (no parsing). Schema changes require recompilation (not runtime parsing like FIX). For HFT: pin your SBE schema version and only upgrade during scheduled maintenance windows. Schema mismatches cause silent data corruption (field offsets shift)
+- **Packet structure**: SBE header (8 bytes: BlockLength, TemplateID, SchemaID, Version) followed by the message body. BlockLength tells you how many bytes the fixed portion of the body occupies. TemplateID maps to a specific message type (e.g., 200 = NewOrderSingle, 1012 = MassQuote). The header is always 8 bytes — the parser reads it first, then switches on TemplateID. For iLink3: the header also includes a 4-byte message length prefix (total packet size), making the effective header 12 bytes
+- **Session login**: encrypted variant uses RSA-encrypted session key. CME provides a public key; you encrypt your credentials and session nonce with it. The login request includes: username, encrypted password, requested heartbeat interval, and party details (firm ID, trader ID). Login response includes: session ID, accepted heartbeat, sequence number reset flag. For HFT: the encrypted login adds ~500ns to the connection setup — negligible for a one-time event. Do NOT use plain-text login in production
+- **Sequencing**: per-session sequence numbers (tag 34 in iLink FIX), starting at 1. Every message (order, cancel, heartbeat) increments the sequence number. Gap detection: if received seqno != expected seqno, send a ResendRequest (35=2) for the missing range. CME responds with GapFill messages (template 1102) that fill the sequence gap without retransmitting the original messages — you must infer what happened from the gap-fill context. This is different from Eurex (which retransmits the original messages)
+- **Retransmission**: GapFill messages (template 1102) fill sequence gaps. A GapFill contains: NewSeqNo (the expected next sequence number) and a flag indicating whether it's a full gap-fill or partial. For HFT: GapFill means "skip these sequence numbers" — do NOT treat it as a fill. After a GapFill, your expected sequence number jumps to NewSeqNo. If you were mid-retransmission, the GapFill terminates the retransmission sequence
+- **Mass quote**: template 1012 (MassQuote), up to 5-10 legs per quote. Each leg specifies: symbol, bid price, bid size, ask price, ask size. Mass quotes are used for options market making — submit quotes across multiple strikes simultaneously. Rate limit: ~10 mass quotes per second per session. For HFT: build the entire mass quote message before sending (don't send partial quotes). The exchange processes the entire message atomically — if one leg fails validation, the entire quote is rejected
+- **Tag 9726 (SecurityReqID)**: used in SecurityDefinitionRequest for instrument discovery. When you connect, you may not know all available instruments. Send a SecurityDefinitionRequest with Tag 9726 = your request ID; CME responds with SecurityDefinition messages listing instruments. For HFT: cache the instrument list at startup and refresh periodically. Tag 9726 is also used in MarketDataRequest to subscribe to specific instruments
 
 ## Usage
 

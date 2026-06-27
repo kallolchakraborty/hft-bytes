@@ -14,11 +14,11 @@ artifact-id: "ZHFT_LSE_MILLENNIUM"
 ---
 ## Key Learning Points
 
-- Millennium Gateway protocol: LSE's binary order entry protocol.
-- Instrument identification: MIC (Market Identifier Code, e.g., XLON)
-- Message structure: FIX-like tag-value but over TCP with length
-- Order types: Limit, Market, Iceberg, Pegged (Midpoint, Primary),
-- Session management: standard FIX session logon (35=A) with
+- **Millennium Gateway protocol**: LSE's binary order entry protocol — not FIX, not SBE, but a proprietary fixed-layout binary format. Messages have an 8-byte header (message_length, message_type, segment_id) followed by a fixed-size body. The protocol is session-based over TCP with heartbeat monitoring. For HFT: Millennium is one of the lowest-latency exchange protocols (~8μs RTT for order-to-fill). The fixed-layout body means zero-parse decoding — memcpy directly into a struct
+- **Instrument identification**: MIC (Market Identifier Code, e.g., XLON for London Stock Exchange, XSES for Singapore). Instruments are identified by mnemonic (e.g., "VOD" for Vodafone) plus SEDOL code. The exchange maps mnemonics to internal instrument IDs at login. For HFT: pre-load the instrument dictionary at startup. If you send an order with an unknown mnemonic, the exchange rejects it with error code 30001 (invalid instrument)
+- **Message structure**: FIX-like tag-value but over TCP with length prefix. Each message has a type code (e.g., 0x0201 = NewOrder, 0x0204 = Fill). The body is fixed-size per message type — no variable-length fields. Decode is a single memcpy + switch on message_type. For HFT: the fixed-layout body is faster than FIX parsing but slower than pure SBE (CME/Eurex). The tradeoff: Millennium's simplicity means fewer encoding bugs but less flexibility
+- **Order types**: Limit, Market, Iceberg, Pegged (Midpoint, Primary, Last), and Stop. Pegged orders are unique to Millennium — they automatically adjust price based on a reference (e.g., midpoint of NBBO). Pegged orders are popular for institutional flow. For HFT: iceberg orders (display_quantity field) are critical for large orders — they hide the full size and replenish the displayed portion after each fill. Pegged orders can be used as a passive strategy (peg to midpoint, earn spread)
+- **Session management**: standard FIX session logon (35=A) with Millennium-specific extensions. Session includes: sequence number reset option, heartbeat negotiation, and party details (firm ID, trader ID, algorithm ID). The algorithm ID field is used by the exchange to tag algo orders for regulatory reporting. For HFT: set ResetSeqNumFlag=Y on first logon to start fresh. After that, use ResetSeqNumFlag=N to preserve sequence numbers across reconnects
 
 ## Usage
 

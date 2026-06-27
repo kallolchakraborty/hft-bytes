@@ -14,12 +14,12 @@ artifact-id: "ZHFT_EUREX_T7"
 ---
 ## Key Learning Points
 
-- EBS (Enhanced Broadcast Solution): market data publish-subscribe.
-- Packet structure: SBE header (8 bytes: BlockLength, TemplateID,
-- Nanosecond timestamps: TransactTime field is nanoseconds since
-- Mass quote: only for market makers. Max leg count: 50 per quote
-- Session recovery: Eurex uses sequence numbers per message stream.
-- Enter order / modify order / delete order / mass cancel: all
+- **EBS (Enhanced Broadcast Solution)**: Eurex's market data protocol — a publish-subscribe model over UDP multicast. Each instrument has its own multicast group. Market data updates are incremental (SBE-encoded) with periodic snapshots for full book rebuild. EBS is separate from the order entry protocol (T7 uses a different TCP session for orders). For HFT: subscribe to both incremental and snapshot feeds; use the snapshot to validate your incremental book state every N seconds
+- **Packet structure**: SBE header (8 bytes: BlockLength, TemplateID, SchemaID, Version) followed by the message body. TemplateID identifies the message type (e.g., 1002 = EnterOrder, 1003 = ModifyOrder). The SBE schema is defined in an XML file provided by Eurex — compile it with the SBE tool to generate C++ structs. The fixed SBE layout means zero-parse decoding: memcpy the wire buffer directly into the struct. For HFT: pre-allocate decode buffers on the stack (no heap allocation in the hot path)
+- **Nanosecond timestamps**: TransactTime field is nanoseconds since epoch (not milliseconds like some exchanges). Eurex uses PTP-synchronized clocks — hardware timestamping at the NIC gives sub-microsecond accuracy. For timestamp ordering across venues: convert all timestamps to nanoseconds before comparison. Eurex's nanosecond precision enables more accurate latency measurement than millisecond-resolution exchanges
+- **Mass quotes**: only available for registered market makers (quote providers). Max leg count: 50 per quote message. Mass quotes update multiple instruments simultaneously — critical for options market making where you need to quote across strikes and expiries atomically. The quote must be submitted within a strict time window (measured from the market data timestamp that triggered it). Late quotes are rejected. For HFT: build the mass quote message in pre-allocated memory and send it in a single write() call to minimize latency
+- **Session recovery**: Eurex uses sequence numbers per message stream (order entry and market data have separate streams). On disconnect, the session enters recovery mode — you request retransmission from the last acknowledged sequence number. Eurex sends a RetransmitResponse with the retransmitted messages. Critical: during recovery, do NOT send new orders until you've replayed all retransmitted messages and your book state is consistent. Order state can change during the gap (fills, cancels) — reprocessing in the wrong order causes position mismatches
+- **Order lifecycle**: EnterOrder (template 1002) → OrderAccepted → ModifyOrder/DeleteOrder → Fill/PartialFill/CancelReject. Each state transition is acknowledged. The exchange rejects orders that violate risk limits (fat-finger checks, position limits). Eurex has a "self-trade prevention" rule — matching your own orders at the same price level triggers a cancel. For HFT: monitor RejectCode in OrderRejected messages — common codes: 10001 (price collar), 10002 (size limit), 10003 (self-trade)
 
 ## Usage
 

@@ -14,12 +14,12 @@ artifact-id: "ZHFT_ICE_BINARY"
 ---
 ## Key Learning Points
 
-- ICE binary message format: fixed-length header (16 bytes) with
-- Message types: Login (0x01), LoginAccepted (0x02), NewOrder (0x10),
-- Sequence numbers: per-session, incremental. Gap detection uses
-- Block trades: negotiated off-screen, reported to ICE via
-- EFRP (Exchange for Related Positions): physical vs futures
-- Recovery: on reconnect, send RetransmitRequest with start seq;
+- **ICE binary message format**: fixed-length 16-byte header (message_length, message_type, flags, sequence_number, session_id) followed by a fixed-layout body. No schema versioning — the format is stable across years. The fixed layout means decoding is a single memcpy (zero-parse), unlike FIX tag-value parsing. For HFT: the fixed format enables compile-time struct overlays (`reinterpret_cast` directly onto the wire buffer), giving sub-100ns decode latency
+- **Message types**: Login (0x01), LoginAccepted (0x02), NewOrder (0x10), OrderAccepted (0x11), OrderRejected (0x12), Fill (0x13), Cancel (0x14), BlockTrade (0x30), EFRP (0x31). Each type has a fixed-size body — no variable-length fields except in block trades. The message type determines the body layout, so the parser switches on a single byte. ICE uses fewer message types than CME iLink3, which simplifies the dispatch table
+- **Sequence numbers**: per-session, incremental starting at 1. Gap detection: if received seqno != expected seqno, a gap exists. Send RetransmitRequest (0x20) with from_seq and to_seq (0 = all missing). ICE responds with RetransmitReply (0x21) containing the retransmitted messages. Critical: ICE retransmits the original messages (not gap-fills like CME), so the receiving engine must handle duplicate messages idempotently. Track processed seqnos in a bloom filter or bitset to avoid reprocessing
+- **Block trades**: negotiated off-screen (voice, IM, or swap execution facility), reported to ICE via BlockTrade message (0x30). Block trades bypass the order book — they're negotiated at a price between bid and ask. The exchange validates that the price is within the block trade collar (typically 10% of NBBO). For HFT: block trades affect your position if you have a related open order — the risk system must detect block trade reports and adjust positions immediately
+- **EFRP (Exchange for Related Positions)**: a physical-to-futures swap — you deliver the physical commodity and receive a futures position (or vice versa). EFRP trades are reported via message type 0x31. The physical leg is negotiated bilaterally; only the futures leg is reported to ICE. For HFT: EFRP prices can diverge significantly from the futures settlement price — monitor EFRP fills as they indicate directional view by large participants
+- **Recovery and resilience**: on reconnect, send RetransmitRequest with the last received seqno + 1. ICE retransmits all messages from that point. The session must survive TCP disconnects and exchange-side restarts. ICE maintains session state for 24 hours — if you reconnect within that window, you get a full retransmission. After 24 hours, the session is reset. For HFT: maintain a persistent connection with heartbeat monitoring (5-second interval). If heartbeat is missed, immediately initiate reconnect and retransmission before the 24-hour window expires
 
 ## Usage
 
