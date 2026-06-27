@@ -35,12 +35,12 @@
   }
   </script>
 </head>
-<body class="font-sans bg-white dark:bg-slate-900 text-slate-900 dark:text-white min-h-screen">
+<body class="font-sans bg-white dark:bg-slate-900 text-slate-900 dark:text-white min-h-screen flex flex-col justify-between">
 
   <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white dark:focus:bg-slate-900 focus:text-[#FF1744] focus:border focus:border-[#FF1744] focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-[#FF1744]">Skip to main content</a>
 
   <!-- Navbar -->
-  <nav class="fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
+  <nav class="sticky top-0 left-0 right-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <a href="index.html" class="flex items-center gap-2 text-lg font-semibold tracking-tight">
@@ -60,156 +60,51 @@
   </nav>
 
   <!-- Hero -->
-  <main id="main-content">
-    <section class="hero-section relative overflow-hidden min-h-[85vh] flex items-center">
-      <!-- Background gradient -->
-      <div class="absolute inset-0 hero-gradient dark:hero-gradient-dark"></div>
-      <!-- Grid pattern overlay -->
-      <div class="absolute inset-0 hero-grid opacity-30"></div>
-      <!-- Content -->
-      <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div class="text-center mb-12">
-          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-500 text-sm font-medium mb-6 hero-fade-in">
-            <span class="material-symbols-outlined text-[16px]">auto_stories</span>
-            <span>199 Artifacts • 17 Topics • C++</span>
-          </div>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 hero-fade-in hero-delay-1">
-            HFT Study Notes &<br>
-            <span class="text-brand-500">Reference Patterns</span>
-          </h1>
-          <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed hero-fade-in hero-delay-2">
-            Master high-frequency trading with production-grade code examples, key learning points, and battle-tested patterns from the trenches.
-          </p>
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 hero-fade-in hero-delay-3">
-            <a href="docs.html" class="group inline-flex items-center gap-2 px-8 py-4 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/30 hover:-translate-y-0.5">
-              <span class="material-symbols-outlined text-[20px]">auto_stories</span>
-              <span>Browse Documentation</span>
-              <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-            </a>
-            <a href="#features" class="inline-flex items-center gap-2 px-8 py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-all hover:-translate-y-0.5">
-              <span class="material-symbols-outlined text-[20px]">explore</span>
-              <span>Explore Topics</span>
-            </a>
+  <main id="main-content" class="flex-grow flex items-center justify-center px-4 py-6">
+    <section class="w-full py-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="flex justify-center mb-6">
+          <div class="w-32 h-32 rounded-3xl flex items-center justify-center" style="background-color: var(--brand-light);">
+            <span class="material-symbols-outlined text-brand-500 logo-animate" style="font-size: 96px;">bolt</span>
           </div>
         </div>
-        <!-- Stats -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto hero-fade-in hero-delay-4">
-          <div class="stat-card bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center hover:border-brand-500/50 transition-colors">
-            <div class="text-2xl sm:text-3xl font-bold text-brand-500 mb-1">199</div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Artifacts</div>
-          </div>
-          <div class="stat-card bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center hover:border-brand-500/50 transition-colors">
-            <div class="text-2xl sm:text-3xl font-bold text-brand-500 mb-1">17</div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Topics</div>
-          </div>
-          <div class="stat-card bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center hover:border-brand-500/50 transition-colors">
-            <div class="text-2xl sm:text-3xl font-bold text-brand-500 mb-1">C++</div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Language</div>
-          </div>
-          <div class="stat-card bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center hover:border-brand-500/50 transition-colors">
-            <div class="text-2xl sm:text-3xl font-bold text-brand-500 mb-1">Staff+</div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Level</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="py-20 bg-slate-50 dark:bg-slate-800/50">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl sm:text-4xl font-bold mb-4">Everything You Need for HFT Mastery</h2>
-          <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            From low-level CPU optimizations to production deployment strategies
-          </p>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Feature 1 -->
-          <a href="docs.html#exchange-architecture" class="feature-card group bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 hover:border-brand-500/50 hover:shadow-lg transition-all">
-            <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 group-hover:bg-brand-500/20 transition-colors">
-              <span class="material-symbols-outlined text-brand-500 text-[24px]">domain</span>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Exchange Architecture</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400">
-              Matching engines, FIX protocol, exchange certification, and multi-venue connectivity patterns.
-            </p>
-          </a>
-          <!-- Feature 2 -->
-          <a href="docs.html#cpp-patterns" class="feature-card group bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 hover:border-brand-500/50 hover:shadow-lg transition-all">
-            <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 group-hover:bg-brand-500/20 transition-colors">
-              <span class="material-symbols-outlined text-brand-500 text-[24px]">code</span>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">C++ Low-Latency</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400">
-              Lock-free queues, SIMD intrinsics, cache-friendly design, custom allocators, and compiler optimizations.
-            </p>
-          </a>
-          <!-- Feature 3 -->
-          <a href="docs.html#trading-strategies" class="feature-card group bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 hover:border-brand-500/50 hover:shadow-lg transition-all">
-            <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 group-hover:bg-brand-500/20 transition-colors">
-              <span class="material-symbols-outlined text-brand-500 text-[24px]">show_chart</span>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Trading Strategies</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400">
-              Market making, arbitrage, execution algos, PnL attribution, and optimal execution frameworks.
-            </p>
-          </a>
-          <!-- Feature 4 -->
-          <a href="docs.html#kernel-bypass" class="feature-card group bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 hover:border-brand-500/50 hover:shadow-lg transition-all">
-            <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 group-hover:bg-brand-500/20 transition-colors">
-              <span class="material-symbols-outlined text-brand-500 text-[24px]">memory</span>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Kernel Bypass</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400">
-              DPDK, io_uring, XDP, and zero-copy networking for ultra-low latency data paths.
-            </p>
-          </a>
-          <!-- Feature 5 -->
-          <a href="docs.html#network-hardware" class="feature-card group bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 hover:border-brand-500/50 hover:shadow-lg transition-all">
-            <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 group-hover:bg-brand-500/20 transition-colors">
-              <span class="material-symbols-outlined text-brand-500 text-[24px]">router</span>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Network Hardware</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400">
-              NIC tuning, PTP clock sync, switch topology, FPGA co-design, and P4 programmable switches.
-            </p>
-          </a>
-          <!-- Feature 6 -->
-          <a href="docs.html#testing-production" class="feature-card group bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 hover:border-brand-500/50 hover:shadow-lg transition-all">
-            <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 group-hover:bg-brand-500/20 transition-colors">
-              <span class="material-symbols-outlined text-brand-500 text-[24px]">science</span>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Testing & Production</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400">
-              Chaos engineering, canary releases, deterministic testing, disaster recovery, and CI/CD pipelines.
-            </p>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-20">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl p-8 sm:p-12 text-white shadow-xl shadow-brand-500/20">
-          <h2 class="text-2xl sm:text-3xl font-bold mb-4">Ready to Master HFT?</h2>
-          <p class="text-white/80 mb-8 max-w-xl mx-auto">
-            Dive into production-grade code examples, battle-tested patterns, and deep technical insights from the trenches of high-frequency trading.
-          </p>
-          <a href="docs.html" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-500 font-semibold rounded-xl hover:bg-slate-50 transition-all shadow-lg hover:-translate-y-0.5">
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
+          HFT Study Notes &<br>
+          <span class="text-brand-500">Reference Patterns</span>
+        </h1>
+        <p class="text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto mb-8 leading-relaxed">
+          hft bytes is a modern, search-first HFT knowledge portal with runnable code examples and key learning points.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a href="docs.html" class="inline-flex items-center gap-2 px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-lg transition-colors shadow-lg shadow-brand-500/20">
             <span class="material-symbols-outlined text-[20px]">auto_stories</span>
-            <span>Start Learning</span>
-            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            <span>Browse Documentation</span>
+            <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
           </a>
+        </div>
+        <!-- Quick stats -->
+        <div class="flex flex-wrap justify-center gap-8 mt-12 text-center">
+          <div>
+            <div class="text-2xl sm:text-3xl font-bold text-brand-500">199</div>
+            <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">HFT Artifacts</div>
+          </div>
+          <div>
+            <div class="text-2xl sm:text-3xl font-bold text-brand-500">17</div>
+            <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Topics Covered</div>
+          </div>
+          <div>
+            <div class="text-2xl sm:text-3xl font-bold text-brand-500">C++</div>
+            <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Language</div>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-slate-200 dark:border-slate-800 py-8 bg-slate-50 dark:bg-slate-900/60">
-    <div class="max-w-7xl mx-auto px-6 flex justify-center items-center text-sm text-slate-500 dark:text-slate-400">
-      <span>Made with ❤️ by <a href="https://www.linkedin.com/in/kallol-chakraborty-9728a699/" target="_blank" rel="noopener noreferrer" class="text-brand-500 hover:text-brand-600 transition-colors font-semibold">Kallol Chakraborty</a></span>
+  <footer class="border-t border-slate-200 dark:border-slate-800 py-4 px-4">
+    <div class="max-w-7xl mx-auto text-center text-sm text-slate-500 dark:text-slate-400">
+      Made with ❤️ by <a href="https://www.linkedin.com/in/kallol-chakraborty-9728a699/" class="text-brand-500 hover:underline" target="_blank">Kallol Chakraborty</a>
     </div>
   </footer>
 
