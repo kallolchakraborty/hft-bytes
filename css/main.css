@@ -203,6 +203,158 @@ html.dark .bg-slate-50\/50, html.dark .bg-slate-100 {
   border-radius: 4px;
   color: var(--brand-primary);
 }
+
+/* ========== Key Learning Points Section ========== */
+#section-key-learning-points {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--brand-primary);
+}
+#section-key-learning-points::before {
+  content: "\2713";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--brand-primary);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Key Learning Points container: the ul that follows the h2 */
+#section-key-learning-points + ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0.5rem 0 1.5rem 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Each learning point card */
+#section-key-learning-points + ul > li {
+  position: relative;
+  padding: 14px 16px 14px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--brand-primary);
+  border-radius: 8px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+html.dark #section-key-learning-points + ul > li {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.06);
+  border-left-color: var(--brand-primary);
+}
+#section-key-learning-points + ul > li:hover {
+  border-left-color: var(--brand-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Bold lead-in text inside learning points (e.g. **TWAP**: description) */
+#section-key-learning-points + ul > li > strong:first-child {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+/* Inline code inside learning points */
+#section-key-learning-points + ul > li code {
+  font-size: 0.82em;
+  background: rgba(255, 23, 68, 0.06);
+  color: var(--brand-primary);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+html.dark #section-key-learning-points + ul > li code {
+  background: rgba(255, 23, 68, 0.12);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  #section-key-learning-points {
+    font-size: 1.15rem;
+  }
+  #section-key-learning-points::before {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+  #section-key-learning-points + ul > li {
+    padding: 12px 14px 12px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ========== Usage & Source Code Section Headers ========== */
+#section-usage, #section-source-code {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-default);
+}
+#section-usage::before {
+  content: "\25B6";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #22c55e;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+#section-source-code::before {
+  content: "{ }";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #3b82f6;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+@media (max-width: 640px) {
+  #section-usage, #section-source-code {
+    font-size: 1.15rem;
+  }
+  #section-usage::before, #section-source-code::before {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+}
+
 /* ========== Code block wrapper and header ========== */
 .code-block-wrapper {
   position: relative;
