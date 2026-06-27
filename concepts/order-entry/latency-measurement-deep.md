@@ -1,0 +1,125 @@
+---
+type: reference
+title: "Latency Measurement Methodology"
+description: "How to measure end-to-end latency in HFT systems with sub-microsecond precision: measurement calibration, coordinated omission, FPGA-based calorimeter measurement, how exchanges measure latency, synthetic vs live measurement methodology, and war stories of measurement mistakes."
+tags: ["latency", "measurement", "methodology", "profiling"]
+difficulty: staff
+timestamp: "2026-06-27T20:00:00.000Z"
+phase: 7
+phaseName: "Order Entry & Execution"
+category: "Order Entry"
+subcategory: "order-entry"
+language: "cpp"
+artifact-id: "ZHFT_LATENCY_MEASUREMENT_DEEP"
+---
+
+## Key Learning Points
+
+- **Measurement calibration**: every measurement tool adds its own latency. A `clock_gettime` call takes ~20ns; `RDTSC` is ~5ns; a kernel `SO_TIMESTAMPING` read adds a syscall (~100ns). To calibrate: measure the empty measurement path (measurement overhead) and subtract from raw results. Use hardware timestamping (PTP PHC) as the ground truth reference — NIC hardware timestamps are at the wire boundary, before any software processing. Cross-validate software timestamps against hardware timestamps to quantify measurement bias
+- **Coordinated omission**: the most common measurement mistake — when the system is slow (tail latency), it processes fewer requests, so the measurement tool under-counts slow operations. Example: if you record latency only for completed requests, and the system drops packets during congestion, those dropped packets (which had infinite latency) are excluded from the histogram. Detection: monitor arrival rate vs completion rate — if they diverge, coordinated omission is present. Fix: use a "load generator" that sends at a fixed rate and tracks all requests (including those that timeout). HFT measurement must include dropped/lost packets as infinite-latency events
+- **Measurement-induced bias**: measuring latency changes the system's behavior. Recording every tick-to-trade latency via `printf` to a file adds ~1µs per event. Instead: (a) use lock-free ring buffers for recording (no syscalls); (b) write batches of 1024 entries to reduce per-event overhead to ~5ns; (c) use hardware counters (PMU) for zero-overhead sampling. The Heisenberg principle applies to latency measurement — the measurement tool must add < 1% overhead to avoid distorting the measured latency
+- **FPGA-based calorimeter**: the gold standard for latency measurement in HFT. A small FPGA (or smart NIC) with a hardware timestamp clock (PTP-synchronized) taps the network via a passive optical splitter or SPAN port. It records: (a) timestamp of inbound market data packet; (b) timestamp of outbound order packet. The difference is tick-to-trade latency measured at the wire, with zero measurement overhead on the trading server. Commercial solutions: Solarflare/TradingTech Precision Time Measurement (PTM), Exablaze ExaNIC. Build your own: Xilinx KU060 with 4x10G SFP+ and onboard PTP grandmaster
+- **How exchanges measure latency**: exchanges (CME, Nasdaq, ICE) measure latency from their matching engine to your order and back — NOT from your server to theirs. CME's iLink3 measures session-level latency and provides daily reports. Nasdaq's INET measures matching engine to network egress. Important: exchange-reported latency is always lower than your measured tick-to-trade because it excludes feed processing, strategy logic, and OMS serialization. The difference (your measurement minus exchange measurement) is your "green time" — the portion you control
+- **Synthetic vs live measurement**: synthetic measurement uses a traffic generator to send pre-recorded market data to the system under test, measuring response time. Live measurement taps a SPAN port in production and measures actual orders against actual market data. Synthetic is reproducible (A/B testing), live reflects real conditions. Best practice: run synthetic measurement in CI (gate on p99 latency regression > 1µs), and live measurement in production (alert on p99 latency shift > 10% in 5-minute window)
+- **Latency decomposition with hardware timestamps**: instrument each pipeline stage with hardware timestamps (PTP PHC): T0 = NIC RX timestamp, T1 = user-space parser start, T2 = order book update, T3 = strategy decision, T4 = OMS serialization, T5 = NIC TX timestamp. The difference between adjacent stages gives per-stage latency. Aggregate histograms (HDR Histogram) per stage per venue. Target: each stage < 1µs at p99. Any stage exceeding budget is a candidate for optimization or FPGA offload
+- **The coordinated omission fix — sequence-number-based tracking**: assign a sequence number to every incoming market data message. Record arrival time and completion time per seqno. If a seqno is missing from the completion log, that message was dropped or bypassed — record it as a "lost" entry with infinite latency. The resulting histogram includes all messages, not just processed ones. This catches the worst-case behavior of the system
+- **Measurement of kernel-bypass vs kernel-stack**: kernel stack (TCP/socket) adds 2-5µs jitter from softirq, context switches, and skb allocation. Kernel bypass (DPDK, Solarflare EFVI) removes this. To measure the difference: (a) run the same application with TCP and with kernel bypass; (b) measure p50/p99/p999 latency using hardware timestamps; (c) the difference is the kernel tax. Typical results: kernel p50 = 5µs, p99 = 15µs, p999 = 50µs; kernel bypass p50 = 1.5µs, p99 = 2.5µs, p999 = 4µs
+
+## Source Code
+
+```cpp
+// Coordinated-omission-aware latency measurement
+#include <cstdint>
+#include <cstdio>
+#include <atomic>
+#include <array>
+
+struct alignas(64) LatencySample {
+  uint64_t seqno;
+  uint64_t arrival_ns;   // PTP hardware timestamp
+  uint64_t complete_ns;  // PTP hardware timestamp
+  bool     processed;
+};
+
+class CoordinatedOmissionTracker {
+  static constexpr size_t kRingSize = 1 << 20;
+  std::array<LatencySample, kRingSize> samples_;
+  std::atomic<uint64_t> write_idx_{0};
+  std::atomic<uint64_t> read_idx_{0};
+
+public:
+  void record_arrival(uint64_t seqno, uint64_t ts_ns) {
+    size_t idx = write_idx_.fetch_add(1, std::memory_order_acq_rel) % kRingSize;
+    samples_[idx] = {seqno, ts_ns, 0, false};
+  }
+
+  void record_completion(uint64_t seqno, uint64_t ts_ns) {
+    // Find the arrival slot — in practice use a hash table keyed by seqno
+    for (size_t i = 0; i < kRingSize; i++) {
+      if (samples_[i].seqno == seqno) {
+        samples_[i].complete_ns = ts_ns;
+        samples_[i].processed = true;
+        break;
+      }
+    }
+  }
+
+  void report() {
+    uint64_t written = write_idx_.load(std::memory_order_acquire);
+    for (uint64_t i = read_idx_.load(); i < written; i++) {
+      auto& s = samples_[i % kRingSize];
+      if (!s.processed) {
+        printf("LOST seqno=%lu arrival=%lu\n", s.seqno, s.arrival_ns);
+        // This message had "infinite" latency — include it in p99 calculation
+      }
+    }
+    read_idx_.store(written, std::memory_order_release);
+  }
+};
+
+// FPGA calorimeter interaction — read DMA buffer with wire timestamps
+struct WireSample {
+  uint64_t rx_timestamp_ns;  // PTP-synced FPGA time at packet reception
+  uint64_t tx_timestamp_ns;  // PTP-synced FPGA time at order transmission
+  uint32_t seqno;
+} __attribute__((packed));
+
+// Read from FPGA DMA ring buffer
+class FpgaCalorimeter {
+  volatile WireSample* dma_buf_;  // mmap'd from FPGA
+  uint64_t last_seq_;
+public:
+  bool read_sample(WireSample* out) {
+    // Poll for new entry (FPGA increments a doorbell register)
+    volatile uint64_t* doorbell = dma_buf_ + 0x1000;
+    uint64_t seq = *doorbell;
+    if (seq == last_seq_) return false;
+    *out = dma_buf_[seq % 4096];
+    last_seq_ = seq;
+    return true;
+  }
+};
+```
+
+## Usage
+
+```bash
+# Synthetic load test with hardware timestamps
+./latency_bench --mode synthetic --rate 1000000 --duration 60 \
+  --output /tmp/latency.hdr
+
+# Live SPAN measurement (requires FPGA calorimeter)
+./latency_bench --mode live --interface eth0 --fpga /dev/fpga0 \
+  --ptp-clock /dev/ptp0 --output /tmp/wire_latency.hdr
+
+# Compare kernel vs kernel-bypass
+./latency_bench --mode synthetic --transport tcp  --output tcp.hdr
+./latency_bench --mode synthetic --transport dpdk --output dpdk.hdr
+
+# Analyze HDR histogram
+java -jar hdr-histogram-plotter.jar /tmp/latency.hdr
+```
+
+## Staff+ Perspective
+
+> **Staff+ Perspective**: In my time at the firm, I've seen three major measurement mistakes firsthand. First, the coordinated omission trap: our monitoring dashboard showed p99 latency of 12µs during the 2020 COVID volatility. But it only measured completed orders — during the peak, our feed handler was dropping 30% of packets. Those dropped packets had infinite latency but weren't in the histogram. The real p99 was > 100µs. We lost $2M that day and didn't know why until a week later when we correlated packet loss with latency measurement. Second, measurement-induced bias: our tick-to-trade logging wrote every sample to a file via `fprintf` — the logging added 3µs per event. Our measured latency was 12µs, but the actual wire-to-wire was 9µs. We had been optimizing our system to reduce the measured number, but the real improvement was invisible. Third, the exchange measurement difference: CME reported our average session latency as 2µs, but our PTP-based measurement said 11µs. The difference was our feed parsing, strategy, and OMS — which CME doesn't count. The conversation with management: "why can't we match CME's number?" The answer: "because they don't measure the same thing." The FPGA calorimeter was the single best investment: a $15K FPGA board that gave us wire-to-wire latency with zero overhead. We discovered that our kernel bypass stack added 2µs per message at p99 — not the 500ns we assumed. That led to a 6-month project to direct-DMA market data to user-space, which eventually saved 1.5µs.

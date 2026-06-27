@@ -102,9 +102,11 @@
           <h4 class="sidebar-label">Getting Started</h4>
           <a href="#cpu-architecture" class="sidebar-link">CPU Architecture &amp; Memory Hierarchy</a>
           <a href="#cache-lines" class="sidebar-link">Cache Lines, NUMA &amp; False Sharing</a>
+          <a href="#memory-architecture" class="sidebar-link">Memory Architecture &amp; Bandwidth</a>
           <a href="#compiler-flags" class="sidebar-link">GCC/Clang Optimization Flags</a>
           <a href="#hw-selection" class="sidebar-link">Hardware Selection Guide</a>
           <a href="#linux-tuning" class="sidebar-link">Linux Kernel Tuning</a>
+          <a href="#cpu-scheduling-deep" class="sidebar-link">CPU Scheduling &amp; Resource Partitioning</a>
           <a href="#huge-pages" class="sidebar-link">Huge Pages &amp; Memory Allocation</a>
           <a href="#colo-setup" class="sidebar-link">Colo Server Setup &amp; Toolchain</a>
           <a href="#colo-deep-dive" class="sidebar-link">Co-Location Deep Dive</a>
@@ -149,6 +151,7 @@
           <a href="#compile-time" class="sidebar-link">Compile-Time Computation</a>
           <a href="#wait-free-hazard-pointers" class="sidebar-link">Wait-Free Hazard Pointers</a>
           <a href="#perf-optimization-advanced" class="sidebar-link">Advanced Perf Optimization (PGO/LTO/BOLT)</a>
+          <a href="#cpu-perf-analysis" class="sidebar-link">CPU Performance Analysis (TMAM)</a>
           <a href="#compiler-optimizations-deep" class="sidebar-link">Advanced Compiler Optimizations for HFT</a>
         <div class="px-2 py-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
           <div class="text-[10px] font-bold text-brand-500 uppercase tracking-wider mb-2">Phase 4: System Programming &amp; IPC</div>
@@ -177,6 +180,7 @@
         <div class="sidebar-section">
           <h4 class="sidebar-label">Kernel Bypass</h4>
           <a href="#kernel-bypass" class="sidebar-link">Kernel Bypass Comparison</a>
+          <a href="#linux-net-stack" class="sidebar-link">Linux Networking Stack Deep Dive</a>
           <a href="#tcp-tuning" class="sidebar-link">TCP Stack Tuning</a>
           <a href="#udp-multicast" class="sidebar-link">UDP Multicast</a>
           <a href="#ebpf-xdp" class="sidebar-link">eBPF/XDP for HFT</a>
@@ -226,6 +230,7 @@
         <div class="sidebar-section">
           <h4 class="sidebar-label">Execution</h4>
           <a href="#latency-measure" class="sidebar-link">Hardware Timestamps &amp; Latency</a>
+          <a href="#latency-measurement-deep" class="sidebar-link">Latency Measurement Methodology</a>
           <a href="#configuration-management" class="sidebar-link">Configuration Management</a>
           <a href="#auction-handling" class="sidebar-link">Auction Handling</a>
           <a href="#order-reconstruction" class="sidebar-link">Order State Reconciliation</a>
@@ -241,6 +246,7 @@
           <a href="#exchange-compare" class="sidebar-link">Exchange Architecture Comparison</a>
           <a href="#market-model-comparison" class="sidebar-link">Exchange Market Model Comparison</a>
           <a href="#matching-engine" class="sidebar-link">Matching Engine Fundamentals</a>
+          <a href="#multi-venue-arch" class="sidebar-link">Multi-Venue Architecture</a>
           <a href="#microstructure-quirks" class="sidebar-link">Exchange Microstructure Quirks</a>
           <a href="#session-recovery" class="sidebar-link">Session Recovery Behaviors</a>
           <a href="#fee-structures" class="sidebar-link">Exchange Fee Structures</a>
@@ -299,6 +305,7 @@
           <a href="#multi-leg-execution" class="sidebar-link">Multi-Leg Order Execution</a>
           <a href="#arbitrage" class="sidebar-link">Latency &amp; Statistical Arbitrage</a>
           <a href="#latency-arb" class="sidebar-link">Cross-Exchange Latency Arbitrage</a>
+          <a href="#crypto-hft" class="sidebar-link">Crypto HFT Architecture</a>
           <a href="#momentum" class="sidebar-link">Momentum &amp; Mean Reversion</a>
           <a href="#pairs-trading" class="sidebar-link">Pairs Trading &amp; Cointegration</a>
           <a href="#optimal-execution" class="sidebar-link">Optimal Execution</a>
@@ -357,6 +364,7 @@
           <a href="#fpga-order-gen" class="sidebar-link">Order Generation on FPGA</a>
           <a href="#fpga-vs-cpu" class="sidebar-link">FPGA vs CPU Tradeoff Matrix</a>
           <a href="#fpga-vendors" class="sidebar-link">FPGA Vendor Guide</a>
+          <a href="#fpga-co-design" class="sidebar-link">FPGA-CPU Co-Design</a>
         </div>
 
         <!-- Phase 14: Monitoring & Security -->
@@ -393,6 +401,7 @@
           <a href="#perf-regression-testing" class="sidebar-link">Performance Regression Testing</a>
           <a href="#perf-benchmarking" class="sidebar-link">Performance Benchmarking Methodology</a>
           <a href="#cicd-hft" class="sidebar-link">CI/CD for HFT</a>
+          <a href="#kernel-lifecycle" class="sidebar-link">OS &amp; Kernel Lifecycle</a>
           <a href="#compliance-surveillance" class="sidebar-link">Compliance &amp; Surveillance Technology</a>
           <a href="#prod-debugging" class="sidebar-link">Production Debugging Tooling</a>
         </div>
@@ -401,6 +410,7 @@
           <a href="#colocation" class="sidebar-link">Colocation Strategy</a>
           <a href="#dr-failover" class="sidebar-link">Disaster Recovery &amp; Failover</a>
           <a href="#canary-release" class="sidebar-link">Canary/Blue-Green Release</a>
+          <a href="#algo-governance" class="sidebar-link">Algo Governance &amp; A/B Testing</a>
           <a href="#incident-cases" class="sidebar-link">Incident Case Studies</a>
           <a href="#operations" class="sidebar-link">Operations &amp; Runbooks</a>
           <a href="#daily-ops" class="sidebar-link">Continuous Optimization &amp; Daily Ops</a>
@@ -425,6 +435,7 @@
         <div class="sidebar-section">
           <h4 class="sidebar-label">Career</h4>
           <a href="#comparison-org" class="sidebar-link">Compensation &amp; Organization</a>
+          <a href="#career-strategy" class="sidebar-link">Career Strategy for Quant Devs</a>
           <a href="#legal-compliance" class="sidebar-link">Legal &amp; Compliance for Developers</a>
           <a href="#regulatory-reporting" class="sidebar-link">Regulatory Reporting Engineering</a>
           <a href="#staff-plus" class="sidebar-link">Staff+ Engineering &amp; Career</a>

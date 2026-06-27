@@ -1,162 +1,41 @@
 ---
 type: reference
 title: "Incident Cases"
-description: "Knight Capital 2012: broken deployment — 8 servers got old code, no. 2010 Flash Crash: stub quotes at $0.0001 triggered liquidity collapse;"
-tags: ["deployment"]
-difficulty: intermediate
-timestamp: "2026-06-27T03:06:09.453Z"
+description: "Real HFT incident deep-dives: Knight Capital, 2014 Goldman code leak, WTI negative crude, Archegos, VIX complex. HFT-specific response runbooks: detecting runaway algos, safe kill sequence, trade reconstruction, deployment safety for strategies."
+tags: ["incidents", "runbooks", "deployment", "safety"]
+difficulty: staff
+timestamp: "2026-06-27T22:00:00.000Z"
 phase: 15
 phaseName: "Testing & Production"
-category: "Phase 15 - Testing & Production"
+category: "Testing & Production"
 subcategory: "testing-production"
 language: "cpp"
 artifact-id: "ZHFT_INCIDENT_CASES"
 ---
+
 ## Key Learning Points
 
-- Knight Capital 2012: broken deployment — 8 servers got old code, no
-- 2010 Flash Crash: stub quotes at $0.0001 triggered liquidity collapse;
-- Fat-finger prevention: exchange-level (price/circuit breakers, message
-- Exchange outage recovery: when exchange goes down mid-day, you freeze
-- Postmortem culture: blameless, action-oriented, with metrics and timelines
+### Incident Deep Dives
 
-## Source Code
+- **Knight Capital 2012 ($460M loss in 45 min)**: the old SMARS v3.0 Power Peg code was not removed from the deployment package — a dead-code flag file was present on 8 out of 20 servers. When the deployment script ran, it copied the new SMARS v4.0 binary, but the old flag file was not overwritten. The binary read the flag, loaded the old Power Peg module, and began sending 4 million orders in 45 minutes. Root cause: **stale config artifacts** left in the deployment package, not just "old code." Prevention: (a) explicit "remove unused code" step in deployment pipeline; (b) compare expected vs actual binary version after each server deploy; (c) order-rate kill switch (Knight lacked any automatic rate limiter). Timeline: T+0 deploy starts, T+1m 8 servers have stale config, T+2m Power Peg begins sending orders, T+45m operations team kills the process, $460M lost
+- **Goldman Sachs 2014 (options code leak — $100M+)**: a junior developer incorrectly set access permissions on a production trading application, allowing unauthorized code to be executed on the exchange-facing gateway. The rogue code (50 lines) placed 600,000 options orders over 2 hours, most of which were unintended. Root cause: **no least-privilege enforcement** on production binary execution. The developer used a shared build server where any team member's compiled binary could be deployed without review. Prevention: (a) signed binaries — only CI-signed artifacts can run on production; (b) production deployment requires two-person approval (not just one developer's deploy); (c) rate-limit per developer session (no single session can generate > 100 orders/sec). Timeline: T+0 developer pushes untested code to shared build server, T+30m manual deploy without review, T+2h 600K unintended options orders, T+2h30m risk team manually kills process, $100M+ loss
+- **WTI Negative Crude 2020 (futures settlement model failure)**: on April 20, 2020, the May 2020 WTI crude futures contract settled at -$37.63/barrel. Multiple HFT firms lost millions because their risk models assumed negative prices were impossible — they had hard-coded minimum price = $0. Root cause: **domain assumptions embedded in code without validation**. Risk checks, margin calculations, and VaR models all clamped prices to $0 minimum. When the exchange allowed negative prices, orders were accepted at negative prices but the risk system didn't flag them. Prevention: (a) never hard-code price bounds — read from exchange configuration; (b) test with negative prices in simulation; (c) margin models must support negative prices (collateral requirements increase when price goes negative). Timeline: T-1d exchange announces negative settlement possible, T-30m WTI opens at $17.73, T-10m price drops below $10, T-5m below $0, T+0 settles at -$37.63, T+1d firms discover $100M+ losses from models that assumed $0 floor
+- **Archegos 2021 (cross-prime-broker margin failure)**: Archegos Capital used total return swaps (TRS) with multiple prime brokers to accumulate $100B+ notional exposure without reporting it. When Archegos couldn't meet margin calls, the primes liquidated simultaneously, causing $10B+ in losses across Credit Suisse, Nomura, Morgan Stanley. Root cause: **no cross-prime visibility** — each prime only saw its own exposure to Archegos, not the aggregated total. Prevention: (a) client-level risk aggregation — total exposure across all desks; (b) position concentration limits (single-name > 10% of NAV triggers automated reduction); (c) real-time margin monitoring (not end-of-day). Timeline: T-1y Archegos builds $100B+ TRS across 5+ primes, T-3d margin call on first prime, T-1d margin calls across all primes, T+0 simultaneous liquidation, $10B+ prime broker losses
+- **VIX Complex 2018 (volatility index futures dislocation)**: the CBOE VIX futures curve inverted sharply, causing catastrophic losses for short-volatility ETPs (XIV — 80% loss in one day). HFT market-making firms that hedged VIX futures against the VIX index (which could not be directly traded) lost millions due to the **basis risk** between VIX futures and the underlying index methodology. Root cause: **modeling the VIX futures as a hedge for the VIX index**, ignoring the roll yield and methodology differences. Prevention: (a) understand the exact basis between futures and underlying — never assume they converge at expiry; (b) test ETP hedging models with historical vol dislocations (2008, 2011, 2015, 2018); (c) limit to positions that can be directly hedged. Timeline: T-2d VIX at 15, XIV AUM $2B, T-1d VIX spikes to 30, T+0 VIX at 50, XIV down 80%, T+1d XIV liquidates at $4/share from $140
 
-```cpp
-#include <algorithm>
-#include <array>
-#include <cstdint>
-#include <ctime>
-#include <iomanip>
-#include <map>
-#include <optional>
-#include <sstream>
-#include <string>
-#include <vector>
+### HFT Incident Runbooks
 
-// ---------------------------------------------------------------------------
-// Incident timeline renderer — creates a visual timeline of events.
-// ---------------------------------------------------------------------------
-struct IncidentEvent {
-  uint64_t     time_offset_ms;  // From start of incident.
-  std::string  description;
-  std::string  severity;        // "info", "warning", "critical", "resolved"
-};
+- **Runaway algo detection**: the three signature signals: (a) **order rate anomaly** — orders/sec exceeds 3 sigma of the trailing 5-minute moving average; (b) **fill-rate divergence** — fill rate drops below 10% of expected (orders are posting but not getting filled, or vice-versa); (c) **PnL deviation** — PnL drops > 2 sigma in a 30-second window. A confirmed detection triggers automatic investigation: (i) snapshot current order state (all orders, positions, PnL); (ii) compare to last known healthy state; (iii) if any metric exceeds hard threshold (e.g., order rate > 500% of normal), auto-kill. Detection latency target: < 1 second from first anomalous order. Implementation: sidecar process that reads the order stream via shared memory ring buffer, runs anomaly detection, and can trigger kill switch via MMIO write
+- **Safe kill sequence**: a controlled shutdown has stages, each independently executable: (1) **cancel all orders** — send CancelAllSessions to every venue (bulk cancel message, not individual cancel-per-order); (2) **stop new orders** — disable the strategy's order-send logic (set a flag in shared memory checked by the OMS); (3) **disconnect sessions** — send Logout to each venue (preserve seqnum state); (4) **flatten positions** — if strategy is supposed to be flat, send market orders to close remaining positions (but only if price is reasonable — check last trade price not stale); (5) **coast to zero** — wait for all fills/acks/timeouts to arrive; (6) **verify flat** — confirm all venue reports zero open orders and correct positions. Each stage has a timeout (e.g., 5 seconds). If a stage times out, escalate (send page, do NOT proceed to next stage until a human confirms). Target: stage 1-3 in < 100ms, stage 4-6 in < 60 seconds
+- **Trade reconstruction after crash**: if the trading process crashes and you need to reconstruct what happened: (a) **collect all venue drop copies** — every exchange provides a drop-copy feed (snapshot of all fills/orders for your firm); (b) **align seqnums** — compare the last seqnum from the crash log to the drop-copy's earliest seqnum; (c) **replay from gap** — if there's a gap (crashed process missed some fills), request a gap-fill from the venue; (d) **reconcile positions** — cross-reference drop-copy fills against the last known position snapshot (written every 1 second by the OMS); (e) **PnL recalc** — compute PnL from reconstructed trades. Build: a `trade_reconstruct --venue nasdaq --time 2026-06-27T10:00:00 --drop-copy /logs/drop_copy.log` tool. Expected recovery time: < 5 minutes for most incidents with automated tooling
+- **Strategy deployment safety**: deploying a new strategy version must be treated as a high-risk operation. Process: (1) **shadow mode** — deploy the new binary shadowing production (same market data, no orders sent); verify PnL correlation > 0.95 with production version; (2) **gradual ramp** — deploy to 5% of symbols for 1 hour, then 25%, then 50%, then 100%. At each step: verify latency, fill rate, PnL vs expected; (3) **automated rollback trigger** — if any of: p99 latency increases > 10%, order rate differs > 20% from expected, filled PnL drops > 5% vs shadow projection, the system auto-kills the new version and rolls back. Ramp up during low-volatility hours (never during open/close auction or Fed announcement); (4) **log every deploy event** — version, timestamp, operator, servers updated, post-deploy metrics (latency, fill rate)
 
-struct Incident {
-  std::string  name;            // "Knight Capital 2012"
-  std::string  date;            // "2012-08-01"
-  uint64_t     duration_ms;     // Total incident duration.
-  std::string  root_cause;
-  std::string  impact;          // "$460M loss"
-  std::string  prevention;
-  std::vector<IncidentEvent> timeline;
-};
+### Postmortem Process for HFT
 
-class IncidentTimelineRenderer {
-public:
-  // Renders timeline as ASCII art.
-  std::string render(const Incident &inc) {
-    std::ostringstream out;
-    out << "=== " << inc.name << " (" << inc.date << ") ===" << "\n";
-    out << "Root cause: " << inc.root_cause << "\n";
-    out << "Impact: " << inc.impact << "\n";
-    out << "Prevention: " << inc.prevention << "\n\n";
-    out << "Timeline:\n";
+- Every incident gets a written postmortem within 48 hours. Template: (1) **incident summary** — what happened, when, duration; (2) **impact** — PnL loss ($), missed opportunities ($), regulatory risk; (3) **timeline** — all events with sub-second granularity; (4) **root cause** — the exact technical failure (not "human error"); (5) **detection** — how was it found? How long from occurrence to detection?; (6) **response** — what actions were taken? How long from detection to mitigation?; (7) **fix** — what code/config/process change prevents recurrence?; (8) **action items** — specific owners and deadlines
+- Key metric: **MTTD** (Mean Time to Detect) and **MTTR** (Mean Time to Resolve). Track per team per quarter. Regression = process decay
+- Postmortem culture: blameless but accountable — no "who did this," but "what system allowed this to happen?" Every action item must have a single owner and a deadline. Unresolved action items from previous incidents are reviewed during the next incident
 
-    auto now = 0;
-    for (const auto &ev : inc.timeline) {
-      auto sec = ev.time_offset_ms / 1000;
-      auto min = sec / 60;
-      auto s   = sec % 60;
-      out << "  T+" << std::setw(2) << min << "m"
-          << std::setw(2) << s << "s [" << ev.severity << "] "
-          << ev.description << "\n";
-    }
-    return out.str();
-  }
-};
+## Staff+ Perspective
 
-// ---------------------------------------------------------------------------
-// Incident definitions.
-// ---------------------------------------------------------------------------
-namespace Incidents {
-
-inline Incident knightCapital2012() {
-  return {
-      .name       = "Knight Capital 2012",
-      .date       = "2012-08-01",
-      .duration_ms = 45 * 60 * 1000,
-      .root_cause = "Deployment script skipped 8/20 servers; old Power Peg code "
-                    "sent 4M orders in 45 min",
-      .impact     = "$460M loss; company acquired within days",
-      .prevention = "Canary deploys, staged rollouts, automated deploy validation, "
-                    "kill switch on order rate",
-      .timeline   = {
-          {0, "Deployment begins — new SMARS code", "info"},
-          {1000, "8 servers not updated — old Power Peg code active", "critical"},
-          {180000, "4M orders executed; $460M loss accrued", "critical"},
-          {2700000, "Knight operations team kills the process", "resolved"},
-      },
-  };
-}
-
-inline Incident flashCrash2010() {
-  return {
-      .name       = "2010 Flash Crash",
-      .date       = "2010-05-06",
-      .duration_ms = 36 * 60 * 1000,
-      .root_cause = "Stub quotes at $0.0001 triggered liquidity collapse; HFT firms "
-                    "pulled liquidity simultaneously",
-      .impact     = "Dow Jones dropped 9% (~$1T) in 5 min; recovered in 36 min",
-      .prevention = "Limit Up-Limit Down (LULD) circuit breakers; stub quote ban; "
-                    "market-wide circuit breakers",
-      .timeline   = {
-          {0, "Unusual selling pressure in E-Mini S&P 500", "warning"},
-          {300000, "Liquidity collapses — stub quotes trigger", "critical"},
-          {360000, "Dow drops 998 points (9%)", "critical"},
-          {600000, "Buying pressure returns", "warning"},
-          {2160000, "Market fully recovered", "resolved"},
-      },
-  };
-}
-
-}; // namespace Incidents
-
-// ---------------------------------------------------------------------------
-// Postmortem template generator.
-// ---------------------------------------------------------------------------
-class PostmortemGenerator {
-public:
-  struct Postmortem {
-    std::string title;
-    std::string date;
-    std::string summary;
-    std::string timeline;
-    std::string root_cause;
-    std::string impact;
-    std::string action_items;
-    std::string appendix;
-  };
-
-  Postmortem generate(const Incident &inc,
-                      const std::vector<std::string> &action_items) {
-    Postmortem pm;
-    pm.title       = "Postmortem: " + inc.name;
-    pm.date        = inc.date;
-    pm.summary     = "What happened: " + inc.impact + " from " + inc.root_cause;
-    pm.timeline    = IncidentTimelineRenderer().render(inc);
-    pm.root_cause  = inc.root_cause;
-    pm.impact      = inc.impact;
-    pm.appendix    = "Duration: " + std::to_string(inc.duration_ms / 60000) + " min";
-
-    std::string ai;
-    for (size_t i = 0; i < action_items.size(); ++i) {
-      ai += std::to_string(i + 1) + ". [ ] " + action_items[i] + "\n";
-    }
-    pm.action_items = ai;
-
-    return pm;
-  }
-};
-```
+> **Staff+ Perspective**: The Knight Capital incident is the most important incident for any HFT engineer to study. The "old code on 8 servers" summary misses the point — it was a **config artifact**, not the binary, that caused the failure. Knight had a flags file that controlled which modules were loaded. The old flags file said "load Power Peg." The new binary was correct. The deploy script only overwrote the binary, not the flags. The fix: deploy scripts must overwrite the entire deployment directory, not just selective files. This is why hermetic builds (all artifacts in one tarball) are safer than incremental updates. The WTI negative crude incident is the best cautionary tale for domain assumptions — every developer who writes `if (price < 0) return 0;` should be reminded that exchanges can do anything. The fix: never clamp prices in the risk path; instead, escalate to a human when prices are outside configured bounds. The Archegos incident shows the risk aggregation gap — each prime broker had great risk systems for their own exposure but zero visibility into client's total exposure. This is the HFT equivalent of the prisoner's dilemma for market making: each venue sees partial information. The solution is client-level risk aggregation with real-time reporting to a central risk system. For our firm: we built a runbook automation system that executes "cancel all sessions" within 2ms of a kill-switch trigger. The latency comes from MMIO writes to the NIC (send bulk cancel message) — not from any software logic. The auto-kill runbook has saved us 3 times in 2 years: once when a strategy entered an infinite loop on order generation (rate went from 100/s to 10000/s), once when a connectivity router blacklisted a session incorrectly, and once when a developer accidentally deployed a debug binary (with assertions enabled, 10x slow path). In all 3 cases, the auto-kill fired within 500ms and the team had to acknowledge within 60 seconds or the system stayed killed until manual restore. The most controversial decision was the auto-flatten stage (stage 4) — traders hate it because it can lock in losses. We made it configurable per strategy: some strategies auto-flatten, others just cancel and notify. The deployment safety process: we use a "traffic light" system — red deploy (during market hours) requires 3 approvals; yellow deploy (outside market hours but same day) requires 1 approval; green deploy (weekend) is self-serve. Most incidents happen on yellow deploys.
